@@ -17,7 +17,7 @@ public interface ProductServiceClient {
 
     @GetMapping("/internal/products/{id}")
     ProductResponse getProductById(
-            @PathVariable("id") Long id,
+            @PathVariable("id") String id,
             @RequestHeader("X-Internal-API-Key") String apiKey
     );
 }

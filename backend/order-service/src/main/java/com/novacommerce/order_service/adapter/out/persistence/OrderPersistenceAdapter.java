@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 /**
  * Adaptador de persistencia para órdenes.
- * Implementa el puerto de salida usando JPA.
+ * Implementa el puerto de salida usando MongoDB.
  */
 @Component
 @RequiredArgsConstructor
@@ -25,18 +25,19 @@ public class OrderPersistenceAdapter implements OrderPersistencePort {
     @Override
     public Order save(Order order) {
         OrderEntity entity = orderMapper.toEntity(order);
+        entity.setTimestamps();
         OrderEntity saved = orderRepository.save(entity);
         return orderMapper.toDomain(saved);
     }
 
     @Override
-    public Optional<Order> findById(Long id) {
+    public Optional<Order> findById(String id) {
         return orderRepository.findById(id)
                 .map(orderMapper::toDomain);
     }
 
     @Override
-    public List<Order> findByCustomerId(Long customerId) {
+    public List<Order> findByCustomerId(String customerId) {
         return orderRepository.findByCustomerId(customerId).stream()
                 .map(orderMapper::toDomain)
                 .collect(Collectors.toList());
@@ -50,7 +51,7 @@ public class OrderPersistenceAdapter implements OrderPersistencePort {
     }
 
     @Override
-    public void deleteById(Long id) {
+    public void deleteById(String id) {
         orderRepository.deleteById(id);
     }
 }

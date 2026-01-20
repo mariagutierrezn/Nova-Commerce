@@ -19,7 +19,7 @@ public interface ProductImageStoragePort {
      * @throws IOException si ocurre un error al guardar el archivo
      * @throws IllegalArgumentException si el archivo no es válido
      */
-    String storeImage(Long productId, MultipartFile imageFile) throws IOException;
+    String storeImage(String productId, MultipartFile imageFile) throws IOException;
     
     /**
      * Elimina la imagen de un producto.

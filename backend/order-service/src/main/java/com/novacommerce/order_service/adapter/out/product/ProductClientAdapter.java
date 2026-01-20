@@ -22,7 +22,7 @@ public class ProductClientAdapter implements ProductValidationPort {
     private String internalApiKey;
 
     @Override
-    public boolean isProductValid(Long productId) {
+    public boolean isProductValid(String productId) {
         try {
             ProductResponse product = productServiceClient.getProductById(productId, internalApiKey);
             return product != null && 
@@ -38,7 +38,7 @@ public class ProductClientAdapter implements ProductValidationPort {
     }
 
     @Override
-    public String getProductName(Long productId) {
+    public String getProductName(String productId) {
         try {
             ProductResponse product = productServiceClient.getProductById(productId, internalApiKey);
             return product != null ? product.getName() : "Unknown";
@@ -49,7 +49,7 @@ public class ProductClientAdapter implements ProductValidationPort {
     }
 
     @Override
-    public String getProductType(Long productId) {
+    public String getProductType(String productId) {
         try {
             ProductResponse product = productServiceClient.getProductById(productId, internalApiKey);
             // El tipo de producto podría venir de la categoría
@@ -61,7 +61,7 @@ public class ProductClientAdapter implements ProductValidationPort {
     }
 
     @Override
-    public boolean hasStock(Long productId, Integer quantity) {
+    public boolean hasStock(String productId, Integer quantity) {
         try {
             ProductResponse product = productServiceClient.getProductById(productId, internalApiKey);
             return product != null && 

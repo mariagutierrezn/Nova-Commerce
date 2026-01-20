@@ -11,15 +11,15 @@ public interface CustomerValidationPort {
      * @param customerId ID del cliente
      * @return true si el cliente es válido
      */
-    boolean isCustomerValid(Long customerId);
+    boolean isCustomerValid(String customerId);
     
     /**
      * Obtiene el estado del cliente.
      */
-    String getCustomerStatus(Long customerId);
+    String getCustomerStatus(String customerId);
     
     /**
      * Obtiene el nivel de fidelidad del cliente.
      */
-    String getCustomerLoyaltyLevel(Long customerId);
+    String getCustomerLoyaltyLevel(String customerId);
 }

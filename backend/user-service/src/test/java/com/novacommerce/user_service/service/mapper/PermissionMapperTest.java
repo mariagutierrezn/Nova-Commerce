@@ -8,8 +8,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.time.LocalDateTime;
-import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -25,19 +23,16 @@ class PermissionMapperTest {
     @BeforeEach
     void setUp() {
         permission = Permission.builder()
-                .id(UUID.randomUUID())
-                .name("USER_READ")
-                .description("Permission to read user data")
-                .createdAt(LocalDateTime.now())
-                .updatedAt(LocalDateTime.now())
-                .build();
+            .id("perm-1")
+            .name("USER_READ")
+            .description("Permission to read user data")
+            .build();
     }
 
     @Test
     @DisplayName("Should map Permission to PermissionResponse")
     void testPermissionToPermissionResponse() {
         PermissionResponse response = permissionMapper.permissionToPermissionResponse(permission);
-
         assertNotNull(response);
         assertEquals(permission.getId(), response.id());
         assertEquals(permission.getName(), response.name());
@@ -64,11 +59,9 @@ class PermissionMapperTest {
     @Test
     @DisplayName("Should map UUID correctly")
     void testUUIDMapping() {
-        UUID permId = UUID.randomUUID();
+        String permId = "perm-uuid";
         permission.setId(permId);
-
         PermissionResponse response = permissionMapper.permissionToPermissionResponse(permission);
-
         assertEquals(permId, response.id());
     }
 
@@ -78,11 +71,9 @@ class PermissionMapperTest {
         permission.setName("USER_CREATE");
         PermissionResponse createResponse = permissionMapper.permissionToPermissionResponse(permission);
         assertEquals("USER_CREATE", createResponse.name());
-
         permission.setName("USER_UPDATE");
         PermissionResponse updateResponse = permissionMapper.permissionToPermissionResponse(permission);
         assertEquals("USER_UPDATE", updateResponse.name());
-
         permission.setName("USER_DELETE");
         PermissionResponse deleteResponse = permissionMapper.permissionToPermissionResponse(permission);
         assertEquals("USER_DELETE", deleteResponse.name());
@@ -103,11 +94,10 @@ class PermissionMapperTest {
     @DisplayName("Should handle user permissions")
     void testUserPermissions() {
         Permission userRead = Permission.builder()
-                .id(UUID.randomUUID())
-                .name("USER_READ")
-                .description("Read users")
-                .build();
-
+            .id("perm-user-read")
+            .name("USER_READ")
+            .description("Read users")
+            .build();
         PermissionResponse response = permissionMapper.permissionToPermissionResponse(userRead);
         assertEquals("USER_READ", response.name());
     }
@@ -116,11 +106,10 @@ class PermissionMapperTest {
     @DisplayName("Should handle role permissions")
     void testRolePermissions() {
         Permission roleCreate = Permission.builder()
-                .id(UUID.randomUUID())
-                .name("ROLE_CREATE")
-                .description("Create roles")
-                .build();
-
+            .id("perm-role-create")
+            .name("ROLE_CREATE")
+            .description("Create roles")
+            .build();
         PermissionResponse response = permissionMapper.permissionToPermissionResponse(roleCreate);
         assertEquals("ROLE_CREATE", response.name());
     }
@@ -129,11 +118,10 @@ class PermissionMapperTest {
     @DisplayName("Should handle auth permissions")
     void testAuthPermissions() {
         Permission authValidate = Permission.builder()
-                .id(UUID.randomUUID())
-                .name("AUTH_VALIDATE")
-                .description("Validate tokens")
-                .build();
-
+            .id("perm-auth-validate")
+            .name("AUTH_VALIDATE")
+            .description("Validate tokens")
+            .build();
         PermissionResponse response = permissionMapper.permissionToPermissionResponse(authValidate);
         assertEquals("AUTH_VALIDATE", response.name());
     }
@@ -141,13 +129,11 @@ class PermissionMapperTest {
     @Test
     @DisplayName("Should map all fields correctly")
     void testCompleteMapping() {
-        UUID id = UUID.randomUUID();
+        String id = "perm-complete";
         permission.setId(id);
         permission.setName("COMPLETE_PERMISSION");
         permission.setDescription("Complete description");
-
         PermissionResponse response = permissionMapper.permissionToPermissionResponse(permission);
-
         assertEquals(id, response.id());
         assertEquals("COMPLETE_PERMISSION", response.name());
         assertEquals("Complete description", response.description());

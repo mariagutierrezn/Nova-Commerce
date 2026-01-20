@@ -40,15 +40,15 @@ class CustomerRestControllerTest {
     @DisplayName("givenCustomers_whenGetAll_thenReturnList")
     void givenCustomers_whenGetAll_thenReturnList() {
         // GIVEN
-        Customer customer1 = new Customer(1L, "Juan", "Pérez", "juan@example.com", "123", CustomerStatus.ACTIVE, LoyaltyLevel.GOLD);
-        Customer customer2 = new Customer(2L, "Ana", "García", "ana@example.com", "456", CustomerStatus.ACTIVE, LoyaltyLevel.SILVER);
+        Customer customer1 = new Customer("1", "Juan", "Pérez", "juan@example.com", "123", CustomerStatus.ACTIVE, LoyaltyLevel.GOLD);
+        Customer customer2 = new Customer("2", "Ana", "García", "ana@example.com", "456", CustomerStatus.ACTIVE, LoyaltyLevel.SILVER);
         
         CustomerDto dto1 = new CustomerDto();
-        dto1.setId(1L);
+        dto1.setId("1");
         dto1.setFirstName("Juan");
         
         CustomerDto dto2 = new CustomerDto();
-        dto2.setId(2L);
+        dto2.setId("2");
         dto2.setFirstName("Ana");
         
         when(manageCustomersUseCase.findAll()).thenReturn(List.of(customer1, customer2));
@@ -70,7 +70,7 @@ class CustomerRestControllerTest {
     @DisplayName("givenExistingId_whenGetById_thenReturnCustomer")
     void givenExistingId_whenGetById_thenReturnCustomer() {
         // GIVEN
-        Long id = 1L;
+        String id = "1";
         Customer customer = new Customer(id, "Juan", "Pérez", "juan@example.com", "123", CustomerStatus.ACTIVE, LoyaltyLevel.GOLD);
         CustomerDto dto = new CustomerDto();
         dto.setId(id);
@@ -93,7 +93,7 @@ class CustomerRestControllerTest {
     @DisplayName("givenNonExistingId_whenGetById_thenReturnNotFound")
     void givenNonExistingId_whenGetById_thenReturnNotFound() {
         // GIVEN
-        Long id = 999L;
+        String id = "999";
         when(manageCustomersUseCase.findById(id)).thenReturn(Optional.empty());
 
         // WHEN
@@ -116,10 +116,10 @@ class CustomerRestControllerTest {
         inputDto.setEmail("juan@example.com");
         
         Customer domainCustomer = new Customer(null, "Juan", "Pérez", "juan@example.com", null, CustomerStatus.ACTIVE, LoyaltyLevel.BRONZE);
-        Customer createdCustomer = new Customer(1L, "Juan", "Pérez", "juan@example.com", null, CustomerStatus.ACTIVE, LoyaltyLevel.BRONZE);
+        Customer createdCustomer = new Customer("1", "Juan", "Pérez", "juan@example.com", null, CustomerStatus.ACTIVE, LoyaltyLevel.BRONZE);
         
         CustomerDto outputDto = new CustomerDto();
-        outputDto.setId(1L);
+        outputDto.setId("1");
         outputDto.setFirstName("Juan");
         
         when(mapper.toDomain(inputDto)).thenReturn(domainCustomer);
@@ -132,7 +132,7 @@ class CustomerRestControllerTest {
         // THEN
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertNotNull(response.getBody());
-        assertEquals(1L, response.getBody().getId());
+        assertEquals("1", response.getBody().getId());
         verify(mapper).toDomain(inputDto);
         verify(manageCustomersUseCase).create(domainCustomer);
         verify(mapper).toDto(createdCustomer);
@@ -142,7 +142,7 @@ class CustomerRestControllerTest {
     @DisplayName("givenValidDto_whenUpdate_thenReturnUpdated")
     void givenValidDto_whenUpdate_thenReturnUpdated() {
         // GIVEN
-        Long id = 1L;
+        String id = "1";
         CustomerDto inputDto = new CustomerDto();
         inputDto.setFirstName("Juan Updated");
         inputDto.setLastName("Pérez");
@@ -176,7 +176,7 @@ class CustomerRestControllerTest {
     @DisplayName("givenId_whenDelete_thenReturnNoContent")
     void givenId_whenDelete_thenReturnNoContent() {
         // GIVEN
-        Long id = 1L;
+        String id = "1";
         doNothing().when(manageCustomersUseCase).delete(id);
 
         // WHEN

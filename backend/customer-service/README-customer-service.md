@@ -2,10 +2,10 @@
 
 Microservicio de gestión de clientes para Nova Commerce.
 
-Implementa Clean Architecture con separación entre dominio, aplicación y adaptadores. Persiste en PostgreSQL mediante JPA/Hibernate y gestiona el esquema con Liquibase. Expone API REST protegida por JWT y validaciones de rol.
+Implementa Clean Architecture con separación entre dominio, aplicación y adaptadores. Persiste en MongoDB mediante Spring Data MongoDB. Expone API REST protegida por JWT y validaciones de rol.
 
 ```
-Cliente → API Gateway → Customer-Service → PostgreSQL
+Cliente → API Gateway → Customer-Service → MongoDB
                     ↓
                 Swagger / OpenAPI
 ```
@@ -14,7 +14,7 @@ Cliente → API Gateway → Customer-Service → PostgreSQL
 
 - Java 17+
 - Maven 3.6+
-- PostgreSQL 14+ (local o Docker)
+- MongoDB 7.0+ (local o Docker)
 - IDE: IntelliJ IDEA o VS Code
 
 ## 🚀 Instalación y Configuración
@@ -25,22 +25,19 @@ git clone https://github.com/LeonardoPerezSoft/Nova-Commerce.git
 cd backend/customer-service
 ```
 
-### 2. Base de datos (Docker opcional)
+### 2. Base de datos MongoDB (Docker opcional)
 ```powershell
-docker run -d --name nova-postgres `
-  -e POSTGRES_USER=postgres `
-  -e POSTGRES_PASSWORD=postgres `
-  -e POSTGRES_DB=nova_db `
-  -p 5432:5432 postgres:16
+docker run -d --name nova-mongodb `
+  -p 27017:27017 `
+  -e MONGO_INITDB_DATABASE=nova_db `
+  mongo:7.0
 ```
 
 ### 3. Variables de entorno (opcional)
 Puedes sobrescribir las propiedades de `application.yaml`:
 ```bash
 SPRING_PROFILES_ACTIVE=local
-SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/nova_db
-SPRING_DATASOURCE_USERNAME=postgres
-SPRING_DATASOURCE_PASSWORD=postgres
+SPRING_DATA_MONGODB_URI=mongodb://localhost:27017/nova_db
 
 # Semilla de datos
 SEED_ENABLED=true
@@ -60,8 +57,7 @@ Por defecto, el servicio corre en el puerto 8084 (ver configuración en [backend
 ## 🛠️ Tecnologías
 
 - Spring Boot 3.x
-- Spring Data JPA (Hibernate)
-- Liquibase
+- Spring Data MongoDB
 - Spring Security (JWT)
 - SpringDoc OpenAPI (Swagger UI)
 - Lombok
@@ -100,19 +96,15 @@ com.novacommerce.customer_service/
 │   └── SecurityConfig.java          # Filtro JWT + llave interna
 │
 └── resources/
-    ├── application.yaml             # Puerto 8084, datasource, springdoc
-    └── db/liquibase/
-        ├── changelog-master.yaml
-        ├── 001-create-customers-table.yaml
-        └── 002-seed-customers.yaml
+    ├── application.yaml             # Puerto 8084, MongoDB, springdoc
+    └── (sin migraciones - MongoDB usa colecciones dinámicas)
 ```
 
 Archivos relevantes:
 - Configuración general: [backend/customer-service/src/main/resources/application.yaml](backend/customer-service/src/main/resources/application.yaml)
 - Controlador REST: [backend/customer-service/src/main/java/com/novacommerce/customer_service/adapter/in/web/CustomerRestController.java](backend/customer-service/src/main/java/com/novacommerce/customer_service/adapter/in/web/CustomerRestController.java)
-- Liquibase master: [backend/customer-service/src/main/resources/db/liquibase/changelog-master.yaml](backend/customer-service/src/main/resources/db/liquibase/changelog-master.yaml)
-- Creación de tabla: [backend/customer-service/src/main/resources/db/liquibase/001-create-customers-table.yaml](backend/customer-service/src/main/resources/db/liquibase/001-create-customers-table.yaml)
-- Seed de clientes: [backend/customer-service/src/main/resources/db/liquibase/002-seed-customers.yaml](backend/customer-service/src/main/resources/db/liquibase/002-seed-customers.yaml)
+- **Colecciones MongoDB**: Se crean automáticamente al iniciar el servicio
+- **Seed de datos**: El servicio incluye seed de clientes iniciales si está habilitado (SEED_ENABLED=true)
 - Filtro API interna: [backend/customer-service/src/main/java/com/novacommerce/customer_service/adapter/in/security/InternalApiKeyFilter.java](backend/customer-service/src/main/java/com/novacommerce/customer_service/adapter/in/security/InternalApiKeyFilter.java)
 
 ## 🔐 Seguridad
@@ -235,9 +227,9 @@ mvnw.cmd clean compile
 mvnw.cmd package -DskipTests
 ```
 
-### "Connection refused: PostgreSQL"
-- Verifica que el contenedor/servicio PostgreSQL esté activo en `localhost:5432`.
-- Revisa credenciales y `SPRING_DATASOURCE_URL`.
+### "Connection refused: MongoDB"
+- Verifica que el contenedor/servicio MongoDB esté activo en `localhost:27017`.
+- Revisa la URI de conexión en `SPRING_DATA_MONGODB_URI`.
 
 ### "Port 8084 already in use"
 Cambia el puerto en `application.yaml`:

@@ -5,7 +5,6 @@ import com.novacommerce.user_service.application.port.in.ValidateUserCredentials
 import com.novacommerce.user_service.application.port.out.PasswordEncoderPort;
 import com.novacommerce.user_service.application.port.out.RolePersistencePort;
 import com.novacommerce.user_service.application.port.out.UserPersistencePort;
-import com.novacommerce.user_service.domain.model.Permission;
 import com.novacommerce.user_service.domain.model.Role;
 import com.novacommerce.user_service.domain.model.User;
 import com.novacommerce.user_service.service.mapper.UserMapper;
@@ -27,9 +26,8 @@ import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-import java.util.UUID;
+// ...existing imports...
 import java.util.stream.Collectors;
 
 /**
@@ -57,7 +55,7 @@ public class UserService implements ManageUsersUseCase, ValidateUserCredentialsU
 
     @Override
     @Transactional(readOnly = true)
-    public UserResponse getUserById(UUID id) {
+    public UserResponse getUserById(String id) {
         log.info("Obteniendo usuario: {}", id);
         return userPersistencePort.findById(id)
             .map(userMapper::userToUserResponse)
@@ -77,7 +75,8 @@ public class UserService implements ManageUsersUseCase, ValidateUserCredentialsU
         }
 
         String encryptedPassword = passwordEncoderPort.encode(createUserRequest.password());
-        Set<Role> roles = loadRoles(createUserRequest.roleIds());
+        Set<String> roleIds = createUserRequest.roleIds();
+        Set<Role> roles = loadRoles(roleIds);
         
         // Si no se especifican roles, asignar rol USER por defecto
         if (roles.isEmpty()) {
@@ -92,7 +91,7 @@ public class UserService implements ManageUsersUseCase, ValidateUserCredentialsU
             .username(createUserRequest.username())
             .email(createUserRequest.email())
             .password(encryptedPassword)
-            .roles(roles)
+            .roleIds(roles.stream().map(Role::getId).collect(Collectors.toSet()))
             .customerId(createUserRequest.customerId())
             .build();
 
@@ -103,30 +102,25 @@ public class UserService implements ManageUsersUseCase, ValidateUserCredentialsU
     }
 
     @Override
-    public UserResponse updateUser(UUID id, CreateUserRequest updateUserRequest) {
+    public UserResponse updateUser(String id, CreateUserRequest updateUserRequest) {
         log.info("Actualizando usuario: {}", id);
 
         User user = userPersistencePort.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("User", "id", id));
 
-        if (!user.getUsername().equals(updateUserRequest.username())) {
-            if (userPersistencePort.existsByUsername(updateUserRequest.username())) {
-                throw new DuplicateResourceException("User", "username", updateUserRequest.username());
-            }
+        if (!user.getUsername().equals(updateUserRequest.username()) && userPersistencePort.existsByUsername(updateUserRequest.username())) {
+            throw new DuplicateResourceException("User", "username", updateUserRequest.username());
         }
-
-        if (!user.getEmail().equals(updateUserRequest.email())) {
-            if (userPersistencePort.existsByEmail(updateUserRequest.email())) {
-                throw new DuplicateResourceException("User", "email", updateUserRequest.email());
-            }
+        if (!user.getEmail().equals(updateUserRequest.email()) && userPersistencePort.existsByEmail(updateUserRequest.email())) {
+            throw new DuplicateResourceException("User", "email", updateUserRequest.email());
         }
 
         user.setUsername(updateUserRequest.username());
         user.setEmail(updateUserRequest.email());
         user.setPassword(passwordEncoderPort.encode(updateUserRequest.password()));
-
-        Set<Role> roles = loadRoles(updateUserRequest.roleIds());
-        user.setRoles(roles);
+        Set<String> roleIds = updateUserRequest.roleIds();
+        Set<Role> roles = loadRoles(roleIds);
+        user.setRoleIds(roles.stream().map(Role::getId).collect(Collectors.toSet()));
 
         User updatedUser = userPersistencePort.save(user);
         log.info("Usuario actualizado exitosamente: {}", id);
@@ -135,7 +129,7 @@ public class UserService implements ManageUsersUseCase, ValidateUserCredentialsU
     }
 
     @Override
-    public void deleteUser(UUID id) {
+    public void deleteUser(String id) {
         log.info("Eliminando usuario: {}", id);
 
         if (!userPersistencePort.findById(id).isPresent()) {
@@ -148,7 +142,7 @@ public class UserService implements ManageUsersUseCase, ValidateUserCredentialsU
 
     @Override
     @Transactional(readOnly = true)
-    public boolean isCurrentUser(UUID id) {
+    public boolean isCurrentUser(String id) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated()) {
             return false;
@@ -161,7 +155,7 @@ public class UserService implements ManageUsersUseCase, ValidateUserCredentialsU
     }
     
     @Override
-    public void updateCustomerId(UUID userId, Long customerId) {
+    public void updateCustomerId(String userId, String customerId) {
         log.info("Actualizando customerId {} para usuario: {}", customerId, userId);
         
         User user = userPersistencePort.findById(userId)
@@ -194,12 +188,11 @@ public class UserService implements ManageUsersUseCase, ValidateUserCredentialsU
             throw new InvalidCredentialsException("Credenciales inválidas");
         }
 
-        if (!user.getEnabled()) {
+        if (Boolean.FALSE.equals(user.getEnabled())) {
             log.warn("Intento de login con usuario deshabilitado: {}", user.getUsername());
             throw new InvalidCredentialsException("Usuario deshabilitado");
         }
-
-        if (user.getLocked()) {
+        if (Boolean.TRUE.equals(user.getLocked())) {
             log.warn("Intento de login con usuario bloqueado: {}", user.getUsername());
             throw new InvalidCredentialsException("Usuario bloqueado");
         }
@@ -207,14 +200,22 @@ public class UserService implements ManageUsersUseCase, ValidateUserCredentialsU
         user.setLastLogin(LocalDateTime.now());
         userPersistencePort.save(user);
 
-        Set<String> roleNames = user.getRoles().stream()
-            .map(Role::getName)
-            .collect(Collectors.toSet());
-
-        Set<String> permissions = user.getRoles().stream()
-            .flatMap(role -> role.getPermissions().stream())
-            .map(Permission::getName)
-            .collect(Collectors.toSet());
+        Set<String> roleNames = new HashSet<>();
+        Set<String> permissions = new HashSet<>();
+        if (user.getRoleIds() != null && !user.getRoleIds().isEmpty()) {
+            Set<Role> userRoles = rolePersistencePort.findAllById(user.getRoleIds());
+            roleNames = userRoles.stream().map(Role::getName).collect(Collectors.toSet());
+            permissions = userRoles.stream()
+                .flatMap(role -> {
+                    if (role.getPermissionIds() != null && !role.getPermissionIds().isEmpty()) {
+                        // You may want to fetch Permission objects here if needed
+                        return role.getPermissionIds().stream();
+                    } else {
+                        return new HashSet<String>().stream();
+                    }
+                })
+                .collect(Collectors.toSet());
+        }
 
         log.info("Credenciales validadas exitosamente para: {}", user.getUsername());
 
@@ -229,27 +230,23 @@ public class UserService implements ManageUsersUseCase, ValidateUserCredentialsU
             .build();
     }
 
-    private Set<Role> loadRoles(Set<UUID> roleIds) {
+    private Set<Role> loadRoles(Set<String> roleIds) {
         if (roleIds == null || roleIds.isEmpty()) {
             return Set.of();
         }
-
         Set<Role> roles = rolePersistencePort.findAllById(roleIds);
-
         if (roles.size() != roleIds.size()) {
-            Set<UUID> foundIds = roles.stream()
+            Set<String> foundIds = roles.stream()
                 .map(Role::getId)
                 .collect(Collectors.toSet());
-            Set<UUID> notFoundIds = roleIds.stream()
+            Set<String> notFoundIds = roleIds.stream()
                 .filter(id -> !foundIds.contains(id))
                 .collect(Collectors.toSet());
-
             log.warn("Roles no encontrados: {}", notFoundIds);
             notFoundIds.forEach(id ->
                 log.warn("Rol no encontrado: {}", id)
             );
         }
-
         return roles;
     }
 }

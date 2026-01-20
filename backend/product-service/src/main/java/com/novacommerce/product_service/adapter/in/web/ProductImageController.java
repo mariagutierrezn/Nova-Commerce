@@ -33,7 +33,7 @@ public class ProductImageController {
                description = "Upload an image for a specific product. Only ADMIN role can perform this action.")
     @PreAuthorize("hasRole('ADMIN')")
         public ResponseEntity<Map<String, String>> uploadProductImage(
-            @PathVariable Long productId,
+            @PathVariable String productId,
             @RequestParam("imageFile") MultipartFile imageFile) {
         
         log.info("Received request to upload image for product ID: {}", productId);

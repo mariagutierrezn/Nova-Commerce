@@ -1,8 +1,8 @@
 package com.novacommerce.customer_service.domain.model;
 
 public class Address {
-    private Long id;
-    private Long customerId;
+    private String id;
+    private String customerId;
     private String street;
     private String city;
     private String state;
@@ -11,7 +11,7 @@ public class Address {
 
     public Address() {}
 
-    public Address(Long id, Long customerId, String street, String city, String state, String zipCode, String country) {
+    public Address(String id, String customerId, String street, String city, String state, String zipCode, String country) {
         this.id = id;
         this.customerId = customerId;
         this.street = street;
@@ -21,10 +21,10 @@ public class Address {
         this.country = country;
     }
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-    public Long getCustomerId() { return customerId; }
-    public void setCustomerId(Long customerId) { this.customerId = customerId; }
+    public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
+    public String getCustomerId() { return customerId; }
+    public void setCustomerId(String customerId) { this.customerId = customerId; }
     public String getStreet() { return street; }
     public void setStreet(String street) { this.street = street; }
     public String getCity() { return city; }

@@ -17,7 +17,7 @@ public interface CustomerServiceClient {
 
     @GetMapping("/internal/customers/{id}")
     CustomerResponse getCustomerById(
-            @PathVariable("id") Long id,
+            @PathVariable("id") String id,
             @RequestHeader("X-Internal-API-Key") String apiKey
     );
 }

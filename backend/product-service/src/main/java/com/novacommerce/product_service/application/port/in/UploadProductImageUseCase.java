@@ -19,5 +19,5 @@ public interface UploadProductImageUseCase {
      * @throws IllegalArgumentException si el archivo no es válido
      * @throws com.novacommerce.product_service.domain.exception.ResourceNotFoundException si el producto no existe
      */
-    String uploadProductImage(Long productId, MultipartFile imageFile) throws IOException;
+    String uploadProductImage(String productId, MultipartFile imageFile) throws IOException;
 }

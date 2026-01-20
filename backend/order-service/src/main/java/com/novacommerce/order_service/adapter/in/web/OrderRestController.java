@@ -7,7 +7,6 @@ import com.novacommerce.order_service.adapter.in.web.mapper.OrderDtoMapper;
 import com.novacommerce.order_service.application.port.in.CreateOrderUseCase;
 import com.novacommerce.order_service.application.port.in.GetOrderUseCase;
 import com.novacommerce.order_service.application.port.in.UpdateOrderStatusUseCase;
-import com.novacommerce.order_service.domain.exception.OrderException;
 import com.novacommerce.order_service.domain.model.Order;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -20,7 +19,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Controlador REST para órdenes.
@@ -57,7 +55,7 @@ public class OrderRestController {
     public ResponseEntity<List<OrderResponse>> getAllOrders() {
         List<OrderResponse> orders = getOrderUseCase.getAllOrders().stream()
                 .map(orderDtoMapper::toResponse)
-                .collect(Collectors.toList());
+                .toList();
         
         return ResponseEntity.ok(orders);
     }
@@ -65,7 +63,7 @@ public class OrderRestController {
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
     @Operation(summary = "Obtener orden por ID", description = "Retorna los detalles de una orden específica")
-    public ResponseEntity<OrderResponse> getOrderById(@PathVariable Long id) {
+    public ResponseEntity<OrderResponse> getOrderById(@PathVariable String id) {
         return getOrderUseCase.getOrderById(id)
                 .map(orderDtoMapper::toResponse)
                 .map(ResponseEntity::ok)
@@ -75,10 +73,10 @@ public class OrderRestController {
     @GetMapping("/customer/{customerId}")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
     @Operation(summary = "Obtener órdenes por cliente", description = "Retorna todas las órdenes de un cliente")
-    public ResponseEntity<List<OrderResponse>> getOrdersByCustomerId(@PathVariable Long customerId) {
+    public ResponseEntity<List<OrderResponse>> getOrdersByCustomerId(@PathVariable String customerId) {
         List<OrderResponse> orders = getOrderUseCase.getOrdersByCustomerId(customerId).stream()
                 .map(orderDtoMapper::toResponse)
-                .collect(Collectors.toList());
+                .toList();
         
         return ResponseEntity.ok(orders);
     }
@@ -87,7 +85,7 @@ public class OrderRestController {
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     @Operation(summary = "Actualizar estado de orden", description = "Cambia el estado de una orden validando transiciones permitidas")
     public ResponseEntity<OrderResponse> updateOrderStatus(
-            @PathVariable Long id,
+            @PathVariable String id,
             @Valid @RequestBody UpdateOrderStatusRequest request) {
         
         log.info("Updating order {} to status {}", id, request.getStatus());

@@ -8,34 +8,25 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
+// ...existing code...
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("UserResponse DTO Tests")
 class UserResponseTest {
 
-    private UserResponse userResponse;
-    private UUID userId;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+        private UserResponse userResponse;
+        private String userId;
+        private LocalDateTime createdAt;
+        private LocalDateTime updatedAt;
 
     @BeforeEach
     void setUp() {
-        userId = UUID.randomUUID();
+        userId = "user-1";
         createdAt = LocalDateTime.now().minusDays(10);
         updatedAt = LocalDateTime.now();
-
-        RoleResponse roleResponse = new RoleResponse(
-                UUID.randomUUID(),
-                "ADMIN",
-                "Administrator role",
-                new HashSet<>()
-        );
-
-        Set<RoleResponse> roles = new HashSet<>();
-        roles.add(roleResponse);
-
+        Set<String> roleIds = new HashSet<>();
+        roleIds.add("role-1");
         userResponse = new UserResponse(
                 userId,
                 "testuser",
@@ -44,7 +35,7 @@ class UserResponseTest {
                 true,
                 false,
                 null,
-                roles,
+                roleIds,
                 createdAt,
                 updatedAt
         );
@@ -60,8 +51,8 @@ class UserResponseTest {
         assertEquals("ACTIVE", userResponse.status());
         assertTrue(userResponse.enabled());
         assertFalse(userResponse.locked());
-        assertNotNull(userResponse.roles());
-        assertEquals(1, userResponse.roles().size());
+        assertNotNull(userResponse.roleIds());
+        assertEquals(1, userResponse.roleIds().size());
         assertEquals(createdAt, userResponse.createdAt());
         assertEquals(updatedAt, userResponse.updatedAt());
     }
@@ -70,7 +61,7 @@ class UserResponseTest {
     @DisplayName("Should handle null roles")
     void testNullRoles() {
         UserResponse response = new UserResponse(
-                UUID.randomUUID(),
+                "user-2",
                 "testuser",
                 "test@example.com",
                 "ACTIVE",
@@ -81,15 +72,14 @@ class UserResponseTest {
                 LocalDateTime.now(),
                 LocalDateTime.now()
         );
-
-        assertNull(response.roles());
+        assertNull(response.roleIds());
     }
 
     @Test
     @DisplayName("Should handle empty roles")
     void testEmptyRoles() {
         UserResponse response = new UserResponse(
-                UUID.randomUUID(),
+                "user-3",
                 "testuser",
                 "test@example.com",
                 "ACTIVE",
@@ -100,49 +90,44 @@ class UserResponseTest {
                 LocalDateTime.now(),
                 LocalDateTime.now()
         );
-
-        assertNotNull(response.roles());
-        assertTrue(response.roles().isEmpty());
+        assertNotNull(response.roleIds());
+        assertTrue(response.roleIds().isEmpty());
     }
 
     @Test
     @DisplayName("Should handle multiple roles")
     void testMultipleRoles() {
-        Set<RoleResponse> roles = new HashSet<>();
-        roles.add(new RoleResponse(UUID.randomUUID(), "ADMIN", "Admin", new HashSet<>()));
-        roles.add(new RoleResponse(UUID.randomUUID(), "USER", "User", new HashSet<>()));
-
+        Set<String> roleIds = new HashSet<>();
+        roleIds.add("role-2");
+        roleIds.add("role-3");
         UserResponse response = new UserResponse(
-                UUID.randomUUID(),
+                "user-4",
                 "testuser",
                 "test@example.com",
                 "ACTIVE",
                 true,
                 false,
                 null,
-                roles,
+                roleIds,
                 LocalDateTime.now(),
                 LocalDateTime.now()
         );
-
-        assertEquals(2, response.roles().size());
+        assertEquals(2, response.roleIds().size());
     }
 
     @Test
     @DisplayName("Should handle different statuses")
     void testDifferentStatuses() {
         UserResponse activeUser = new UserResponse(
-                UUID.randomUUID(), "user1", "email1@test.com", "ACTIVE", true, false, null, new HashSet<>(), LocalDateTime.now(), LocalDateTime.now()
+                "user-5", "user1", "email1@test.com", "ACTIVE", true, false, null, new HashSet<>(), LocalDateTime.now(), LocalDateTime.now()
         );
         assertEquals("ACTIVE", activeUser.status());
-
         UserResponse inactiveUser = new UserResponse(
-                UUID.randomUUID(), "user2", "email2@test.com", "INACTIVE", false, false, null, new HashSet<>(), LocalDateTime.now(), LocalDateTime.now()
+                "user-6", "user2", "email2@test.com", "INACTIVE", false, false, null, new HashSet<>(), LocalDateTime.now(), LocalDateTime.now()
         );
         assertEquals("INACTIVE", inactiveUser.status());
-
         UserResponse lockedUser = new UserResponse(
-                UUID.randomUUID(), "user3", "email3@test.com", "LOCKED", true, true, null, new HashSet<>(), LocalDateTime.now(), LocalDateTime.now()
+                "user-7", "user3", "email3@test.com", "LOCKED", true, true, null, new HashSet<>(), LocalDateTime.now(), LocalDateTime.now()
         );
         assertEquals("LOCKED", lockedUser.status());
     }
@@ -151,19 +136,17 @@ class UserResponseTest {
     @DisplayName("Should handle enabled and locked combinations")
     void testEnabledLockedCombinations() {
         UserResponse user1 = new UserResponse(
-                UUID.randomUUID(), "user1", "email@test.com", "ACTIVE", true, false, null, new HashSet<>(), LocalDateTime.now(), LocalDateTime.now()
+                "user-8", "user1", "email@test.com", "ACTIVE", true, false, null, new HashSet<>(), LocalDateTime.now(), LocalDateTime.now()
         );
         assertTrue(user1.enabled());
         assertFalse(user1.locked());
-
         UserResponse user2 = new UserResponse(
-                UUID.randomUUID(), "user2", "email@test.com", "INACTIVE", false, false, null, new HashSet<>(), LocalDateTime.now(), LocalDateTime.now()
+                "user-9", "user2", "email@test.com", "INACTIVE", false, false, null, new HashSet<>(), LocalDateTime.now(), LocalDateTime.now()
         );
         assertFalse(user2.enabled());
         assertFalse(user2.locked());
-
         UserResponse user3 = new UserResponse(
-                UUID.randomUUID(), "user3", "email@test.com", "LOCKED", true, true, null, new HashSet<>(), LocalDateTime.now(), LocalDateTime.now()
+                "user-10", "user3", "email@test.com", "LOCKED", true, true, null, new HashSet<>(), LocalDateTime.now(), LocalDateTime.now()
         );
         assertTrue(user3.enabled());
         assertTrue(user3.locked());
@@ -172,13 +155,11 @@ class UserResponseTest {
     @Test
     @DisplayName("Should preserve UUID format")
     void testUUIDFormat() {
-        UUID testId = UUID.randomUUID();
+        String testId = "user-uuid";
         UserResponse response = new UserResponse(
                 testId, "testuser", "test@example.com", "ACTIVE", true, false, null, new HashSet<>(), LocalDateTime.now(), LocalDateTime.now()
         );
-
         assertEquals(testId, response.id());
-        assertEquals(testId.toString(), response.id().toString());
     }
 
     @Test
@@ -188,9 +169,8 @@ class UserResponseTest {
         LocalDateTime updated = LocalDateTime.of(2024, 1, 15, 14, 30);
 
         UserResponse response = new UserResponse(
-                UUID.randomUUID(), "testuser", "test@example.com", "ACTIVE", true, false, null, new HashSet<>(), created, updated
+                "user-11", "testuser", "test@example.com", "ACTIVE", true, false, null, new HashSet<>(), created, updated
         );
-
         assertEquals(created, response.createdAt());
         assertEquals(updated, response.updatedAt());
     }
@@ -199,9 +179,8 @@ class UserResponseTest {
     @DisplayName("Should handle username and email correctly")
     void testUsernameAndEmail() {
         UserResponse response = new UserResponse(
-                UUID.randomUUID(), "admin", "admin@novacommerce.com", "ACTIVE", true, false, null, new HashSet<>(), LocalDateTime.now(), LocalDateTime.now()
+                "user-12", "admin", "admin@novacommerce.com", "ACTIVE", true, false, null, new HashSet<>(), LocalDateTime.now(), LocalDateTime.now()
         );
-
         assertEquals("admin", response.username());
         assertEquals("admin@novacommerce.com", response.email());
     }

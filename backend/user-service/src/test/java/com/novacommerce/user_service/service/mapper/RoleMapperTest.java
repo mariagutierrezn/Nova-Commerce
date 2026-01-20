@@ -1,6 +1,5 @@
 package com.novacommerce.user_service.service.mapper;
 
-import com.novacommerce.user_service.domain.model.Permission;
 import com.novacommerce.user_service.domain.model.Role;
 import com.novacommerce.user_service.web.api.dto.response.RoleResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,10 +8,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -24,51 +21,40 @@ class RoleMapperTest {
     private RoleMapper roleMapper;
 
     private Role role;
-    private Permission permission;
+    private String permissionId;
 
     @BeforeEach
     void setUp() {
-        permission = Permission.builder()
-                .id(UUID.randomUUID())
-                .name("USER_READ")
-                .description("Permission to read users")
-                .createdAt(LocalDateTime.now())
-                .updatedAt(LocalDateTime.now())
-                .build();
-
-        Set<Permission> permissions = new HashSet<>();
-        permissions.add(permission);
-
+        permissionId = "perm-1";
+        Set<String> permissionIds = new HashSet<>();
+        permissionIds.add(permissionId);
         role = Role.builder()
-                .id(UUID.randomUUID())
-                .name("ADMIN")
-                .description("Administrator role")
-                .permissions(permissions)
-                .createdAt(LocalDateTime.now())
-                .updatedAt(LocalDateTime.now())
-                .build();
+            .id("role-1")
+            .name("ADMIN")
+            .description("Administrator role")
+            .permissionIds(permissionIds)
+            .build();
     }
 
     @Test
     @DisplayName("Should map Role to RoleResponse")
     void testRoleToRoleResponse() {
         RoleResponse response = roleMapper.roleToRoleResponse(role);
-
         assertNotNull(response);
         assertEquals(role.getId(), response.id());
         assertEquals(role.getName(), response.name());
         assertEquals(role.getDescription(), response.description());
+        assertNotNull(response.permissionIds());
+        assertEquals(1, response.permissionIds().size());
     }
 
     @Test
     @DisplayName("Should map permissions correctly")
     void testPermissionsMapping() {
         RoleResponse response = roleMapper.roleToRoleResponse(role);
-
-        assertNotNull(response.permissions());
-        assertEquals(1, response.permissions().size());
-        assertTrue(response.permissions().stream()
-                .anyMatch(p -> p.name().equals("USER_READ")));
+        assertNotNull(response.permissionIds());
+        assertEquals(1, response.permissionIds().size());
+        assertTrue(response.permissionIds().contains(permissionId));
     }
 
     @Test
@@ -82,17 +68,15 @@ class RoleMapperTest {
     @DisplayName("Should handle role without permissions")
     void testRoleWithoutPermissions() {
         Role roleWithoutPermissions = Role.builder()
-                .id(UUID.randomUUID())
-                .name("USER")
-                .description("User role")
-                .permissions(new HashSet<>())
-                .build();
-
+            .id("role-2")
+            .name("USER")
+            .description("User role")
+            .permissionIds(new HashSet<>())
+            .build();
         RoleResponse response = roleMapper.roleToRoleResponse(roleWithoutPermissions);
-
         assertNotNull(response);
-        assertNotNull(response.permissions());
-        assertTrue(response.permissions().isEmpty());
+        assertNotNull(response.permissionIds());
+        assertTrue(response.permissionIds().isEmpty());
     }
 
     @Test
@@ -108,40 +92,21 @@ class RoleMapperTest {
     @Test
     @DisplayName("Should handle multiple permissions")
     void testMultiplePermissions() {
-        Permission createPermission = Permission.builder()
-                .id(UUID.randomUUID())
-                .name("USER_CREATE")
-                .description("Create users")
-                .build();
-
-        Permission updatePermission = Permission.builder()
-                .id(UUID.randomUUID())
-                .name("USER_UPDATE")
-                .description("Update users")
-                .build();
-
-        role.addPermission(createPermission);
-        role.addPermission(updatePermission);
-
+        role.getPermissionIds().add("perm-2");
+        role.getPermissionIds().add("perm-3");
         RoleResponse response = roleMapper.roleToRoleResponse(role);
-
-        assertEquals(3, response.permissions().size());
-        assertTrue(response.permissions().stream()
-                .anyMatch(p -> p.name().equals("USER_READ")));
-        assertTrue(response.permissions().stream()
-                .anyMatch(p -> p.name().equals("USER_CREATE")));
-        assertTrue(response.permissions().stream()
-                .anyMatch(p -> p.name().equals("USER_UPDATE")));
+        assertEquals(3, response.permissionIds().size());
+        assertTrue(response.permissionIds().contains(permissionId));
+        assertTrue(response.permissionIds().contains("perm-2"));
+        assertTrue(response.permissionIds().contains("perm-3"));
     }
 
     @Test
     @DisplayName("Should map UUID correctly")
     void testUUIDMapping() {
-        UUID roleId = UUID.randomUUID();
+        String roleId = "role-uuid";
         role.setId(roleId);
-
         RoleResponse response = roleMapper.roleToRoleResponse(role);
-
         assertEquals(roleId, response.id());
     }
 
@@ -151,7 +116,6 @@ class RoleMapperTest {
         role.setName("SALES");
         RoleResponse salesResponse = roleMapper.roleToRoleResponse(role);
         assertEquals("SALES", salesResponse.name());
-
         role.setName("USER");
         RoleResponse userResponse = roleMapper.roleToRoleResponse(role);
         assertEquals("USER", userResponse.name());
@@ -161,22 +125,16 @@ class RoleMapperTest {
     @DisplayName("Should map permission details completely")
     void testCompletePermissionMapping() {
         RoleResponse response = roleMapper.roleToRoleResponse(role);
-
-        response.permissions().forEach(permResponse -> {
-            assertNotNull(permResponse.id());
-            assertNotNull(permResponse.name());
-            assertNotNull(permResponse.description());
-        });
+        assertNotNull(response.permissionIds());
     }
 
     @Test
     @DisplayName("Should handle empty permission set")
     void testEmptyPermissionSet() {
-        role.setPermissions(new HashSet<>());
+        role.setPermissionIds(new HashSet<>());
         RoleResponse response = roleMapper.roleToRoleResponse(role);
-
-        assertNotNull(response.permissions());
-        assertEquals(0, response.permissions().size());
+        assertNotNull(response.permissionIds());
+        assertEquals(0, response.permissionIds().size());
     }
 
     @Test

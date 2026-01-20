@@ -1,7 +1,6 @@
 package com.novacommerce.auth_service.config.security;
 
 import com.novacommerce.auth_service.config.security.jwt.JwtAuthenticationFilter;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -9,13 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -100,9 +93,7 @@ class SecurityConfigTest {
     @Test
     @DisplayName("Debe manejar authenticationEntryPoint con 401")
     void testAuthenticationEntryPoint() throws Exception {
-        HttpServletRequest request = mock(HttpServletRequest.class);
         HttpServletResponse response = mock(HttpServletResponse.class);
-        AuthenticationException authException = mock(AuthenticationException.class);
         
         StringWriter stringWriter = new StringWriter();
         PrintWriter printWriter = new PrintWriter(stringWriter);
@@ -121,9 +112,7 @@ class SecurityConfigTest {
     @Test
     @DisplayName("Debe manejar accessDeniedHandler con 403")
     void testAccessDeniedHandler() throws Exception {
-        HttpServletRequest request = mock(HttpServletRequest.class);
         HttpServletResponse response = mock(HttpServletResponse.class);
-        AccessDeniedException accessDeniedException = mock(AccessDeniedException.class);
         
         StringWriter stringWriter = new StringWriter();
         PrintWriter printWriter = new PrintWriter(stringWriter);

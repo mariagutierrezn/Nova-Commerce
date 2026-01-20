@@ -17,8 +17,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class OrderResponse {
-    private Long id;
-    private Long customerId;
+    private String id;
+    private String customerId;
     private String status;
     private BigDecimal totalBeforeDiscount;
     private BigDecimal discountTotal;

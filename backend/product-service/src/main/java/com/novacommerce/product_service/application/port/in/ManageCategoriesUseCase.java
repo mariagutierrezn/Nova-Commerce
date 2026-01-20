@@ -8,11 +8,11 @@ public interface ManageCategoriesUseCase {
     
     Category createCategory(Category category);
     
-    Category updateCategory(Long id, Category category);
+    Category updateCategory(String id, Category category);
     
-    void deleteCategory(Long id);
+    void deleteCategory(String id);
     
-    Category getCategoryById(Long id);
+    Category getCategoryById(String id);
     
     Page<Category> getAllCategories(Pageable pageable);
 }

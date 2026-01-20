@@ -14,7 +14,7 @@ class CategoryEntityTest {
     @BeforeEach
     void setUp() {
         categoryEntity = CategoryEntity.builder()
-                .id(1L)
+                .id("1")
                 .name("Electronics")
                 .description("Electronic devices")
                 .status("ACTIVE")
@@ -25,7 +25,7 @@ class CategoryEntityTest {
     @DisplayName("Should create category entity with all fields")
     void testCategoryEntityCreation() {
         assertNotNull(categoryEntity);
-        assertEquals(1L, categoryEntity.getId());
+        assertEquals("1", categoryEntity.getId());
         assertEquals("Electronics", categoryEntity.getName());
         assertEquals("Electronic devices", categoryEntity.getDescription());
         assertEquals("ACTIVE", categoryEntity.getStatus());
@@ -55,8 +55,8 @@ class CategoryEntityTest {
     @Test
     @DisplayName("Should allow setting category id")
     void testSetId() {
-        categoryEntity.setId(10L);
-        assertEquals(10L, categoryEntity.getId());
+        categoryEntity.setId("10");
+        assertEquals("10", categoryEntity.getId());
     }
 
     @Test
@@ -70,13 +70,13 @@ class CategoryEntityTest {
     @DisplayName("Should use builder pattern correctly")
     void testBuilderPattern() {
         CategoryEntity built = CategoryEntity.builder()
-                .id(2L)
+                .id("2")
                 .name("Clothing")
                 .description("Clothing and accessories")
                 .status("ACTIVE")
                 .build();
 
-        assertEquals(2L, built.getId());
+        assertEquals("2", built.getId());
         assertEquals("Clothing", built.getName());
     }
 
@@ -90,8 +90,8 @@ class CategoryEntityTest {
     @Test
     @DisplayName("Should support all-args constructor")
     void testAllArgsConstructor() {
-        CategoryEntity entity = new CategoryEntity(3L, "Books", "Books and media", "ACTIVE");
-        assertEquals(3L, entity.getId());
+        CategoryEntity entity = new CategoryEntity("3", "Books", "Books and media", "ACTIVE");
+        assertEquals("3", entity.getId());
         assertEquals("Books", entity.getName());
         assertEquals("Books and media", entity.getDescription());
         assertEquals("ACTIVE", entity.getStatus());
@@ -107,12 +107,12 @@ class CategoryEntityTest {
     @Test
     @DisplayName("Should maintain all field values after modification")
     void testFieldsAfterModification() {
-        categoryEntity.setId(100L);
+        categoryEntity.setId("100");
         categoryEntity.setName("Furniture");
         categoryEntity.setDescription("Home furniture");
         categoryEntity.setStatus("INACTIVE");
 
-        assertEquals(100L, categoryEntity.getId());
+        assertEquals("100", categoryEntity.getId());
         assertEquals("Furniture", categoryEntity.getName());
         assertEquals("Home furniture", categoryEntity.getDescription());
         assertEquals("INACTIVE", categoryEntity.getStatus());

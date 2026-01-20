@@ -20,7 +20,7 @@ public class RegisterResponse {
     private String userId;
 
     @Schema(description = "ID del cliente creado", example = "5")
-    private Long customerId;
+    private String customerId;
 
     @Schema(description = "Email del usuario registrado", example = "leonardo@sofka.com.co")
     private String email;

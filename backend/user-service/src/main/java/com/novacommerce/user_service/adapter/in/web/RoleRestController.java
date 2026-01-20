@@ -19,7 +19,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.UUID;
+// ...existing imports...
 
 /**
  * Adaptador de entrada REST para gestión de roles.
@@ -66,7 +66,7 @@ public class RoleRestController {
         @ApiResponse(responseCode = "403", description = "No tiene permisos (requiere ADMIN)"),
         @ApiResponse(responseCode = "404", description = "Rol no encontrado")
     })
-    public ResponseEntity<RoleResponse> getRoleById(@PathVariable UUID id) {
+    public ResponseEntity<RoleResponse> getRoleById(@PathVariable String id) {
         log.info("Solicitud de rol: {}", id);
         RoleResponse role = manageRolesUseCase.getRoleById(id);
         return ResponseEntity.ok(role);
@@ -104,7 +104,7 @@ public class RoleRestController {
         @ApiResponse(responseCode = "403", description = "No tiene permisos (requiere ADMIN)"),
         @ApiResponse(responseCode = "404", description = "Rol no encontrado")
     })
-    public ResponseEntity<Void> deleteRole(@PathVariable UUID id) {
+    public ResponseEntity<Void> deleteRole(@PathVariable String id) {
         log.info("Solicitud de eliminación de rol: {}", id);
         manageRolesUseCase.deleteRole(id);
         return ResponseEntity.noContent().build();

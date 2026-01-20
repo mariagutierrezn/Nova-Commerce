@@ -28,7 +28,7 @@
     • Health       → http://localhost:${server.port}/actuator/health
 
   🔐 Security: JWT Token-Based Authentication (Stateless)
-  📊 Database: PostgreSQL with Liquibase Migrations
+  📊 Database: MongoDB
 
   ════════════════════════════════════════════════════════════════════════════
 

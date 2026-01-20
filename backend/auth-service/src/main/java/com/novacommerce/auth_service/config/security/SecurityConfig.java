@@ -56,10 +56,9 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            .csrf().disable()
-            .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
+            .csrf(csrf -> csrf.disable())
+            .sessionManagement(session -> session
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(authz -> authz
                 // Endpoints públicos de autenticación
                 .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
@@ -75,7 +74,7 @@ public class SecurityConfig {
                 // Cualquier otra solicitud requiere autenticación
                 .anyRequest().authenticated()
             )
-            .exceptionHandling()
+            .exceptionHandling(ex -> ex
                 .authenticationEntryPoint((request, response, authException) -> {
                     response.setStatus(401);
                     response.setContentType("application/json");
@@ -85,8 +84,7 @@ public class SecurityConfig {
                     response.setStatus(403);
                     response.setContentType("application/json");
                     response.getWriter().write("{\"error\": \"Acceso denegado\"}");
-                })
-                .and()
+                }))
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

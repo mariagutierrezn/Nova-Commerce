@@ -7,8 +7,8 @@ import java.util.Optional;
 
 public interface CustomerPersistencePort {
     Customer save(Customer customer);
-    Optional<Customer> findById(Long id);
+    Optional<Customer> findById(String id);
     List<Customer> findAll();
-    void deleteById(Long id);
+    void deleteById(String id);
     boolean existsByEmail(String email);
 }

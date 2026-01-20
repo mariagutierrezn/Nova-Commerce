@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -28,8 +27,8 @@ class CreateUserRequestTest {
     @Test
     @DisplayName("Should create valid CreateUserRequest")
     void testValidCreateUserRequest() {
-        Set<UUID> roleIds = new HashSet<>();
-        roleIds.add(UUID.randomUUID());
+        Set<String> roleIds = new HashSet<>();
+        roleIds.add("role-123");
 
         CreateUserRequest request = new CreateUserRequest(
                 "testuser",
@@ -188,10 +187,10 @@ class CreateUserRequestTest {
     @Test
     @DisplayName("Should handle multiple roleIds")
     void testMultipleRoleIds() {
-        Set<UUID> roleIds = new HashSet<>();
-        roleIds.add(UUID.randomUUID());
-        roleIds.add(UUID.randomUUID());
-        roleIds.add(UUID.randomUUID());
+        Set<String> roleIds = new HashSet<>();
+        roleIds.add("role-1");
+        roleIds.add("role-2");
+        roleIds.add("role-3");
 
         CreateUserRequest request = new CreateUserRequest(
                 "testuser",

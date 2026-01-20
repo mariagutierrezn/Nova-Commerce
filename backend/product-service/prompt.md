@@ -45,7 +45,7 @@ product-service/
 │
 └── resources/
     ├── application.yaml
-    └── db/liquibase/
+    └── (sin migraciones - MongoDB usa colecciones dinámicas)
         ├── changelog-master.yaml
         └── changes/
             ├── 001-create-category-table.yaml
@@ -58,7 +58,7 @@ Mantiene:
 ✔ ports
 ✔ domain model puro
 ✔ persistence aislada
-✔ compatibilidad Liquibase
+✔ MongoDB con colecciones dinámicas
 ✔ extensible para descuentos y pricing después
 
 🧩 Modelo de Dominio sugerido
@@ -80,7 +80,7 @@ categoryId
 stockQuantity
 status
 
-🗄️ Liquibase — estructura recomendada
+🗄️ MongoDB — colecciones dinámicas
 databaseChangeLog:
   - include:
       file: changes/001-create-category-table.yaml

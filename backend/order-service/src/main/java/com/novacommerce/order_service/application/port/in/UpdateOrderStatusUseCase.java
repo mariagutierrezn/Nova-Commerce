@@ -15,5 +15,5 @@ public interface UpdateOrderStatusUseCase {
      * @param newStatus nuevo estado
      * @return orden actualizada
      */
-    Order updateOrderStatus(Long orderId, OrderStatus newStatus);
+    Order updateOrderStatus(String orderId, OrderStatus newStatus);
 }

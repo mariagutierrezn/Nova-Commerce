@@ -16,8 +16,8 @@ class OrderItemEntityTest {
     void givenNewOrderItemEntity_whenBuild_thenCreatesCorrectly() {
         // GIVEN/WHEN - Construir OrderItemEntity
         OrderItemEntity item = OrderItemEntity.builder()
-                .id(1L)
-                .productId(100L)
+                .id("1")
+                .productId("100")
                 .productName("Laptop Dell XPS")
                 .quantity(2)
                 .unitPrice(new BigDecimal("1200.50"))
@@ -25,8 +25,8 @@ class OrderItemEntityTest {
                 .build();
 
         // THEN - Debe tener los valores correctos
-        assertEquals(1L, item.getId());
-        assertEquals(100L, item.getProductId());
+        assertEquals("1", item.getId());
+        assertEquals("100", item.getProductId());
         assertEquals("Laptop Dell XPS", item.getProductName());
         assertEquals(2, item.getQuantity());
         assertEquals(0, new BigDecimal("1200.50").compareTo(item.getUnitPrice()));
@@ -37,58 +37,59 @@ class OrderItemEntityTest {
     void givenOrderItemEntity_whenSetOrder_thenOrderIsSet() {
         // GIVEN - OrderItemEntity y OrderEntity
         OrderItemEntity item = OrderItemEntity.builder()
-                .id(2L)
-                .productId(200L)
+                .id("2")
+                .productId("200")
                 .productName("Mouse")
                 .quantity(1)
                 .unitPrice(new BigDecimal("25.00"))
                 .build();
 
         OrderEntity order = OrderEntity.builder()
-                .id(10L)
-                .customerId(50L)
+                .id("10")
+                .customerId("50")
                 .build();
 
-        // WHEN - Establecer la orden
-        item.setOrder(order);
+        // WHEN - Agregar item a la orden
+        order.addItem(item);
 
-        // THEN - La orden debe estar establecida
-        assertEquals(order, item.getOrder());
-        assertEquals(10L, item.getOrder().getId());
+        // THEN - El item debe estar en la lista de items de la orden
+        assertEquals(1, order.getItems().size());
+        assertEquals(item, order.getItems().get(0));
+        assertEquals("10", order.getId());
     }
 
     @Test
     void givenOrderItemEntity_whenGetOrder_thenReturnsOrder() {
         // GIVEN - OrderEntity con item
         OrderEntity order = OrderEntity.builder()
-                .id(15L)
-                .customerId(75L)
+                .id("15")
+                .customerId("75")
                 .build();
 
         OrderItemEntity item = OrderItemEntity.builder()
-                .id(3L)
-                .productId(300L)
+                .id("3")
+                .productId("300")
                 .productName("Keyboard")
                 .quantity(1)
                 .unitPrice(new BigDecimal("50.00"))
-                .order(order)
                 .build();
 
-        // WHEN - Obtener la orden
-        OrderEntity retrievedOrder = item.getOrder();
+        // WHEN - Agregar item a la orden
+        order.addItem(item);
 
-        // THEN - Debe retornar la orden correcta
-        assertNotNull(retrievedOrder);
-        assertEquals(15L, retrievedOrder.getId());
-        assertEquals(75L, retrievedOrder.getCustomerId());
+        // THEN - El item debe estar en la lista de items de la orden
+        assertEquals(1, order.getItems().size());
+        assertEquals(item, order.getItems().get(0));
+        assertEquals("15", order.getId());
+        assertEquals("75", order.getCustomerId());
     }
 
     @Test
     void givenOrderItemEntity_whenChangeQuantity_thenQuantityIsUpdated() {
         // GIVEN - OrderItemEntity con cantidad inicial
         OrderItemEntity item = OrderItemEntity.builder()
-                .id(4L)
-                .productId(400L)
+                .id("4")
+                .productId("400")
                 .productName("Monitor")
                 .quantity(1)
                 .unitPrice(new BigDecimal("300.00"))
@@ -105,8 +106,8 @@ class OrderItemEntityTest {
     void givenOrderItemEntity_whenChangeUnitPrice_thenPriceIsUpdated() {
         // GIVEN - OrderItemEntity con precio inicial
         OrderItemEntity item = OrderItemEntity.builder()
-                .id(5L)
-                .productId(500L)
+                .id("5")
+                .productId("500")
                 .productName("Headphones")
                 .quantity(2)
                 .unitPrice(new BigDecimal("75.00"))
@@ -124,8 +125,8 @@ class OrderItemEntityTest {
     void givenOrderItemEntityWithoutProductType_whenBuild_thenProductTypeIsNull() {
         // GIVEN/WHEN - Construir OrderItemEntity sin productType
         OrderItemEntity item = OrderItemEntity.builder()
-                .id(6L)
-                .productId(600L)
+                .id("6")
+                .productId("600")
                 .productName("Generic Product")
                 .quantity(1)
                 .unitPrice(new BigDecimal("10.00"))
@@ -139,8 +140,8 @@ class OrderItemEntityTest {
     void givenOrderItemEntity_whenSetProductType_thenProductTypeIsSet() {
         // GIVEN - OrderItemEntity sin productType
         OrderItemEntity item = OrderItemEntity.builder()
-                .id(7L)
-                .productId(700L)
+                .id("7")
+                .productId("700")
                 .productName("T-Shirt")
                 .quantity(3)
                 .unitPrice(new BigDecimal("20.00"))
@@ -157,8 +158,8 @@ class OrderItemEntityTest {
     void givenTwoOrderItemEntities_whenCompare_thenEqualsAndHashCodeWork() {
         // GIVEN - Dos OrderItemEntity con mismo ID y valores
         OrderItemEntity item1 = OrderItemEntity.builder()
-                .id(20L)
-                .productId(800L)
+                .id("20")
+                .productId("800")
                 .productName("Cable USB")
                 .quantity(5)
                 .unitPrice(new BigDecimal("5.00"))
@@ -166,8 +167,8 @@ class OrderItemEntityTest {
                 .build();
 
         OrderItemEntity item2 = OrderItemEntity.builder()
-                .id(20L)
-                .productId(800L)
+                .id("20")
+                .productId("800")
                 .productName("Cable USB")
                 .quantity(5)
                 .unitPrice(new BigDecimal("5.00"))
@@ -183,16 +184,16 @@ class OrderItemEntityTest {
     void givenOrderItemEntity_whenUseNoArgsConstructor_thenCanSetFields() {
         // GIVEN/WHEN - Crear con constructor sin argumentos
         OrderItemEntity item = new OrderItemEntity();
-        item.setId(8L);
-        item.setProductId(900L);
+        item.setId("8");
+        item.setProductId("900");
         item.setProductName("Webcam");
         item.setQuantity(1);
         item.setUnitPrice(new BigDecimal("60.00"));
         item.setProductType("ELECTRONICS");
 
         // THEN - Todos los campos deben estar establecidos
-        assertEquals(8L, item.getId());
-        assertEquals(900L, item.getProductId());
+        assertEquals("8", item.getId());
+        assertEquals("900", item.getProductId());
         assertEquals("Webcam", item.getProductName());
         assertEquals(1, item.getQuantity());
         assertEquals(0, new BigDecimal("60.00").compareTo(item.getUnitPrice()));
@@ -202,16 +203,10 @@ class OrderItemEntityTest {
     @Test
     void givenOrderItemEntity_whenUseAllArgsConstructor_thenAllFieldsAreSet() {
         // GIVEN - OrderEntity para la relación
-        OrderEntity order = OrderEntity.builder()
-                .id(25L)
-                .customerId(100L)
-                .build();
-
         // WHEN - Crear con constructor de todos los argumentos
         OrderItemEntity item = new OrderItemEntity(
-                9L,
-                order,
-                1000L,
+                "9",
+                "1000",
                 "Smartphone",
                 1,
                 new BigDecimal("799.99"),
@@ -219,9 +214,8 @@ class OrderItemEntityTest {
         );
 
         // THEN - Todos los campos deben estar establecidos
-        assertEquals(9L, item.getId());
-        assertEquals(order, item.getOrder());
-        assertEquals(1000L, item.getProductId());
+        assertEquals("9", item.getId());
+        assertEquals("1000", item.getProductId());
         assertEquals("Smartphone", item.getProductName());
         assertEquals(1, item.getQuantity());
         assertEquals(0, new BigDecimal("799.99").compareTo(item.getUnitPrice()));

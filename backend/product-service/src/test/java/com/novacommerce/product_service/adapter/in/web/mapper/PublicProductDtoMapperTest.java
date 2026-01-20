@@ -27,12 +27,12 @@ class PublicProductDtoMapperTest {
     @BeforeEach
     void setUp() {
         product = Product.builder()
-                .id(1L)
+                .id("1")
                 .name("Laptop")
                 .description("High-performance laptop")
                 .price(new BigDecimal("999.99"))
                 .productType(ProductType.PHYSICAL)
-                .categoryId(1L)
+                .categoryId("1")
                 .stockQuantity(10)
                 .status("ACTIVE")
                 .build();
@@ -92,12 +92,12 @@ class PublicProductDtoMapperTest {
     @DisplayName("Should map list of Products to list of PublicProductResponses")
     void testToPublicResponseList() {
         Product product2 = Product.builder()
-                .id(2L)
+                .id("2")
                 .name("Mouse")
                 .description("Wireless mouse")
                 .price(new BigDecimal("25.99"))
                 .productType(ProductType.PHYSICAL)
-                .categoryId(2L)
+                .categoryId("2")
                 .stockQuantity(50)
                 .status("ACTIVE")
                 .build();

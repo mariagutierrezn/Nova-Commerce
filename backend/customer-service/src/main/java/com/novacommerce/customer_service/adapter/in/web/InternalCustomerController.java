@@ -10,10 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
-
 class InternalCustomerResponse {
-    public Long id;
+    public String id;
     public String firstName;
     public String lastName;
     public String email;
@@ -52,7 +50,7 @@ public class InternalCustomerController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<InternalCustomerResponse> getByIdInternal(@PathVariable Long id) {
+    public ResponseEntity<InternalCustomerResponse> getByIdInternal(@PathVariable String id) {
         return manageCustomersUseCase.findById(id)
             .map(c -> ResponseEntity.ok(InternalCustomerResponse.from(c)))
             .orElseGet(() -> ResponseEntity.notFound().build());

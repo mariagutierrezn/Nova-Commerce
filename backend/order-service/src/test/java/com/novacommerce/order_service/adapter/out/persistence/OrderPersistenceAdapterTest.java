@@ -44,8 +44,8 @@ class OrderPersistenceAdapterTest {
     @BeforeEach
     void setUp() {
         mockOrder = Order.builder()
-                .id(1L)
-                .customerId(100L)
+                .id("1")
+                .customerId("100")
                 .status(OrderStatus.CREATED)
                 .totalBeforeDiscount(Money.of(new BigDecimal("1000.00")))
                 .discountTotal(Money.of(new BigDecimal("100.00")))
@@ -55,8 +55,8 @@ class OrderPersistenceAdapterTest {
                 .build();
 
         mockEntity = OrderEntity.builder()
-                .id(1L)
-                .customerId(100L)
+                .id("1")
+                .customerId("100")
                 .status(OrderStatus.CREATED)
                 .totalBeforeDiscount(new BigDecimal("1000.00"))
                 .discountTotal(new BigDecimal("100.00"))
@@ -78,8 +78,8 @@ class OrderPersistenceAdapterTest {
 
         // THEN - Debe persistir y retornar dominio
         assertNotNull(savedOrder);
-        assertEquals(1L, savedOrder.getId());
-        assertEquals(100L, savedOrder.getCustomerId());
+        assertEquals("1", savedOrder.getId());
+        assertEquals("100", savedOrder.getCustomerId());
         assertEquals(OrderStatus.CREATED, savedOrder.getStatus());
 
         verify(orderMapper).toEntity(mockOrder);
@@ -90,7 +90,7 @@ class OrderPersistenceAdapterTest {
     @Test
     void givenExistingOrderId_whenFindById_thenReturnsOrder() {
         // GIVEN - ID de orden existente
-        Long orderId = 1L;
+        String orderId = "1";
         when(orderRepository.findById(orderId)).thenReturn(Optional.of(mockEntity));
         when(orderMapper.toDomain(mockEntity)).thenReturn(mockOrder);
 
@@ -99,8 +99,8 @@ class OrderPersistenceAdapterTest {
 
         // THEN - Debe retornar la orden
         assertTrue(result.isPresent());
-        assertEquals(1L, result.get().getId());
-        assertEquals(100L, result.get().getCustomerId());
+        assertEquals("1", result.get().getId());
+        assertEquals("100", result.get().getCustomerId());
 
         verify(orderRepository).findById(orderId);
         verify(orderMapper).toDomain(mockEntity);
@@ -109,7 +109,7 @@ class OrderPersistenceAdapterTest {
     @Test
     void givenNonExistingOrderId_whenFindById_thenReturnsEmpty() {
         // GIVEN - ID de orden no existente
-        Long orderId = 999L;
+        String orderId = "999";
         when(orderRepository.findById(orderId)).thenReturn(Optional.empty());
 
         // WHEN - Buscar por ID
@@ -125,21 +125,21 @@ class OrderPersistenceAdapterTest {
     @Test
     void givenCustomerId_whenFindByCustomerId_thenReturnsOrders() {
         // GIVEN - Customer ID con órdenes
-        Long customerId = 100L;
+        String customerId = "100";
         OrderEntity entity1 = OrderEntity.builder()
-                .id(1L)
+                .id("1")
                 .customerId(customerId)
                 .status(OrderStatus.CREATED)
                 .build();
 
         OrderEntity entity2 = OrderEntity.builder()
-                .id(2L)
+                .id("2")
                 .customerId(customerId)
                 .status(OrderStatus.PAID)
                 .build();
 
-        Order order1 = Order.builder().id(1L).customerId(customerId).build();
-        Order order2 = Order.builder().id(2L).customerId(customerId).build();
+        Order order1 = Order.builder().id("1").customerId(customerId).build();
+        Order order2 = Order.builder().id("2").customerId(customerId).build();
 
         when(orderRepository.findByCustomerId(customerId))
                 .thenReturn(Arrays.asList(entity1, entity2));
@@ -152,8 +152,8 @@ class OrderPersistenceAdapterTest {
         // THEN - Debe retornar las órdenes del cliente
         assertNotNull(orders);
         assertEquals(2, orders.size());
-        assertEquals(1L, orders.get(0).getId());
-        assertEquals(2L, orders.get(1).getId());
+        assertEquals("1", orders.get(0).getId());
+        assertEquals("2", orders.get(1).getId());
 
         verify(orderRepository).findByCustomerId(customerId);
         verify(orderMapper, times(2)).toDomain(any(OrderEntity.class));
@@ -162,7 +162,7 @@ class OrderPersistenceAdapterTest {
     @Test
     void givenCustomerIdWithNoOrders_whenFindByCustomerId_thenReturnsEmptyList() {
         // GIVEN - Customer ID sin órdenes
-        Long customerId = 999L;
+        String customerId = "999";
         when(orderRepository.findByCustomerId(customerId)).thenReturn(List.of());
 
         // WHEN - Buscar por customer ID
@@ -179,13 +179,13 @@ class OrderPersistenceAdapterTest {
     @Test
     void whenFindAll_thenReturnsAllOrders() {
         // GIVEN - Múltiples órdenes en la base de datos
-        OrderEntity entity1 = OrderEntity.builder().id(1L).build();
-        OrderEntity entity2 = OrderEntity.builder().id(2L).build();
-        OrderEntity entity3 = OrderEntity.builder().id(3L).build();
+        OrderEntity entity1 = OrderEntity.builder().id("1").build();
+        OrderEntity entity2 = OrderEntity.builder().id("2").build();
+        OrderEntity entity3 = OrderEntity.builder().id("3").build();
 
-        Order order1 = Order.builder().id(1L).build();
-        Order order2 = Order.builder().id(2L).build();
-        Order order3 = Order.builder().id(3L).build();
+        Order order1 = Order.builder().id("1").build();
+        Order order2 = Order.builder().id("2").build();
+        Order order3 = Order.builder().id("3").build();
 
         when(orderRepository.findAll()).thenReturn(Arrays.asList(entity1, entity2, entity3));
         when(orderMapper.toDomain(entity1)).thenReturn(order1);
@@ -206,7 +206,7 @@ class OrderPersistenceAdapterTest {
     @Test
     void givenOrderId_whenDeleteById_thenDelegatesToRepository() {
         // GIVEN - ID de orden a eliminar
-        Long orderId = 1L;
+        String orderId = "1";
 
         // WHEN - Eliminar orden
         persistenceAdapter.deleteById(orderId);

@@ -4,7 +4,6 @@ import com.novacommerce.user_service.web.api.dto.request.CreateRoleRequest;
 import com.novacommerce.user_service.web.api.dto.response.RoleResponse;
 
 import java.util.List;
-import java.util.UUID;
 
 /**
  * Puerto de entrada para gestión de roles.
@@ -20,7 +19,7 @@ public interface ManageRolesUseCase {
     /**
      * Obtiene un rol por su UUID.
      */
-    RoleResponse getRoleById(UUID id);
+    RoleResponse getRoleById(String id);
 
     /**
      * Crea un nuevo rol.
@@ -30,5 +29,5 @@ public interface ManageRolesUseCase {
     /**
      * Elimina un rol.
      */
-    void deleteRole(UUID id);
+    void deleteRole(String id);
 }

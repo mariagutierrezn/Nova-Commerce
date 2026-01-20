@@ -4,9 +4,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDateTime;
-import java.util.UUID;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("Permission Domain Model Tests")
@@ -17,11 +14,9 @@ class PermissionTest {
     @BeforeEach
     void setUp() {
         permission = Permission.builder()
-                .id(UUID.randomUUID())
+                .id("perm-123")
                 .name("USER_READ")
                 .description("Permission to read user data")
-                .createdAt(LocalDateTime.now())
-                .updatedAt(LocalDateTime.now())
                 .build();
     }
 
@@ -32,8 +27,6 @@ class PermissionTest {
         assertNotNull(permission.getId());
         assertEquals("USER_READ", permission.getName());
         assertEquals("Permission to read user data", permission.getDescription());
-        assertNotNull(permission.getCreatedAt());
-        assertNotNull(permission.getUpdatedAt());
     }
 
     @Test
@@ -53,7 +46,7 @@ class PermissionTest {
     @Test
     @DisplayName("Should use builder pattern correctly")
     void testBuilderPattern() {
-        UUID testId = UUID.randomUUID();
+        String testId = "perm-456";
         Permission builtPermission = Permission.builder()
                 .id(testId)
                 .name("ROLE_CREATE")
@@ -73,25 +66,9 @@ class PermissionTest {
     }
 
     @Test
-    @DisplayName("Should set created at timestamp")
-    void testSetCreatedAt() {
-        LocalDateTime createdAt = LocalDateTime.now();
-        permission.setCreatedAt(createdAt);
-        assertEquals(createdAt, permission.getCreatedAt());
-    }
-
-    @Test
-    @DisplayName("Should set updated at timestamp")
-    void testSetUpdatedAt() {
-        LocalDateTime updatedAt = LocalDateTime.now();
-        permission.setUpdatedAt(updatedAt);
-        assertEquals(updatedAt, permission.getUpdatedAt());
-    }
-
-    @Test
-    @DisplayName("Should create permission with UUID")
-    void testPermissionWithUUID() {
-        UUID customId = UUID.randomUUID();
+    @DisplayName("Should create permission with String ID")
+    void testPermissionWithStringId() {
+        String customId = "perm-custom";
         Permission customPermission = Permission.builder()
                 .id(customId)
                 .name("CUSTOM_PERMISSION")
@@ -116,7 +93,7 @@ class PermissionTest {
     @Test
     @DisplayName("Should allow setting permission ID")
     void testSetId() {
-        UUID newId = UUID.randomUUID();
+        String newId = "perm-new";
         permission.setId(newId);
         assertEquals(newId, permission.getId());
     }

@@ -11,7 +11,7 @@ import java.util.List;
 @Value
 @Builder
 public class DiscountContext {
-    Long customerId;
+    String customerId;
     String customerLoyaltyLevel;
     String customerStatus;
     Money orderTotal;

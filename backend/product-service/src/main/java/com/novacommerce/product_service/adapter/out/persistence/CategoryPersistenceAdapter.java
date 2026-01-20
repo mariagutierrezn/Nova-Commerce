@@ -26,7 +26,7 @@ public class CategoryPersistenceAdapter implements CategoryPersistencePort {
     }
 
     @Override
-    public Optional<Category> findById(Long id) {
+    public Optional<Category> findById(String id) {
         return categoryRepository.findById(id)
                 .map(categoryEntityMapper::toDomain);
     }
@@ -38,12 +38,12 @@ public class CategoryPersistenceAdapter implements CategoryPersistencePort {
     }
 
     @Override
-    public void deleteById(Long id) {
+    public void deleteById(String id) {
         categoryRepository.deleteById(id);
     }
 
     @Override
-    public boolean existsById(Long id) {
+    public boolean existsById(String id) {
         return categoryRepository.existsById(id);
     }
 }

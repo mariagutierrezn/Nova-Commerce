@@ -7,8 +7,6 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -21,20 +19,21 @@ class UserTest {
     @BeforeEach
     void setUp() {
         role = Role.builder()
-                .id(UUID.randomUUID())
+                .id("role-123")
                 .name("ADMIN")
                 .description("Administrator role")
+                .permissionIds(new HashSet<>())
                 .build();
 
         user = User.builder()
-                .id(UUID.randomUUID())
+                .id("user-123")
                 .username("testuser")
                 .email("test@example.com")
                 .password("encryptedPassword123")
                 .status(UserStatusEnum.ACTIVE)
                 .enabled(true)
                 .locked(false)
-                .roles(new HashSet<>())
+                .roleIds(new HashSet<>())
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .lastLogin(LocalDateTime.now().minusDays(1))
@@ -52,8 +51,8 @@ class UserTest {
         assertEquals(UserStatusEnum.ACTIVE, user.getStatus());
         assertTrue(user.getEnabled());
         assertFalse(user.getLocked());
-        assertNotNull(user.getRoles());
-        assertTrue(user.getRoles().isEmpty());
+        assertNotNull(user.getRoleIds());
+        assertTrue(user.getRoleIds().isEmpty());
     }
 
     @Test
@@ -107,10 +106,10 @@ class UserTest {
     @Test
     @DisplayName("Should add role to user successfully")
     void testAddRole() {
-        user.addRole(role);
+        user.addRole(role.getId());
         
-        assertEquals(1, user.getRoles().size());
-        assertTrue(user.getRoles().contains(role));
+        assertEquals(1, user.getRoleIds().size());
+        assertTrue(user.getRoleIds().contains(role.getId()));
     }
 
     @Test
@@ -118,34 +117,34 @@ class UserTest {
     void testAddNullRole() {
         user.addRole(null);
         
-        assertEquals(0, user.getRoles().size());
+        assertEquals(0, user.getRoleIds().size());
     }
 
     @Test
     @DisplayName("Should remove role from user successfully")
     void testRemoveRole() {
-        user.addRole(role);
-        assertEquals(1, user.getRoles().size());
+        user.addRole(role.getId());
+        assertEquals(1, user.getRoleIds().size());
         
-        user.removeRole(role);
-        assertEquals(0, user.getRoles().size());
-        assertFalse(user.getRoles().contains(role));
+        user.removeRole(role.getId());
+        assertEquals(0, user.getRoleIds().size());
+        assertFalse(user.getRoleIds().contains(role.getId()));
     }
 
     @Test
     @DisplayName("Should not fail when removing null role")
     void testRemoveNullRole() {
-        user.addRole(role);
-        assertEquals(1, user.getRoles().size());
+        user.addRole(role.getId());
+        assertEquals(1, user.getRoleIds().size());
         
         user.removeRole(null);
-        assertEquals(1, user.getRoles().size());
+        assertEquals(1, user.getRoleIds().size());
     }
 
     @Test
     @DisplayName("Should use builder pattern correctly")
     void testBuilderPattern() {
-        UUID testId = UUID.randomUUID();
+        String testId = "user-456";
         User builtUser = User.builder()
                 .id(testId)
                 .username("builderUser")
@@ -175,17 +174,17 @@ class UserTest {
     @Test
     @DisplayName("Should handle multiple roles")
     void testMultipleRoles() {
-        Role role1 = Role.builder().id(UUID.randomUUID()).name("ADMIN").build();
-        Role role2 = Role.builder().id(UUID.randomUUID()).name("USER").build();
-        Role role3 = Role.builder().id(UUID.randomUUID()).name("SALES").build();
+        String roleId1 = "role-1";
+        String roleId2 = "role-2";
+        String roleId3 = "role-3";
 
-        user.addRole(role1);
-        user.addRole(role2);
-        user.addRole(role3);
+        user.addRole(roleId1);
+        user.addRole(roleId2);
+        user.addRole(roleId3);
 
-        assertEquals(3, user.getRoles().size());
-        assertTrue(user.getRoles().contains(role1));
-        assertTrue(user.getRoles().contains(role2));
-        assertTrue(user.getRoles().contains(role3));
+        assertEquals(3, user.getRoleIds().size());
+        assertTrue(user.getRoleIds().contains(roleId1));
+        assertTrue(user.getRoleIds().contains(roleId2));
+        assertTrue(user.getRoleIds().contains(roleId3));
     }
 }

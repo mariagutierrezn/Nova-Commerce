@@ -7,14 +7,14 @@ Implementa **Clean Architecture** con **Ports & Adapters** y **Strategy Pattern*
 ```
 Cliente → API Gateway → Order-Service ↔ Customer-Service (Feign)
                             ↓          ↔ Product-Service (Feign)
-                        PostgreSQL
+                        MongoDB
 ```
 
 ## 📋 Requisitos
 
 - Java 17+
 - Maven 3.6+
-- PostgreSQL 14+ (local o Docker)
+- MongoDB 7.0+ (local o Docker)
 - **Customer-Service** corriendo en puerto 8084
 - **Product-Service** corriendo en puerto 8083
 - IDE: IntelliJ IDEA o VS Code
@@ -27,13 +27,12 @@ git clone https://github.com/LeonardoPerezSoft/Nova-Commerce.git
 cd backend/order-service
 ```
 
-### 2. Base de datos (Docker opcional)
+### 2. Base de datos MongoDB (Docker opcional)
 ```powershell
-docker run -d --name nova-postgres `
-  -e POSTGRES_USER=postgres `
-  -e POSTGRES_PASSWORD=postgres `
-  -e POSTGRES_DB=nova_db `
-  -p 5432:5432 postgres:16
+docker run -d --name nova-mongodb `
+  -p 27017:27017 `
+  -e MONGO_INITDB_DATABASE=nova_db `
+  mongo:7.0
 ```
 
 ### 3. Asegurar que los servicios dependientes estén activos
@@ -63,9 +62,8 @@ El servicio corre en el puerto **8085**.
 ## 🛠️ Tecnologías
 
 - Spring Boot 3.4.1
-- Spring Data JPA (Hibernate)
+- Spring Data MongoDB
 - Spring Cloud OpenFeign (integración con microservicios)
-- Liquibase
 - Spring Security (JWT)
 - SpringDoc OpenAPI (Swagger UI)
 - Lombok
@@ -120,7 +118,7 @@ com.novacommerce.order_service/
 │   │       ├── dto/                 # DTOs de request/response
 │   │       └── mapper/              # Mappers DTO ↔ Domain
 │   └── out/
-│       ├── persistence/             # Adaptador JPA
+│       ├── persistence/             # Adaptador MongoDB
 │       │   ├── OrderPersistenceAdapter.java
 │       │   └── OrderMapper.java
 │       ├── customer/                # Feign Client - Customer Service
@@ -130,10 +128,10 @@ com.novacommerce.order_service/
 │           ├── ProductServiceClient.java
 │           └── ProductClientAdapter.java
 │
-├── repository/                      # JPA Repositories
+├── repository/                      # MongoDB Repositories
 │   ├── OrderRepository.java
 │   ├── OrderItemRepository.java
-│   └── entity/                      # Entidades JPA
+│   └── entity/                      # Documentos MongoDB
 │       ├── OrderEntity.java
 │       └── OrderItemEntity.java
 │
@@ -142,7 +140,7 @@ com.novacommerce.order_service/
 │
 └── resources/
     ├── application.yaml
-    └── db/liquibase/
+    └── (sin migraciones - MongoDB usa colecciones dinámicas)
         ├── changelog-master.yaml
         └── changes/
             ├── 001-create-orders-table.yaml
@@ -287,9 +285,9 @@ java -version
 mvnw.cmd clean compile
 ```
 
-### "Connection refused: PostgreSQL"
-- Verifica PostgreSQL activo en `localhost:5432`
-- Revisa credenciales en `application.yaml`
+### "Connection refused: MongoDB"
+- Verifica MongoDB activo en `localhost:27017`
+- Revisa URI de conexión en `application.yaml`
 
 ## 🏗️ Arquitectura Destacada
 

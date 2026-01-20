@@ -16,8 +16,8 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 public class OrderItem {
-    private Long id;
-    private Long productId;
+    private String id;
+    private String productId;
     private String productName;
     private Integer quantity;
     private Money unitPrice;

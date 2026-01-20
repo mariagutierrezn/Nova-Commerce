@@ -22,7 +22,7 @@ public class CustomerClientAdapter implements CustomerValidationPort {
     private String internalApiKey;
 
     @Override
-    public boolean isCustomerValid(Long customerId) {
+    public boolean isCustomerValid(String customerId) {
         try {
             CustomerResponse customer = customerServiceClient.getCustomerById(customerId, internalApiKey);
             return customer != null && customer.getId() != null;
@@ -36,7 +36,7 @@ public class CustomerClientAdapter implements CustomerValidationPort {
     }
 
     @Override
-    public String getCustomerStatus(Long customerId) {
+    public String getCustomerStatus(String customerId) {
         try {
             CustomerResponse customer = customerServiceClient.getCustomerById(customerId, internalApiKey);
             return customer != null ? customer.getStatus() : "UNKNOWN";
@@ -47,7 +47,7 @@ public class CustomerClientAdapter implements CustomerValidationPort {
     }
 
     @Override
-    public String getCustomerLoyaltyLevel(Long customerId) {
+    public String getCustomerLoyaltyLevel(String customerId) {
         try {
             CustomerResponse customer = customerServiceClient.getCustomerById(customerId, internalApiKey);
             return customer != null ? customer.getLoyaltyLevel() : null;

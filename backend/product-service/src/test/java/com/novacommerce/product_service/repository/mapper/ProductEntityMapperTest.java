@@ -25,23 +25,23 @@ class ProductEntityMapperTest {
         mapper = Mappers.getMapper(ProductEntityMapper.class);
         
         productEntity = ProductEntity.builder()
-                .id(1L)
+                .id("1")
                 .name("Laptop")
                 .description("High-performance laptop")
                 .price(new BigDecimal("999.99"))
                 .productType(ProductType.PHYSICAL)
-                .categoryId(1L)
+                .categoryId("1")
                 .stockQuantity(10)
                 .status("ACTIVE")
                 .build();
 
         product = Product.builder()
-                .id(1L)
+                .id("1")
                 .name("Laptop")
                 .description("High-performance laptop")
                 .price(new BigDecimal("999.99"))
                 .productType(ProductType.PHYSICAL)
-                .categoryId(1L)
+                .categoryId("1")
                 .stockQuantity(10)
                 .status("ACTIVE")
                 .build();

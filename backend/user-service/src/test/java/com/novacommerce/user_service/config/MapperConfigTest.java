@@ -50,7 +50,6 @@ class MapperConfigTest {
     @DisplayName("Should have no custom methods")
     void testNoCustomMethods() {
         // MapperConfig debe estar vacío, permitir métodos sintéticos/proxy generados por Spring
-        int methodCount = MapperConfig.class.getDeclaredMethods().length;
         // Filtrar solo métodos no sintéticos
         long nonSyntheticCount = java.util.Arrays.stream(MapperConfig.class.getDeclaredMethods())
                 .filter(m -> !m.isSynthetic())

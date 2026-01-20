@@ -32,8 +32,8 @@ class OrderMapperTest {
     void givenOrder_whenToEntity_thenMapsCorrectly() {
         // GIVEN - Orden de dominio con items
         OrderItem item1 = OrderItem.builder()
-                .id(1L)
-                .productId(100L)
+                .id("1")
+                .productId("100")
                 .productName("Laptop")
                 .quantity(2)
                 .unitPrice(Money.of(new BigDecimal("1000.00")))
@@ -41,8 +41,8 @@ class OrderMapperTest {
                 .build();
 
         OrderItem item2 = OrderItem.builder()
-                .id(2L)
-                .productId(200L)
+                .id("2")
+                .productId("200")
                 .productName("Mouse")
                 .quantity(5)
                 .unitPrice(Money.of(new BigDecimal("20.00")))
@@ -50,8 +50,8 @@ class OrderMapperTest {
                 .build();
 
         Order order = Order.builder()
-                .id(1L)
-                .customerId(42L)
+                .id("1")
+                .customerId("42")
                 .status(OrderStatus.CREATED)
                 .totalBeforeDiscount(Money.of(new BigDecimal("2100.00")))
                 .discountTotal(Money.of(new BigDecimal("100.00")))
@@ -66,8 +66,8 @@ class OrderMapperTest {
 
         // THEN - Verificar campos de la orden
         assertNotNull(entity);
-        assertEquals(1L, entity.getId());
-        assertEquals(42L, entity.getCustomerId());
+        assertEquals("1", entity.getId());
+        assertEquals("42", entity.getCustomerId());
         assertEquals(OrderStatus.CREATED, entity.getStatus());
         assertEquals(0, new BigDecimal("2100.00").compareTo(entity.getTotalBeforeDiscount()));
         assertEquals(0, new BigDecimal("100.00").compareTo(entity.getDiscountTotal()));
@@ -78,8 +78,8 @@ class OrderMapperTest {
         // THEN - Verificar items
         assertEquals(2, entity.getItems().size());
         OrderItemEntity itemEntity1 = entity.getItems().get(0);
-        assertEquals(1L, itemEntity1.getId());
-        assertEquals(100L, itemEntity1.getProductId());
+        assertEquals("1", itemEntity1.getId());
+        assertEquals("100", itemEntity1.getProductId());
         assertEquals("Laptop", itemEntity1.getProductName());
         assertEquals(2, itemEntity1.getQuantity());
         assertEquals(0, new BigDecimal("1000.00").compareTo(itemEntity1.getUnitPrice()));
@@ -90,8 +90,8 @@ class OrderMapperTest {
     void givenOrderEntity_whenToDomain_thenMapsCorrectly() {
         // GIVEN - Entidad JPA con items
         OrderEntity entity = OrderEntity.builder()
-                .id(5L)
-                .customerId(99L)
+                .id("5")
+                .customerId("99")
                 .status(OrderStatus.PAID)
                 .totalBeforeDiscount(new BigDecimal("500.00"))
                 .discountTotal(new BigDecimal("50.00"))
@@ -101,8 +101,8 @@ class OrderMapperTest {
                 .build();
 
         OrderItemEntity itemEntity = OrderItemEntity.builder()
-                .id(10L)
-                .productId(300L)
+                .id("10")
+                .productId("300")
                 .productName("Keyboard")
                 .quantity(3)
                 .unitPrice(new BigDecimal("150.00"))
@@ -116,8 +116,8 @@ class OrderMapperTest {
 
         // THEN - Verificar campos de la orden
         assertNotNull(order);
-        assertEquals(5L, order.getId());
-        assertEquals(99L, order.getCustomerId());
+        assertEquals("5", order.getId());
+        assertEquals("99", order.getCustomerId());
         assertEquals(OrderStatus.PAID, order.getStatus());
         assertEquals(0, new BigDecimal("500.00").compareTo(order.getTotalBeforeDiscountValue()));
         assertEquals(0, new BigDecimal("50.00").compareTo(order.getDiscountTotalValue()));
@@ -128,8 +128,8 @@ class OrderMapperTest {
         // THEN - Verificar items
         assertEquals(1, order.getItems().size());
         OrderItem item = order.getItems().get(0);
-        assertEquals(10L, item.getId());
-        assertEquals(300L, item.getProductId());
+        assertEquals("10", item.getId());
+        assertEquals("300", item.getProductId());
         assertEquals("Keyboard", item.getProductName());
         assertEquals(3, item.getQuantity());
         assertEquals(0, new BigDecimal("150.00").compareTo(item.getUnitPriceValue()));
@@ -158,8 +158,8 @@ class OrderMapperTest {
     void givenOrderWithoutItems_whenToEntity_thenHandlesEmptyItems() {
         // GIVEN - Orden sin items
         Order order = Order.builder()
-                .id(2L)
-                .customerId(50L)
+                .id("2")
+                .customerId("50")
                 .status(OrderStatus.CREATED)
                 .totalBeforeDiscount(Money.of(BigDecimal.ZERO))
                 .discountTotal(Money.of(BigDecimal.ZERO))
@@ -180,8 +180,8 @@ class OrderMapperTest {
     void givenEntityWithoutItems_whenToDomain_thenHandlesEmptyItems() {
         // GIVEN - Entidad sin items
         OrderEntity entity = OrderEntity.builder()
-                .id(3L)
-                .customerId(60L)
+                .id("3")
+                .customerId("60")
                 .status(OrderStatus.SHIPPED)
                 .totalBeforeDiscount(new BigDecimal("100.00"))
                 .discountTotal(BigDecimal.ZERO)

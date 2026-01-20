@@ -6,7 +6,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 import java.util.Set;
-import java.util.UUID;
 
 /**
  * DTO para crear un nuevo usuario del sistema.
@@ -25,8 +24,8 @@ public record CreateUserRequest(
     String password,
 
     @JsonProperty("role_ids")
-    Set<UUID> roleIds,
-    
+    Set<String> roleIds,
+
     @JsonProperty("customer_id")
-    Long customerId
+    String customerId
 ) {}

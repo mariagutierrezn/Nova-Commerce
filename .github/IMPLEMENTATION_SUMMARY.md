@@ -7,7 +7,7 @@
 ```
 ✓ Workflow completo con 11 pasos
 ✓ Triggers: push y pull_request (develop, main)
-✓ PostgreSQL como servicio para tests
+✓ MongoDB como servicio para tests
 ✓ Variables de entorno para Spring Boot
 ✓ Build, Tests, JaCoCo Coverage
 ✓ Publicación de resultados con % de cobertura por microservicio
@@ -27,7 +27,7 @@
 ```
 ✓ Guía completa de configuración del CI/CD
 ✓ Explicación detallada de cada paso del workflow
-✓ Infraestructura (PostgreSQL, variables de entorno)
+✓ Infraestructura (MongoDB, variables de entorno)
 ✓ Configuración de JaCoCo y cobertura de código
 ✓ Instrucciones de monitoreo y debugging
 ✓ Verificación local y troubleshooting
@@ -67,15 +67,14 @@ Nova-Commerce/
                  │
                  ▼
 ┌─────────────────────────────────────────────────────┐
-│  PostgreSQL Service (postgres:16-alpine)            │
-│  └─ DB: testdb, User: testuser, Port: 5432          │
+│  MongoDB Service (mongo:7.0)                        │
+│  └─ DB: testdb, Port: 27017                         │
 └────────────────┬────────────────────────────────────┘
                  │
                  ▼
 ┌─────────────────────────────────────────────────────┐
 │  Environment Variables                              │
-│  ├─ SPRING_DATASOURCE_URL                           │
-│  ├─ SPRING_DATASOURCE_USERNAME/PASSWORD             │
+│  ├─ SPRING_DATA_MONGODB_URI                         │
 │  ├─ SPRING_PROFILES_ACTIVE=ci                       │
 │  ├─ JWT_SECRET                                      │
 │  └─ INTERNAL_API_KEY                                │
@@ -86,7 +85,7 @@ Nova-Commerce/
 │  1. Checkout repository                             │
 │  2. Setup Java 17 (Temurin)                         │
 │  3. Cache Maven dependencies (~/.m2)                │
-│  3.1 Wait for PostgreSQL readiness                  │
+│  3.1 Wait for MongoDB readiness                     │
 │  4. Verify monorepo structure                       │
 └────────────────┬────────────────────────────────────┘
                  │
@@ -167,21 +166,17 @@ Nova-Commerce/
 
 ## �️ Infraestructura del Pipeline
 
-### PostgreSQL Service Container
+### MongoDB Service Container
 ```yaml
-Imagen: postgres:16-alpine
+Imagen: mongo:7.0
 Base de datos: testdb
-Usuario: testuser
-Password: testpass
-Puerto: 5432
-Health checks: pg_isready cada 10s
+Puerto: 27017
+Health checks: mongosh ping cada 10s
 ```
 
 ### Variables de Entorno
 ```bash
-SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/testdb
-SPRING_DATASOURCE_USERNAME=testuser
-SPRING_DATASOURCE_PASSWORD=testpass
+SPRING_DATA_MONGODB_URI=mongodb://localhost:27017/testdb
 SPRING_PROFILES_ACTIVE=ci
 JWT_SECRET=NovaCommerceCISecretKeyForJWTTokenValidationMustBeLongHS512
 INTERNAL_API_KEY=nova-internal-service-key-2024
@@ -272,7 +267,7 @@ El workflow compila automáticamente:
 - **Cache Maven:** Reduce tiempo de build en 2-3 minutos
 - **Skip Tests en compile:** Compilación rápida
 - **Skip Tests flag:** `-DskipTests` en paso 5
-- **PostgreSQL Health Checks:** Asegura DB lista antes de tests
+- **MongoDB Health Checks:** Asegura DB lista antes de tests
 
 ### Code Quality
 - **JaCoCo Coverage:** Medición automática de cobertura
@@ -345,11 +340,9 @@ mvn clean compile --file backend/pom.xml
 # Ejecutar tests completos con cobertura
 mvn verify --file backend/pom.xml
 
-# Simular ambiente CI (requiere PostgreSQL local)
+# Simular ambiente CI (requiere MongoDB local)
 mvn verify --file backend/pom.xml \
-  -Dspring.datasource.url=jdbc:postgresql://localhost:5432/testdb \
-  -Dspring.datasource.username=testuser \
-  -Dspring.datasource.password=testpass \
+  -Dspring.data.mongodb.uri=mongodb://localhost:27017/testdb \
   -Dspring.profiles.active=ci
 
 # Ver reporte de cobertura
@@ -428,7 +421,7 @@ Workflow execution → Artifacts
 
 **Solución:**
 ```bash
-# Verificar que PostgreSQL esté corriendo (en CI ya está configurado)
+# Verificar que MongoDB esté corriendo (en CI ya está configurado)
 # Para local, asegurar DB disponible o usar H2 en tests
 ```
 
@@ -556,9 +549,9 @@ backend/
 - ✅ POM padre del monorepo para build unificado
 - ✅ **Documentación completa consolidada en archivo único**
 - ✅ Verificación de estructura del monorepo
-- ✅ PostgreSQL service container para tests de integración
+- ✅ MongoDB service container para tests de integración
 - ✅ Variables de entorno para Spring Boot CI (6 env vars)
-- ✅ Health checks de PostgreSQL antes de ejecutar tests
+- ✅ Health checks de MongoDB antes de ejecutar tests
 - ✅ Publicación de resultados de tests en GitHub UI (1065 tests)
 - ✅ **Tabla de cobertura % por microservicio** (paso 8.1 con 5 métricas)
 - ✅ Diagnósticos mejorados con identificación automática de errores
@@ -590,9 +583,9 @@ backend/
 ## 📝 Changelog
 
 ### Versión 2.0 - 9 de Enero 2026
-- ✅ Agregado PostgreSQL service container
+- ✅ Agregado MongoDB service container
 - ✅ Variables de entorno para Spring Boot CI
-- ✅ Health checks de PostgreSQL
+- ✅ Health checks de MongoDB
 - ✅ Paso 8.1: Coverage Summary por microservicio
 - ✅ Diagnósticos mejorados con identificación automática de errores
 - ✅ Subida de surefire-reports como artefactos
@@ -623,11 +616,9 @@ backend/
 # Build completo (local)
 mvn clean verify --file backend/pom.xml
 
-# Simular CI (requiere PostgreSQL local)
+# Simular CI (requiere MongoDB local)
 mvn verify --file backend/pom.xml \
-  -Dspring.datasource.url=jdbc:postgresql://localhost:5432/testdb \
-  -Dspring.datasource.username=testuser \
-  -Dspring.datasource.password=testpass \
+  -Dspring.data.mongodb.uri=mongodb://localhost:27017/testdb \
   -Dspring.profiles.active=ci
 
 # Ver coverage de un servicio

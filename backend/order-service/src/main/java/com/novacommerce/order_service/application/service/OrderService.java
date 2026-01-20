@@ -4,8 +4,11 @@ import com.novacommerce.order_service.application.port.in.CreateOrderUseCase;
 import com.novacommerce.order_service.application.port.in.GetOrderUseCase;
 import com.novacommerce.order_service.application.port.in.UpdateOrderStatusUseCase;
 import com.novacommerce.order_service.application.port.out.CustomerValidationPort;
+import com.novacommerce.order_service.application.port.out.OrderEventPublisherPort;
 import com.novacommerce.order_service.application.port.out.OrderPersistencePort;
 import com.novacommerce.order_service.application.port.out.ProductValidationPort;
+import com.novacommerce.order_service.domain.event.OrderCreatedEvent;
+import com.novacommerce.order_service.domain.event.OrderPaidEvent;
 import com.novacommerce.order_service.domain.discount.DiscountStrategy;
 import com.novacommerce.order_service.domain.exception.BusinessRuleException;
 import com.novacommerce.order_service.domain.exception.OrderException;
@@ -31,6 +34,7 @@ public class OrderService implements CreateOrderUseCase, GetOrderUseCase, Update
     private final OrderPersistencePort orderPersistencePort;
     private final CustomerValidationPort customerValidationPort;
     private final ProductValidationPort productValidationPort;
+    private final OrderEventPublisherPort orderEventPublisherPort;
     private final List<DiscountStrategy> discountStrategies;
 
     @Override
@@ -59,18 +63,21 @@ public class OrderService implements CreateOrderUseCase, GetOrderUseCase, Update
         Order savedOrder = orderPersistencePort.save(order);
         log.info("Order created successfully with ID: {}", savedOrder.getId());
         
+        // Publicar evento asíncrono
+        publishOrderCreatedEvent(savedOrder);
+        
         return savedOrder;
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Optional<Order> getOrderById(Long id) {
+    public Optional<Order> getOrderById(String id) {
         return orderPersistencePort.findById(id);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<Order> getOrdersByCustomerId(Long customerId) {
+    public List<Order> getOrdersByCustomerId(String customerId) {
         return orderPersistencePort.findByCustomerId(customerId);
     }
 
@@ -81,7 +88,7 @@ public class OrderService implements CreateOrderUseCase, GetOrderUseCase, Update
     }
 
     @Override
-    public Order updateOrderStatus(Long orderId, OrderStatus newStatus) {
+    public Order updateOrderStatus(String orderId, OrderStatus newStatus) {
         log.info("Updating order {} to status {}", orderId, newStatus);
         
         Order order = orderPersistencePort.findById(orderId)
@@ -93,13 +100,18 @@ public class OrderService implements CreateOrderUseCase, GetOrderUseCase, Update
         Order updated = orderPersistencePort.save(order);
         log.info("Order status updated successfully");
         
+        // Publicar evento si la orden fue pagada
+        if (newStatus == OrderStatus.PAID) {
+            publishOrderPaidEvent(updated);
+        }
+        
         return updated;
     }
 
     /**
      * Valida que el cliente existe y cumple reglas de negocio.
      */
-    private void validateCustomer(Long customerId) {
+    private void validateCustomer(String customerId) {
         if (!customerValidationPort.isCustomerValid(customerId)) {
             throw new BusinessRuleException("Customer not found or invalid: " + customerId);
         }
@@ -172,9 +184,52 @@ public class OrderService implements CreateOrderUseCase, GetOrderUseCase, Update
 
     /**
      * Obtiene la temporada actual (simplificado - podría venir de configuración).
+     * En producción vendría de configuración o regla de negocio.
      */
+    private static final String CURRENT_SEASON = "WINTER";
+    
     private String getCurrentSeason() {
-        // Lógica simplificada - en producción vendría de configuración o regla de negocio
-        return "WINTER";
+        return CURRENT_SEASON;
+    }
+
+    /**
+     * Publica el evento de orden creada de forma asíncrona.
+     */
+    private void publishOrderCreatedEvent(Order order) {
+        OrderCreatedEvent event = OrderCreatedEvent.builder()
+                .orderId(order.getId())
+                .customerId(order.getCustomerId())
+                .status(order.getStatus().name())
+                .totalBeforeDiscount(order.getTotalBeforeDiscountValue())
+                .discountTotal(order.getDiscountTotalValue())
+                .totalAfterDiscount(order.getTotalAfterDiscountValue())
+                .createdAt(order.getCreatedAt())
+                .items(order.getItems().stream()
+                        .map(item -> OrderCreatedEvent.OrderItemEvent.builder()
+                                .productId(item.getProductId())
+                                .productName(item.getProductName())
+                                .quantity(item.getQuantity())
+                                .unitPrice(item.getUnitPriceValue())
+                                .subTotal(item.calculateSubTotal().getAmount())
+                                .build())
+                                .toList())
+                .build();
+        
+        orderEventPublisherPort.publishOrderCreated(event);
+    }
+
+    /**
+     * Publica el evento de orden pagada de forma asíncrona.
+     */
+    private void publishOrderPaidEvent(Order order) {
+        OrderPaidEvent event = OrderPaidEvent.builder()
+                .orderId(order.getId())
+                .customerId(order.getCustomerId())
+                .totalAmount(order.getTotalAfterDiscountValue())
+                .paidAt(order.getUpdatedAt() != null ? order.getUpdatedAt() : java.time.LocalDateTime.now())
+                .paymentMethod("CREDIT_CARD") // Por ahora fijo, luego se puede enriquecer
+                .build();
+        
+        orderEventPublisherPort.publishOrderPaid(event);
     }
 }

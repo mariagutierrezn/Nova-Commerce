@@ -70,7 +70,6 @@ class InvalidCredentialsExceptionTest {
     @Test
     @DisplayName("Should have cause capability")
     void testWithCause() {
-        Throwable cause = new Exception("Original error");
         InvalidCredentialsException exception = new InvalidCredentialsException("Credenciales inválidas");
         
         assertNull(exception.getCause());

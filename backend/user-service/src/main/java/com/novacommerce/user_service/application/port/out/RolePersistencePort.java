@@ -5,7 +5,6 @@ import com.novacommerce.user_service.domain.model.Role;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.UUID;
 
 /**
  * Puerto de salida para persistencia de roles.
@@ -21,7 +20,7 @@ public interface RolePersistencePort {
     /**
      * Encuentra un rol por su ID.
      */
-    Optional<Role> findById(UUID id);
+    Optional<Role> findById(String id);
 
     /**
      * Encuentra un rol por su nombre.
@@ -31,7 +30,7 @@ public interface RolePersistencePort {
     /**
      * Encuentra roles por sus IDs.
      */
-    Set<Role> findAllById(Set<UUID> ids);
+    Set<Role> findAllById(Set<String> ids);
 
     /**
      * Verifica si existe un rol con el nombre dado.
@@ -46,5 +45,5 @@ public interface RolePersistencePort {
     /**
      * Elimina un rol por su ID.
      */
-    void deleteById(UUID id);
+    void deleteById(String id);
 }

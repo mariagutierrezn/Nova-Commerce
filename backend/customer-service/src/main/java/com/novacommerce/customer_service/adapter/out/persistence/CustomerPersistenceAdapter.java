@@ -30,7 +30,7 @@ public class CustomerPersistenceAdapter implements CustomerPersistencePort {
     }
 
     @Override
-    public Optional<Customer> findById(Long id) {
+    public Optional<Customer> findById(String id) {
         return repository.findById(id).map(mapper::toDomain);
     }
 
@@ -40,7 +40,7 @@ public class CustomerPersistenceAdapter implements CustomerPersistencePort {
     }
 
     @Override
-    public void deleteById(Long id) {
+    public void deleteById(String id) {
         repository.deleteById(id);
     }
 

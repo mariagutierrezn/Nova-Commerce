@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import javax.crypto.SecretKey;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -26,7 +25,7 @@ class JwtTokenValidatorTest {
     @BeforeEach
     void setUp() {
         // Generar una clave secreta válida
-        secretKey = Keys.secretKeyFor(io.jsonwebtoken.SignatureAlgorithm.HS512);
+        secretKey = Keys.hmacShaKeyFor(new byte[64]);
         base64Secret = Encoders.BASE64.encode(secretKey.getEncoded());
         tokenValidator = new JwtTokenValidator(base64Secret);
     }
@@ -80,7 +79,7 @@ class JwtTokenValidatorTest {
     @Test
     void givenTokenWithDifferentSignature_whenIsValid_thenReturnsFalse() {
         // GIVEN - Token firmado con otra clave
-        SecretKey differentKey = Keys.secretKeyFor(io.jsonwebtoken.SignatureAlgorithm.HS512);
+        SecretKey differentKey = Keys.hmacShaKeyFor(new byte[64]);
         String token = Jwts.builder()
                 .subject("testuser")
                 .issuedAt(new Date())

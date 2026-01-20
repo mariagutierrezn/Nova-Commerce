@@ -8,13 +8,13 @@ public interface ManageProductsUseCase {
     
     Product createProduct(Product product);
     
-    Product updateProduct(Long id, Product product);
+    Product updateProduct(String id, Product product);
     
-    void deleteProduct(Long id);
+    void deleteProduct(String id);
     
-    Product getProductById(Long id);
+    Product getProductById(String id);
     
     Page<Product> getAllProducts(Pageable pageable);
     
-    Page<Product> getProductsByCategoryId(Long categoryId, Pageable pageable);
+    Page<Product> getProductsByCategoryId(String categoryId, Pageable pageable);
 }

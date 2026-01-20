@@ -21,7 +21,7 @@ class ProductRequestTest {
                 .description("High-performance laptop")
                 .price(new BigDecimal("999.99"))
                 .productType(ProductType.PHYSICAL)
-                .categoryId(1L)
+                .categoryId("1")
                 .stockQuantity(10)
                 .status("ACTIVE")
                 .build();
@@ -35,7 +35,7 @@ class ProductRequestTest {
         assertEquals("High-performance laptop", request.getDescription());
         assertEquals(new BigDecimal("999.99"), request.getPrice());
         assertEquals(ProductType.PHYSICAL, request.getProductType());
-        assertEquals(1L, request.getCategoryId());
+        assertEquals("1", request.getCategoryId());
         assertEquals(10, request.getStockQuantity());
         assertEquals("ACTIVE", request.getStatus());
     }
@@ -71,8 +71,8 @@ class ProductRequestTest {
     @Test
     @DisplayName("Should allow setting category ID")
     void testSetCategoryId() {
-        request.setCategoryId(2L);
-        assertEquals(2L, request.getCategoryId());
+        request.setCategoryId("2");
+        assertEquals("2", request.getCategoryId());
     }
 
     @Test
@@ -103,7 +103,7 @@ class ProductRequestTest {
                 .name("Mouse")
                 .price(new BigDecimal("25.99"))
                 .productType(ProductType.PHYSICAL)
-                .categoryId(3L)
+                .categoryId("3")
                 .stockQuantity(100)
                 .status("ACTIVE")
                 .build();

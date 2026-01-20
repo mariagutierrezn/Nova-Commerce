@@ -1,0 +1,66 @@
+server:
+  port: 8086
+
+spring:
+  application:
+    name: notification-service
+    description: Notification Service Worker para Nova Commerce
+    version: 1.0.0
+
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:local}
+
+  banner:
+    location: classpath:banner.txt
+    charset: UTF-8
+    mode: console
+
+  rabbitmq:
+    host: ${SPRING_RABBITMQ_HOST:localhost}
+    port: ${SPRING_RABBITMQ_PORT:5672}
+    username: ${SPRING_RABBITMQ_USERNAME:nova}
+    password: ${SPRING_RABBITMQ_PASSWORD:nova123}
+    virtual-host: ${SPRING_RABBITMQ_VIRTUAL_HOST:/nova}
+    listener:
+      simple:
+        acknowledge-mode: auto
+        prefetch: 10
+        concurrency: 1
+        max-concurrency: 5
+
+# Configuración de la aplicación
+app:
+  name: ${APP_NAME:Notification Service}
+  description: ${APP_DESCRIPTION:Notification Service Worker para Nova Commerce}
+  version: ${APP_VERSION:1.0.0}
+  contact:
+    name: ${APP_CONTACT_NAME:Nova Commerce}
+    email: ${APP_CONTACT_EMAIL:yesid.perez@sofka.com.co}
+    url: ${APP_CONTACT_URL:https://novacomerce.com}
+
+  # Configuración de RabbitMQ
+  rabbitmq:
+    exchange: ${app.rabbitmq.exchange:nova.exchange}
+    queue:
+      order-created: ${app.rabbitmq.queue.order-created:order.created.queue}
+      order-paid: ${app.rabbitmq.queue.order-paid:order.paid.queue}
+
+# Configuración de OpenAPI/Swagger
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+    enabled: true
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: true
+    tags-sorter: alpha
+    operations-sorter: alpha
+    display-request-duration: true
+    disable-swagger-default-url: true
+    doc-expansion: none
+  show-actuator: false
+
+logging:
+  level:
+    com.novacommerce.notification_service: INFO
+    org.springframework.amqp: DEBUG

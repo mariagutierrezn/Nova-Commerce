@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 public class CreateCustomerResponse {
 
     @Schema(description = "ID del cliente creado", example = "5")
-    private Long id;
+    private String id;
 
     @Schema(description = "Email del cliente")
     private String email;

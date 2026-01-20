@@ -1,6 +1,7 @@
 package com.novacommerce.order_service.application.service;
 
 import com.novacommerce.order_service.application.port.out.CustomerValidationPort;
+import com.novacommerce.order_service.application.port.out.OrderEventPublisherPort;
 import com.novacommerce.order_service.application.port.out.OrderPersistencePort;
 import com.novacommerce.order_service.application.port.out.ProductValidationPort;
 import com.novacommerce.order_service.domain.discount.DiscountStrategy;
@@ -13,8 +14,6 @@ import com.novacommerce.order_service.domain.model.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Mockito;
 
 import java.util.List;
 import java.util.Optional;
@@ -40,28 +39,29 @@ class OrderServiceTest {
                 new SeasonDiscountStrategy(),
                 new ProductTypeDiscountStrategy()
         );
-        service = new OrderService(orderPersistencePort, customerValidationPort, productValidationPort, strategies);
+        OrderEventPublisherPort orderEventPublisherPort = mock(OrderEventPublisherPort.class);
+        service = new OrderService(orderPersistencePort, customerValidationPort, productValidationPort, orderEventPublisherPort, strategies);
 
-        when(customerValidationPort.isCustomerValid(anyLong())).thenReturn(true);
-        when(customerValidationPort.getCustomerStatus(anyLong())).thenReturn("ACTIVE");
-        when(customerValidationPort.getCustomerLoyaltyLevel(anyLong())).thenReturn("GOLD");
+        when(customerValidationPort.isCustomerValid(anyString())).thenReturn(true);
+        when(customerValidationPort.getCustomerStatus(anyString())).thenReturn("ACTIVE");
+        when(customerValidationPort.getCustomerLoyaltyLevel(anyString())).thenReturn("GOLD");
 
-        when(productValidationPort.isProductValid(anyLong())).thenReturn(true);
-        when(productValidationPort.hasStock(anyLong(), anyInt())).thenReturn(true);
-        when(productValidationPort.getProductName(anyLong())).thenReturn("Product");
-        when(productValidationPort.getProductType(anyLong())).thenReturn("ELECTRONICS");
+        when(productValidationPort.isProductValid(anyString())).thenReturn(true);
+        when(productValidationPort.hasStock(anyString(), anyInt())).thenReturn(true);
+        when(productValidationPort.getProductName(anyString())).thenReturn("Product");
+        when(productValidationPort.getProductType(anyString())).thenReturn("ELECTRONICS");
 
         when(orderPersistencePort.save(any(Order.class))).thenAnswer(inv -> {
             Order o = inv.getArgument(0);
-            o.setId(100L);
+            o.setId("100");
             return o;
         });
     }
 
     private Order buildValidOrder() {
-        Order order = Order.builder().customerId(1L).build();
-        order.addItem(OrderItem.builder().productId(1L).quantity(1).unitPrice(Money.of(100)).build());
-        order.addItem(OrderItem.builder().productId(2L).quantity(2).unitPrice(Money.of(50)).build());
+        Order order = Order.builder().customerId("1").build();
+        order.addItem(OrderItem.builder().productId("1").quantity(1).unitPrice(Money.of(100)).build());
+        order.addItem(OrderItem.builder().productId("2").quantity(2).unitPrice(Money.of(50)).build());
         return order;
     }
 
@@ -79,7 +79,7 @@ class OrderServiceTest {
     @Test
     @DisplayName("GIVEN INACTIVE customer WHEN createOrder THEN throws BusinessRuleException")
     void inactiveCustomer() {
-        when(customerValidationPort.getCustomerStatus(anyLong())).thenReturn("INACTIVE");
+        when(customerValidationPort.getCustomerStatus(anyString())).thenReturn("INACTIVE");
         Order o = buildValidOrder();
         assertThrows(BusinessRuleException.class, () -> service.createOrder(o));
     }
@@ -87,7 +87,7 @@ class OrderServiceTest {
     @Test
     @DisplayName("GIVEN BLOCKED customer WHEN createOrder THEN throws BusinessRuleException")
     void blockedCustomer() {
-        when(customerValidationPort.getCustomerStatus(anyLong())).thenReturn("BLOCKED");
+        when(customerValidationPort.getCustomerStatus(anyString())).thenReturn("BLOCKED");
         Order o = buildValidOrder();
         assertThrows(BusinessRuleException.class, () -> service.createOrder(o));
     }
@@ -95,7 +95,7 @@ class OrderServiceTest {
     @Test
     @DisplayName("GIVEN invalid product WHEN createOrder THEN throws BusinessRuleException")
     void invalidProduct() {
-        when(productValidationPort.isProductValid(eq(2L))).thenReturn(false);
+        when(productValidationPort.isProductValid(eq("2"))).thenReturn(false);
         Order o = buildValidOrder();
         assertThrows(BusinessRuleException.class, () -> service.createOrder(o));
     }
@@ -103,7 +103,7 @@ class OrderServiceTest {
     @Test
     @DisplayName("GIVEN insufficient stock WHEN createOrder THEN throws BusinessRuleException")
     void insufficientStock() {
-        when(productValidationPort.hasStock(eq(2L), anyInt())).thenReturn(false);
+        when(productValidationPort.hasStock(eq("2"), anyInt())).thenReturn(false);
         Order o = buildValidOrder();
         assertThrows(BusinessRuleException.class, () -> service.createOrder(o));
     }
@@ -123,11 +123,11 @@ class OrderServiceTest {
     void updateOrderStatus() {
         Order existing = buildValidOrder();
         existing.markAsCreated();
-        existing.setId(10L);
-        when(orderPersistencePort.findById(10L)).thenReturn(Optional.of(existing));
+        existing.setId("10");
+        when(orderPersistencePort.findById("10")).thenReturn(Optional.of(existing));
         when(orderPersistencePort.save(any(Order.class))).thenAnswer(inv -> inv.getArgument(0));
 
-        Order updated = service.updateOrderStatus(10L, OrderStatus.PAID);
+        Order updated = service.updateOrderStatus("10", OrderStatus.PAID);
         assertEquals(OrderStatus.PAID, updated.getStatus());
         verify(orderPersistencePort).save(any(Order.class));
     }
@@ -135,7 +135,7 @@ class OrderServiceTest {
     @Test
     @DisplayName("GIVEN missing order WHEN updateOrderStatus THEN throws OrderException")
     void updateMissingOrder() {
-        when(orderPersistencePort.findById(99L)).thenReturn(Optional.empty());
-        assertThrows(OrderException.class, () -> service.updateOrderStatus(99L, OrderStatus.PAID));
+        when(orderPersistencePort.findById("99")).thenReturn(Optional.empty());
+        assertThrows(OrderException.class, () -> service.updateOrderStatus("99", OrderStatus.PAID));
     }
 }

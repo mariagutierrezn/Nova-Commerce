@@ -1,7 +1,6 @@
 package com.novacommerce.gateway.application.port;
 
 import com.novacommerce.gateway.adapter.out.jwt.JwtTokenValidatorAdapter;
-import com.novacommerce.gateway.domain.model.Token;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

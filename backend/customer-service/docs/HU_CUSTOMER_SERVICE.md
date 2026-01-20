@@ -775,7 +775,7 @@ Como enumeración de dominio, Quiero que CustomerStatus defina los estados váli
 ### Adapters
 - **REST API**: Endpoints bajo `/api/customers` con autenticación JWT y roles
 - **Internal API**: `/internal/customers/{id}` con API Key para comunicación entre microservicios
-- **Persistence**: CustomerPersistenceAdapter con PostgreSQL + Liquibase
+- **Persistence**: CustomerPersistenceAdapter con MongoDB
 - **Security**: JwtAuthenticationFilter + InternalApiKeyFilter + SecurityConfig
 
 ### Ports & Adapters
@@ -801,16 +801,16 @@ Como enumeración de dominio, Quiero que CustomerStatus defina los estados váli
 
 ### Data Model
 ```
-customers table:
-  - id (PK)
-  - first_name
-  - last_name
-  - email (unique)
+customers collection (MongoDB):
+  - _id (ObjectId)
+  - firstName
+  - lastName
+  - email (unique index)
   - phone
   - status (ACTIVE/INACTIVE/BLOCKED)
-  - loyalty_level (BRONZE/SILVER/GOLD/PLATINUM)
-  - created_at
-  - updated_at
+  - loyaltyLevel (BRONZE/SILVER/GOLD/PLATINUM)
+  - createdAt
+  - updatedAt
 ```
 
 ---
@@ -849,7 +849,7 @@ Customer Service actúa como **proveedor de datos** para Order Service:
   - Integración: 4 clases (CustomerRestControllerTest, InternalCustomerControllerTest, etc.)
 - **Arquitectura**: Clean Architecture + Hexagonal (Ports & Adapters)
 - **Validaciones**: Bean Validation (JSR-380) en DTOs
-- **Persistencia**: JPA + PostgreSQL + Liquibase migrations
+- **Persistencia**: Spring Data MongoDB
 - **Documentación**: OpenAPI 3.0 (Swagger)
 - **Seguridad**: Spring Security + JWT + API Key
 

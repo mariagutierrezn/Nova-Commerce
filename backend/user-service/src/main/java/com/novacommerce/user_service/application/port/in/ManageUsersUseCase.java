@@ -5,7 +5,6 @@ import com.novacommerce.user_service.web.api.dto.response.UserResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import java.util.UUID;
 
 /**
  * Puerto de entrada para gestión de usuarios.
@@ -21,7 +20,7 @@ public interface ManageUsersUseCase {
     /**
      * Obtiene un usuario por su UUID.
      */
-    UserResponse getUserById(UUID id);
+    UserResponse getUserById(String id);
 
     /**
      * Crea un nuevo usuario.
@@ -31,20 +30,20 @@ public interface ManageUsersUseCase {
     /**
      * Actualiza un usuario existente.
      */
-    UserResponse updateUser(UUID id, CreateUserRequest updateUserRequest);
+    UserResponse updateUser(String id, CreateUserRequest updateUserRequest);
 
     /**
      * Elimina un usuario.
      */
-    void deleteUser(UUID id);
+    void deleteUser(String id);
     
     /**
      * Actualiza el customerId de un usuario.
      */
-    void updateCustomerId(UUID userId, Long customerId);
+    void updateCustomerId(String userId, String customerId);
 
     /**
      * Verifica si un usuario es el usuario actual autenticado.
      */
-    boolean isCurrentUser(UUID id);
+    boolean isCurrentUser(String id);
 }

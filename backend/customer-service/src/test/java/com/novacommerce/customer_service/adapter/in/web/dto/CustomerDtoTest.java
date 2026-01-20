@@ -30,7 +30,7 @@ class CustomerDtoTest {
     void givenValidDto_whenValidate_thenNoViolations() {
         // GIVEN
         CustomerDto dto = new CustomerDto();
-        dto.setId(1L);
+        dto.setId("1");
         dto.setFirstName("Juan");
         dto.setLastName("Pérez");
         dto.setEmail("juan@example.com");
@@ -155,7 +155,7 @@ class CustomerDtoTest {
         CustomerDto dto = new CustomerDto();
 
         // WHEN
-        dto.setId(1L);
+        dto.setId("1");
         dto.setFirstName("Juan");
         dto.setLastName("Pérez");
         dto.setEmail("juan@example.com");
@@ -164,7 +164,7 @@ class CustomerDtoTest {
         dto.setLoyaltyLevel(LoyaltyLevel.PLATINUM);
 
         // THEN
-        assertEquals(1L, dto.getId());
+        assertEquals("1", dto.getId());
         assertEquals("Juan", dto.getFirstName());
         assertEquals("Pérez", dto.getLastName());
         assertEquals("juan@example.com", dto.getEmail());

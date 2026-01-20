@@ -44,7 +44,7 @@ class ProductImageControllerTest {
     @WithMockUser(roles = "ADMIN")
     @DisplayName("Should upload product image successfully with ADMIN role")
     void testUploadProductImageSuccess() throws Exception {
-        Long productId = 1L;
+        String productId = "1";
         String imageUrl = "http://localhost:8083/images/products/1/test-image.jpg";
         
         MockMultipartFile imageFile = new MockMultipartFile(
@@ -71,7 +71,7 @@ class ProductImageControllerTest {
     @Test
     @DisplayName("Should return 401 when no authentication provided")
     void testUploadProductImageUnauthorized() throws Exception {
-        Long productId = 1L;
+        String productId = "1";
         
         MockMultipartFile imageFile = new MockMultipartFile(
                 "imageFile",
@@ -90,7 +90,7 @@ class ProductImageControllerTest {
     @WithMockUser(roles = "ADMIN")
     @DisplayName("Should return 404 when product not found")
     void testUploadProductImageProductNotFound() throws Exception {
-        Long productId = 999L;
+        String productId = "999";
         
         MockMultipartFile imageFile = new MockMultipartFile(
                 "imageFile",
@@ -113,7 +113,7 @@ class ProductImageControllerTest {
     @WithMockUser(roles = "ADMIN")
     @DisplayName("Should return 400 when invalid file format")
     void testUploadProductImageInvalidFormat() throws Exception {
-        Long productId = 1L;
+        String productId = "1";
         
         MockMultipartFile pdfFile = new MockMultipartFile(
                 "imageFile",
@@ -136,7 +136,7 @@ class ProductImageControllerTest {
     @WithMockUser(roles = "ADMIN")
     @DisplayName("Should return 400 when file too large")
     void testUploadProductImageFileTooLarge() throws Exception {
-        Long productId = 1L;
+        String productId = "1";
         
         MockMultipartFile largeFile = new MockMultipartFile(
                 "imageFile",
@@ -159,7 +159,7 @@ class ProductImageControllerTest {
     @WithMockUser(roles = "ADMIN")
     @DisplayName("Should return 500 when IOException occurs")
     void testUploadProductImageIOException() throws Exception {
-        Long productId = 1L;
+        String productId = "1";
         
         MockMultipartFile imageFile = new MockMultipartFile(
                 "imageFile",
@@ -183,7 +183,7 @@ class ProductImageControllerTest {
     @WithMockUser(roles = "ADMIN")
     @DisplayName("Should handle empty file")
     void testUploadProductImageEmptyFile() throws Exception {
-        Long productId = 1L;
+        String productId = "1";
         
         MockMultipartFile emptyFile = new MockMultipartFile(
                 "imageFile",
@@ -206,7 +206,7 @@ class ProductImageControllerTest {
     @WithMockUser(roles = "ADMIN")
     @DisplayName("Should handle PNG image")
     void testUploadProductImagePNG() throws Exception {
-        Long productId = 1L;
+        String productId = "1";
         String imageUrl = "http://localhost:8083/images/products/1/test-image.png";
         
         MockMultipartFile pngFile = new MockMultipartFile(
@@ -231,7 +231,7 @@ class ProductImageControllerTest {
     @WithMockUser(roles = "ADMIN")
     @DisplayName("Should handle WEBP image")
     void testUploadProductImageWEBP() throws Exception {
-        Long productId = 1L;
+        String productId = "1";
         String imageUrl = "http://localhost:8083/images/products/1/test-image.webp";
         
         MockMultipartFile webpFile = new MockMultipartFile(
@@ -256,7 +256,7 @@ class ProductImageControllerTest {
     @WithMockUser(roles = "ADMIN")
     @DisplayName("Should replace existing image")
     void testUploadProductImageReplaceExisting() throws Exception {
-        Long productId = 1L;
+        String productId = "1";
         String newImageUrl = "http://localhost:8083/images/products/1/new-image.jpg";
         
         MockMultipartFile imageFile = new MockMultipartFile(
@@ -284,7 +284,7 @@ class ProductImageControllerTest {
     @WithMockUser(roles = "ADMIN")
     @DisplayName("Should handle null filename")
     void testUploadProductImageNullFilename() throws Exception {
-        Long productId = 1L;
+        String productId = "1";
         
         MockMultipartFile imageFile = new MockMultipartFile(
                 "imageFile",
@@ -310,7 +310,7 @@ class ProductImageControllerTest {
     @WithMockUser(roles = "ADMIN")
     @DisplayName("Should handle storage exception")
     void testUploadProductImageStorageException() throws Exception {
-        Long productId = 1L;
+        String productId = "1";
         
         MockMultipartFile imageFile = new MockMultipartFile(
                 "imageFile",

@@ -15,7 +15,7 @@ public interface TokenGeneratorPort {
      * @param customerId ID del cliente asociado al usuario
      * @return token JWT como String
      */
-    String generateToken(Authentication authentication, Long customerId);
+    String generateToken(Authentication authentication, String customerId);
     
     /**
      * Genera un refresh token

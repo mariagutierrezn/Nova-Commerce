@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.time.LocalDateTime;
 import java.util.Set;
-import java.util.UUID;
 
 /**
  * DTO de respuesta para información de usuario.
@@ -12,7 +11,7 @@ import java.util.UUID;
  */
 public record UserResponse(
     @JsonProperty("id")
-    UUID id,
+    String id,
 
     @JsonProperty("username")
     String username,
@@ -28,12 +27,12 @@ public record UserResponse(
 
     @JsonProperty("locked")
     Boolean locked,
-    
-    @JsonProperty("customer_id")
-    Long customerId,
 
-    @JsonProperty("roles")
-    Set<RoleResponse> roles,
+    @JsonProperty("customer_id")
+    String customerId,
+
+    @JsonProperty("role_ids")
+    Set<String> roleIds,
 
     @JsonProperty("created_at")
     LocalDateTime createdAt,

@@ -15,7 +15,7 @@ class PublicProductResponseTest {
     @DisplayName("Should create PublicProductResponse with all fields")
     void testPublicProductResponseCreation() {
         PublicProductResponse response = PublicProductResponse.builder()
-                .id(1L)
+                .id("1")
                 .name("Laptop")
                 .description("High-performance laptop")
                 .price(new BigDecimal("999.99"))
@@ -23,7 +23,7 @@ class PublicProductResponseTest {
                 .build();
 
         assertNotNull(response);
-        assertEquals(1L, response.getId());
+        assertEquals("1", response.getId());
         assertEquals("Laptop", response.getName());
         assertEquals("High-performance laptop", response.getDescription());
         assertEquals(new BigDecimal("999.99"), response.getPrice());
@@ -41,7 +41,7 @@ class PublicProductResponseTest {
     @DisplayName("Should use all-args constructor")
     void testAllArgsConstructor() {
         PublicProductResponse response = new PublicProductResponse(
-                1L,
+                "1",
                 "Laptop",
                 "High-performance laptop",
                 new BigDecimal("999.99"),
@@ -49,7 +49,7 @@ class PublicProductResponseTest {
                 "http://localhost:8083/images/products/1/test.jpg"
         );
 
-        assertEquals(1L, response.getId());
+        assertEquals("1", response.getId());
         assertEquals("Laptop", response.getName());
     }
 
@@ -57,13 +57,13 @@ class PublicProductResponseTest {
     @DisplayName("Should allow setting individual fields")
     void testSetters() {
         PublicProductResponse response = new PublicProductResponse();
-        response.setId(2L);
+        response.setId("2");
         response.setName("Mouse");
         response.setDescription("Wireless mouse");
         response.setPrice(new BigDecimal("25.99"));
         response.setProductType(ProductType.DIGITAL);
 
-        assertEquals(2L, response.getId());
+        assertEquals("2", response.getId());
         assertEquals("Mouse", response.getName());
         assertEquals("Wireless mouse", response.getDescription());
         assertEquals(new BigDecimal("25.99"), response.getPrice());
@@ -93,13 +93,13 @@ class PublicProductResponseTest {
     @DisplayName("Should implement equals and hashCode correctly")
     void testEqualsAndHashCode() {
         PublicProductResponse response1 = PublicProductResponse.builder()
-                .id(1L)
+                .id("1")
                 .name("Laptop")
                 .price(new BigDecimal("999.99"))
                 .build();
 
         PublicProductResponse response2 = PublicProductResponse.builder()
-                .id(1L)
+                .id("1")
                 .name("Laptop")
                 .price(new BigDecimal("999.99"))
                 .build();
@@ -112,7 +112,7 @@ class PublicProductResponseTest {
     @DisplayName("Should implement toString correctly")
     void testToString() {
         PublicProductResponse response = PublicProductResponse.builder()
-                .id(1L)
+                .id("1")
                 .name("Laptop")
                 .build();
 

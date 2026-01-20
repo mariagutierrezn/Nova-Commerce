@@ -20,7 +20,7 @@ import java.util.List;
 public class CreateOrderRequest {
     
     @NotNull(message = "Customer ID is required")
-    private Long customerId;
+    private String customerId;
     
     @NotEmpty(message = "Order must have at least one item")
     @Valid

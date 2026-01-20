@@ -19,8 +19,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Order {
-    private Long id;
-    private Long customerId;
+    private String id;
+    private String customerId;
     private OrderStatus status;
     private Money totalBeforeDiscount;
     private Money discountTotal;

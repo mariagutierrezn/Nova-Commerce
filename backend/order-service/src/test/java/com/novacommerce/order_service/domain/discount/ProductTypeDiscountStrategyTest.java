@@ -18,8 +18,8 @@ class ProductTypeDiscountStrategyTest {
     @Test
     @DisplayName("GIVEN electronics and clothing items WHEN apply THEN accumulates item discounts")
     void applyItemTypes() {
-        OrderItem i1 = OrderItem.builder().productId(1L).quantity(1).unitPrice(Money.of(100)).productType("ELECTRONICS").build();
-        OrderItem i2 = OrderItem.builder().productId(2L).quantity(2).unitPrice(Money.of(50)).productType("CLOTHING").build();
+        OrderItem i1 = OrderItem.builder().productId("1").quantity(1).unitPrice(Money.of(100)).productType("ELECTRONICS").build();
+        OrderItem i2 = OrderItem.builder().productId("2").quantity(2).unitPrice(Money.of(50)).productType("CLOTHING").build();
         DiscountContext ctx = DiscountContext.builder()
                 .items(List.of(i1, i2))
                 .orderTotal(Money.of(200))
@@ -33,7 +33,7 @@ class ProductTypeDiscountStrategyTest {
     @Test
     @DisplayName("GIVEN items with no type WHEN apply THEN no discount")
     void noTypeNoDiscount() {
-        OrderItem i1 = OrderItem.builder().productId(1L).quantity(1).unitPrice(Money.of(100)).build();
+        OrderItem i1 = OrderItem.builder().productId("1").quantity(1).unitPrice(Money.of(100)).build();
         DiscountContext ctx = DiscountContext.builder()
                 .items(List.of(i1))
                 .orderTotal(Money.of(100))

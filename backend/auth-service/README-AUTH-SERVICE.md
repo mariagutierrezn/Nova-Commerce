@@ -7,7 +7,7 @@ Microservicio de autenticación y autorización centralizada para Nova Commerce.
 Implementa **Clean Architecture** con separación clara entre dominio, aplicación y adaptadores.
 
 ```
-Cliente → API Gateway (8080) → Auth-Service (8081) → (Feign) → User-Service (8082, BD PostgreSQL)
+Cliente → API Gateway (8080) → Auth-Service (8081) → (Feign) → User-Service (8082, MongoDB)
                                    ↓ Genera JWT
                            Retorna al API Gateway
                                    ↓
@@ -219,7 +219,7 @@ AuthService (application/service)
     │   UserServiceClient (Feign)
     │       ↓
     │   User-Service (http://localhost:8082)
-    │       ↓ Valida credenciales contra PostgreSQL
+    │       ↓ Valida credenciales contra MongoDB
     │       ↓ Retorna usuario, roles, permisos
     │
     └─→ TokenGeneratorPort (application/port/out)
@@ -318,7 +318,7 @@ auth-service/
 - **AuthServiceImpl**: Lógica de autenticación (valida con Feign, genera JWT)
 - **AuthController**: Endpoints REST (`/api/auth/login`, `/refresh`, `/validate`)
 - **JwtTokenProvider**: Generación y validación de tokens JWT
-- **NO tiene**: Entidades JPA, Repositorios, Liquibase (user-service maneja la BD)
+- **NO tiene**: Documentos MongoDB, Repositorios (user-service maneja la BD)
 
 ## � Integración con User-Service
 
@@ -340,7 +340,7 @@ public interface UserServiceClient {
 
 1. Cliente envía credenciales a `POST /api/auth/login`
 2. Auth-Service llama a `user-service` vía Feign: `POST /internal/users/validate`
-3. User-Service valida credenciales contra PostgreSQL
+3. User-Service valida credenciales contra MongoDB
 4. User-Service retorna información del usuario (id, username, roles, permissions)
 5. Auth-Service genera JWT con esa información
 6. Auth-Service retorna JWT al cliente

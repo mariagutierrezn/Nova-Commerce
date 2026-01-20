@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 
 /**
  * Entidad de dominio que representa un token JWT.
- * No es una entidad JPA, es un concepto del dominio de seguridad.
+ * No es un documento de MongoDB, es un concepto del dominio de seguridad.
  */
 @Getter
 @Builder

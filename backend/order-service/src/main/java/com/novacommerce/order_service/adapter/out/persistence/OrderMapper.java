@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import java.util.stream.Collectors;
 
 /**
- * Mapper manual entre dominio y entidades JPA.
+ * Mapper manual entre dominio y entidades MongoDB.
  */
 @Component
 public class OrderMapper {

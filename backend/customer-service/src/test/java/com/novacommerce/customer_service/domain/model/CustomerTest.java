@@ -31,7 +31,7 @@ class CustomerTest {
     @DisplayName("givenCustomer_whenAllArgsConstructor_thenCreateWithValues")
     void givenCustomer_whenAllArgsConstructor_thenCreateWithValues() {
         // GIVEN
-        Long id = 1L;
+        String id = "1";
         String firstName = "Juan";
         String lastName = "Pérez";
         String email = "juan@example.com";
@@ -43,7 +43,7 @@ class CustomerTest {
         Customer customer = new Customer(id, firstName, lastName, email, phone, status, loyaltyLevel);
 
         // THEN
-        assertEquals(1L, customer.getId());
+        assertEquals("1", customer.getId());
         assertEquals("Juan", customer.getFirstName());
         assertEquals("Pérez", customer.getLastName());
         assertEquals("juan@example.com", customer.getEmail());
@@ -59,7 +59,7 @@ class CustomerTest {
         Customer customer = new Customer();
 
         // WHEN
-        customer.setId(2L);
+        customer.setId("2");
         customer.setFirstName("María");
         customer.setLastName("García");
         customer.setEmail("maria@example.com");
@@ -68,7 +68,7 @@ class CustomerTest {
         customer.setLoyaltyLevel(LoyaltyLevel.SILVER);
 
         // THEN
-        assertEquals(2L, customer.getId());
+        assertEquals("2", customer.getId());
         assertEquals("María", customer.getFirstName());
         assertEquals("García", customer.getLastName());
         assertEquals("maria@example.com", customer.getEmail());
@@ -81,7 +81,7 @@ class CustomerTest {
     @DisplayName("givenCustomer_whenNullPhone_thenAllowNull")
     void givenCustomer_whenNullPhone_thenAllowNull() {
         // GIVEN
-        Customer customer = new Customer(3L, "Carlos", "López", "carlos@example.com", null,
+        Customer customer = new Customer("3", "Carlos", "López", "carlos@example.com", null,
             CustomerStatus.BLOCKED, LoyaltyLevel.BRONZE);
 
         // WHEN & THEN
@@ -125,11 +125,11 @@ class CustomerTest {
     @DisplayName("givenCustomer_whenGetters_thenReturnValues")
     void givenCustomer_whenGetters_thenReturnValues() {
         // GIVEN
-        Customer customer = new Customer(4L, "Ana", "Rodríguez", "ana@example.com", "555123456",
+        Customer customer = new Customer("4", "Ana", "Rodríguez", "ana@example.com", "555123456",
             CustomerStatus.ACTIVE, LoyaltyLevel.PLATINUM);
 
         // WHEN & THEN
-        assertEquals(4L, customer.getId());
+        assertEquals("4", customer.getId());
         assertEquals("Ana", customer.getFirstName());
         assertEquals("Rodríguez", customer.getLastName());
         assertEquals("ana@example.com", customer.getEmail());
@@ -143,7 +143,7 @@ class CustomerTest {
     void givenCustomer_whenMultipleUpdates_thenFinalStateCorrect() {
         // GIVEN
         Customer customer = new Customer();
-        customer.setId(5L);
+        customer.setId("5");
         customer.setFirstName("Test");
         customer.setStatus(CustomerStatus.ACTIVE);
 
@@ -153,7 +153,7 @@ class CustomerTest {
         customer.setLoyaltyLevel(LoyaltyLevel.GOLD);
 
         // THEN
-        assertEquals(5L, customer.getId());
+        assertEquals("5", customer.getId());
         assertEquals("Updated", customer.getFirstName());
         assertEquals(CustomerStatus.INACTIVE, customer.getStatus());
         assertEquals(LoyaltyLevel.GOLD, customer.getLoyaltyLevel());
@@ -163,9 +163,9 @@ class CustomerTest {
     @DisplayName("givenTwoCustomers_whenSameValues_thenEqualityBehavior")
     void givenTwoCustomers_whenSameValues_thenEqualityBehavior() {
         // GIVEN
-        Customer customer1 = new Customer(1L, "Juan", "Pérez", "juan@example.com", "123456789",
+        Customer customer1 = new Customer("1", "Juan", "Pérez", "juan@example.com", "123456789",
             CustomerStatus.ACTIVE, LoyaltyLevel.GOLD);
-        Customer customer2 = new Customer(1L, "Juan", "Pérez", "juan@example.com", "123456789",
+        Customer customer2 = new Customer("1", "Juan", "Pérez", "juan@example.com", "123456789",
             CustomerStatus.ACTIVE, LoyaltyLevel.GOLD);
 
         // WHEN & THEN

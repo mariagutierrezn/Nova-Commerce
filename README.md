@@ -15,7 +15,7 @@ Plataforma de e-commerce modular basada en microservicios. El objetivo del proye
 
 - API Gateway: Punto único de entrada; ruteo; validación preliminar y propagación de JWT.
 - Auth Service: Autenticación; emisión de JWT; valida credenciales contra User Service.
-- User Service: Gestión de usuarios, roles y permisos; persistencia en PostgreSQL.
+- User Service: Gestión de usuarios, roles y permisos; persistencia en MongoDB.
 - Product Service: Catálogo y categorías; endpoints públicos y `internal` protegidos por API Key.
 - Customer Service: Gestión de clientes; endpoints públicos y `internal` protegidos por API Key.
 - Order Service: Creación y consulta de órdenes; validación con Customer/Product vía Feign; descuentos con Strategy Pattern.
@@ -58,7 +58,7 @@ graph LR
 
   %% Datos
   subgraph Data
-    DB[PostgreSQL]
+    DB[MongoDB]
   end
 
   %% Flujo principal
@@ -184,7 +184,7 @@ sequenceDiagram
 	- Gestión de usuarios, productos, categorías y clientes
 	- Creación/consulta de órdenes con motor de descuentos (Strategy Pattern)
 	- Endpoints internos `/internal/**` con `X-Internal-API-Key`
-	- Persistencia con PostgreSQL + Liquibase
+	- Persistencia con MongoDB
 	- OpenAPI/Swagger en cada servicio
 
 - Escalabilidad por arquitectura:

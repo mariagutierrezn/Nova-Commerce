@@ -37,7 +37,7 @@ class CategoryServiceTest {
     @BeforeEach
     void setUp() {
         category = Category.builder()
-                .id(1L)
+                .id("1")
                 .name("Electronics")
                 .description("Electronic devices")
                 .status("ACTIVE")
@@ -62,74 +62,74 @@ class CategoryServiceTest {
         Category updated = category;
         updated.setName("Computing");
 
-        when(categoryPersistencePort.existsById(1L)).thenReturn(true);
+        when(categoryPersistencePort.existsById("1")).thenReturn(true);
         when(categoryPersistencePort.save(any(Category.class))).thenReturn(updated);
 
-        Category result = categoryService.updateCategory(1L, updated);
+        Category result = categoryService.updateCategory("1", updated);
 
         assertNotNull(result);
         assertEquals("Computing", result.getName());
-        verify(categoryPersistencePort, times(1)).existsById(1L);
+        verify(categoryPersistencePort, times(1)).existsById("1");
         verify(categoryPersistencePort, times(1)).save(any(Category.class));
     }
 
     @Test
     @DisplayName("Should throw exception when updating non-existent category")
     void testUpdateCategoryNotFound() {
-        when(categoryPersistencePort.existsById(999L)).thenReturn(false);
+        when(categoryPersistencePort.existsById("999")).thenReturn(false);
 
         assertThrows(ResourceNotFoundException.class, () -> {
-            categoryService.updateCategory(999L, category);
+            categoryService.updateCategory("999", category);
         });
 
-        verify(categoryPersistencePort, times(1)).existsById(999L);
+        verify(categoryPersistencePort, times(1)).existsById("999");
     }
 
     @Test
     @DisplayName("Should delete category successfully")
     void testDeleteCategory() {
-        when(categoryPersistencePort.existsById(1L)).thenReturn(true);
+        when(categoryPersistencePort.existsById("1")).thenReturn(true);
 
-        categoryService.deleteCategory(1L);
+        categoryService.deleteCategory("1");
 
-        verify(categoryPersistencePort, times(1)).existsById(1L);
-        verify(categoryPersistencePort, times(1)).deleteById(1L);
+        verify(categoryPersistencePort, times(1)).existsById("1");
+        verify(categoryPersistencePort, times(1)).deleteById("1");
     }
 
     @Test
     @DisplayName("Should throw exception when deleting non-existent category")
     void testDeleteCategoryNotFound() {
-        when(categoryPersistencePort.existsById(999L)).thenReturn(false);
+        when(categoryPersistencePort.existsById("999")).thenReturn(false);
 
         assertThrows(ResourceNotFoundException.class, () -> {
-            categoryService.deleteCategory(999L);
+            categoryService.deleteCategory("999");
         });
 
-        verify(categoryPersistencePort, times(1)).existsById(999L);
+        verify(categoryPersistencePort, times(1)).existsById("999");
     }
 
     @Test
     @DisplayName("Should get category by ID successfully")
     void testGetCategoryById() {
-        when(categoryPersistencePort.findById(1L)).thenReturn(Optional.of(category));
+        when(categoryPersistencePort.findById("1")).thenReturn(Optional.of(category));
 
-        Category found = categoryService.getCategoryById(1L);
+        Category found = categoryService.getCategoryById("1");
 
         assertNotNull(found);
         assertEquals("Electronics", found.getName());
-        verify(categoryPersistencePort, times(1)).findById(1L);
+        verify(categoryPersistencePort, times(1)).findById("1");
     }
 
     @Test
     @DisplayName("Should throw exception when category not found by ID")
     void testGetCategoryByIdNotFound() {
-        when(categoryPersistencePort.findById(999L)).thenReturn(Optional.empty());
+        when(categoryPersistencePort.findById("999")).thenReturn(Optional.empty());
 
         assertThrows(ResourceNotFoundException.class, () -> {
-            categoryService.getCategoryById(999L);
+            categoryService.getCategoryById("999");
         });
 
-        verify(categoryPersistencePort, times(1)).findById(999L);
+        verify(categoryPersistencePort, times(1)).findById("999");
     }
 
     @Test
@@ -168,7 +168,7 @@ class CategoryServiceTest {
     void testGetAllCategoriesMultiple() {
         Pageable pageable = PageRequest.of(0, 20);
         Category category2 = Category.builder()
-                .id(2L)
+                .id("2")
                 .name("Clothing")
                 .description("Clothing and fashion")
                 .status("ACTIVE")

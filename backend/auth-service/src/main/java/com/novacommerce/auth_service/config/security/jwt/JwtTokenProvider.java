@@ -1,6 +1,10 @@
 package com.novacommerce.auth_service.config.security.jwt;
 
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,7 +44,7 @@ public class JwtTokenProvider {
      * @param customerId ID del cliente asociado al usuario
      * @return el token JWT generado
      */
-    public String generateToken(Authentication authentication, Long customerId) {
+    public String generateToken(Authentication authentication, String customerId) {
         String username = authentication.getName();
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         
@@ -63,7 +67,7 @@ public class JwtTokenProvider {
             builder.claim("customerId", customerId);
         }
         
-        return builder.signWith(key, SignatureAlgorithm.HS512)
+        return builder.signWith(key)
             .compact();
     }
 
@@ -83,7 +87,7 @@ public class JwtTokenProvider {
             .setSubject(username)
             .setIssuedAt(now)
             .setExpiration(expiryDate)
-            .signWith(key, SignatureAlgorithm.HS512)
+            .signWith(key)
             .compact();
     }
 

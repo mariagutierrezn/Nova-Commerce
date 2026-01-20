@@ -40,7 +40,6 @@ public class JwtTokenValidatorAdapter {
         }
     }
 
-    @SuppressWarnings("unchecked")
     public List<String> extractAuthorities(Claims claims) {
         Object authorities = claims.get("authorities");
         if (authorities instanceof String s && !s.isBlank()) {

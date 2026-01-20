@@ -15,6 +15,6 @@ public record UserValidationResponse(
     Set<String> roles,
     Set<String> permissions,
     @JsonProperty("customer_id")
-    Long customerId
+    String customerId
 ) {
 }

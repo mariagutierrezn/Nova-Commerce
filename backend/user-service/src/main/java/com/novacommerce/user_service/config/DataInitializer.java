@@ -121,16 +121,17 @@ public class DataInitializer implements ApplicationRunner {
         String roleName = "ADMIN";
 
         if (roleRepository.findByName(roleName).isEmpty()) {
-            Set<Permission> allPermissions = new HashSet<>(permissionRepository.findAll());
+            Set<String> allPermissionIds = new HashSet<>();
+            permissionRepository.findAll().forEach(p -> allPermissionIds.add(p.getId()));
 
             Role adminRole = Role.builder()
                 .name(roleName)
                 .description("Administrador del sistema con acceso completo")
-                .permissions(allPermissions)
+                .permissionIds(allPermissionIds)
                 .build();
 
             roleRepository.save(adminRole);
-            log.info("✓ Rol creado: {} con {} permisos", roleName, allPermissions.size());
+            log.info("✓ Rol creado: {} con {} permisos", roleName, allPermissionIds.size());
         } else {
             log.info("○ Rol ya existe: {}", roleName);
         }
@@ -143,16 +144,16 @@ public class DataInitializer implements ApplicationRunner {
         String roleName = "HR";
 
         if (roleRepository.findByName(roleName).isEmpty()) {
-            Set<Permission> permissions = findPermissionsByNames("USER_READ");
+            Set<String> permissionIds = findPermissionIdsByNames("USER_READ");
 
             Role hrRole = Role.builder()
                 .name(roleName)
                 .description("Recursos Humanos con acceso de lectura a usuarios")
-                .permissions(permissions)
+                .permissionIds(permissionIds)
                 .build();
 
             roleRepository.save(hrRole);
-            log.info("✓ Rol creado: {} con {} permisos", roleName, permissions.size());
+            log.info("✓ Rol creado: {} con {} permisos", roleName, permissionIds.size());
         } else {
             log.info("○ Rol ya existe: {}", roleName);
         }
@@ -165,16 +166,16 @@ public class DataInitializer implements ApplicationRunner {
         String roleName = "SALES";
 
         if (roleRepository.findByName(roleName).isEmpty()) {
-            Set<Permission> permissions = findPermissionsByNames("USER_READ");
+            Set<String> permissionIds = findPermissionIdsByNames("USER_READ");
 
             Role salesRole = Role.builder()
                 .name(roleName)
                 .description("Ventas con acceso de lectura a usuarios")
-                .permissions(permissions)
+                .permissionIds(permissionIds)
                 .build();
 
             roleRepository.save(salesRole);
-            log.info("✓ Rol creado: {} con {} permisos", roleName, permissions.size());
+            log.info("✓ Rol creado: {} con {} permisos", roleName, permissionIds.size());
         } else {
             log.info("○ Rol ya existe: {}", roleName);
         }
@@ -187,16 +188,16 @@ public class DataInitializer implements ApplicationRunner {
         String roleName = "USER";
 
         if (roleRepository.findByName(roleName).isEmpty()) {
-            Set<Permission> permissions = findPermissionsByNames("USER_READ");
-            
+            Set<String> permissionIds = findPermissionIdsByNames("USER_READ");
+
             Role userRole = Role.builder()
                 .name(roleName)
                 .description("Usuario estándar del sistema con acceso de lectura")
-                .permissions(permissions)
+                .permissionIds(permissionIds)
                 .build();
 
             roleRepository.save(userRole);
-            log.info("✓ Rol creado: {} con {} permisos", roleName, permissions.size());
+            log.info("✓ Rol creado: {} con {} permisos", roleName, permissionIds.size());
         } else {
             log.info("○ Rol ya existe: {}", roleName);
         }
@@ -238,7 +239,7 @@ public class DataInitializer implements ApplicationRunner {
             .status(UserStatusEnum.ACTIVE)
             .enabled(true)
             .locked(false)
-            .roles(Set.of(adminRole.get()))
+            .roleIds(Set.of(adminRole.get().getId()))
             .build();
 
         userRepository.save(admin);
@@ -253,14 +254,12 @@ public class DataInitializer implements ApplicationRunner {
      * @param permissionNames nombres de permisos
      * @return conjunto de permisos encontrados
      */
-    private Set<Permission> findPermissionsByNames(String... permissionNames) {
-        Set<Permission> permissions = new HashSet<>();
-
+    private Set<String> findPermissionIdsByNames(String... permissionNames) {
+        Set<String> permissionIds = new HashSet<>();
         for (String name : permissionNames) {
-            permissionRepository.findByName(name).ifPresent(permissions::add);
+            permissionRepository.findByName(name).ifPresent(p -> permissionIds.add(p.getId()));
         }
-
-        return permissions;
+        return permissionIds;
     }
 
     /**

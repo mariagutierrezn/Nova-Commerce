@@ -5,7 +5,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.Optional;
-import java.util.UUID;
 
 /**
  * Puerto de salida para persistencia de usuarios.
@@ -21,7 +20,7 @@ public interface UserPersistencePort {
     /**
      * Encuentra un usuario por su ID.
      */
-    Optional<User> findById(UUID id);
+    Optional<User> findById(String id);
 
     /**
      * Encuentra un usuario por su username.
@@ -56,5 +55,5 @@ public interface UserPersistencePort {
     /**
      * Elimina un usuario por su ID.
      */
-    void deleteById(UUID id);
+    void deleteById(String id);
 }

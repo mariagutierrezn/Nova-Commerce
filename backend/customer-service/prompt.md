@@ -50,7 +50,7 @@ customer-service/
 │
 └── resources/
     ├── application.yaml
-    └── db/liquibase/
+    └── (sin migraciones - MongoDB usa colecciones dinámicas)
         ├── changelog-master.yaml
         └── changes/
             ├── 001-create-customer-table.yaml

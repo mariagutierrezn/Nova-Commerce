@@ -27,7 +27,7 @@ public class ProductService implements ManageProductsUseCase {
 
     @Override
     @Transactional
-    public Product updateProduct(Long id, Product product) {
+    public Product updateProduct(String id, Product product) {
         log.info("Updating product with ID: {}", id);
         
         if (!productPersistencePort.existsById(id)) {
@@ -40,7 +40,7 @@ public class ProductService implements ManageProductsUseCase {
 
     @Override
     @Transactional
-    public void deleteProduct(Long id) {
+    public void deleteProduct(String id) {
         log.info("Deleting product with ID: {}", id);
         
         if (!productPersistencePort.existsById(id)) {
@@ -52,7 +52,7 @@ public class ProductService implements ManageProductsUseCase {
 
     @Override
     @Transactional(readOnly = true)
-    public Product getProductById(Long id) {
+    public Product getProductById(String id) {
         log.info("Fetching product with ID: {}", id);
         
         return productPersistencePort.findById(id)
@@ -68,7 +68,7 @@ public class ProductService implements ManageProductsUseCase {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<Product> getProductsByCategoryId(Long categoryId, Pageable pageable) {
+    public Page<Product> getProductsByCategoryId(String categoryId, Pageable pageable) {
         log.info("Fetching products by category ID: {} - Page: {}, Size: {}", 
                 categoryId, pageable.getPageNumber(), pageable.getPageSize());
         return productPersistencePort.findByCategoryId(categoryId, pageable);

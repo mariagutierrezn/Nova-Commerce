@@ -1,10 +1,10 @@
 package com.novacommerce.product_service.repository.entity;
 
-import jakarta.persistence.*;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.annotation.Id;
 import lombok.*;
 
-@Entity
-@Table(name = "categories")
+@Document(collection = "categories")
 @Getter
 @Setter
 @Builder
@@ -13,15 +13,8 @@ import lombok.*;
 public class CategoryEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(nullable = false, unique = true, length = 100)
+    private String id;
     private String name;
-
-    @Column(length = 500)
     private String description;
-
-    @Column(nullable = false, length = 20)
     private String status;
 }

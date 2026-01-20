@@ -2,17 +2,15 @@ package com.novacommerce.user_service.domain.model;
 
 
 import com.novacommerce.user_service.domain.enums.UserStatusEnum;
-import jakarta.persistence.*;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.annotation.Id;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 
 /**
  * Entidad que representa un usuario del sistema.
@@ -20,14 +18,7 @@ import java.util.UUID;
  * NO representa empleados, clientes u otras entidades de negocio.
  * Utiliza relación MANY-TO-MANY con Role.
  */
-@Entity
-@Table(
-    name = "users",
-    indexes = {
-        @Index(name = "idx_username", columnList = "username", unique = true),
-        @Index(name = "idx_email", columnList = "email", unique = true)
-    }
-)
+@Document
 @Getter
 @Setter
 @NoArgsConstructor
@@ -36,77 +27,56 @@ import java.util.UUID;
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    private String id;
 
-    @Column(name = "username", nullable = false, unique = true, length = 100)
     @NotBlank(message = "El nombre de usuario es obligatorio")
     private String username;
 
-    @Column(name = "email", nullable = false, unique = true, length = 150)
     @NotBlank(message = "El email es obligatorio")
     @Email(message = "El email debe ser válido")
     private String email;
 
-    @Column(name = "password", nullable = false)
     @NotBlank(message = "La contraseña es obligatoria")
     private String password;
-
-    @Column(name = "status", nullable = false, length = 20)
-    @Enumerated(EnumType.STRING)
+// @AllArgsConstructor
     @Builder.Default
     private UserStatusEnum status = UserStatusEnum.ACTIVE;
 
-    @Column(name = "enabled", nullable = false)
     @Builder.Default
     private Boolean enabled = true;
 
-    @Column(name = "locked", nullable = false)
     @Builder.Default
     private Boolean locked = false;
 
-    @Column(name = "customer_id")
-    private Long customerId;
+    private String customerId;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(
-        name = "user_role",
-        joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
-        inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id")
-    )
-    @Builder.Default
-    private Set<Role> roles = new HashSet<>();
+    // Eliminado campo duplicado
+        @Builder.Default
+        private Set<String> roleIds = new HashSet<>(); // Referencia a los ids de roles en MongoDB
 
-    @CreationTimestamp
-    @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
-
-    @UpdateTimestamp
-    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
-
-    @Column(name = "last_login")
     private LocalDateTime lastLogin;
 
     /**
-     * Agrega un rol al usuario.
+     * Agrega el id de un rol al usuario.
      *
-     * @param role el rol a agregar
+     * @param roleId el id del rol a agregar
      */
-    public void addRole(Role role) {
-        if (role != null) {
-            this.roles.add(role);
+    public void addRole(String roleId) {
+        if (roleId != null && !roleId.isBlank()) {
+            this.roleIds.add(roleId);
         }
     }
 
     /**
-     * Remueve un rol del usuario.
+     * Remueve el id de un rol del usuario.
      *
-     * @param role el rol a remover
+     * @param roleId el id del rol a remover
      */
-    public void removeRole(Role role) {
-        if (role != null) {
-            this.roles.remove(role);
+    public void removeRole(String roleId) {
+        if (roleId != null && !roleId.isBlank()) {
+            this.roleIds.remove(roleId);
         }
     }
 
@@ -116,9 +86,7 @@ public class User {
      * @return true si el usuario está activo, no bloqueado y habilitado
      */
     public Boolean isAccountActive() {
-        return UserStatusEnum.ACTIVE.equals(this.status) 
-            && this.enabled 
-            && !this.locked;
+        return UserStatusEnum.ACTIVE.equals(this.status) && this.enabled && !this.locked;
     }
 
     /**

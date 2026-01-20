@@ -17,8 +17,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -49,39 +49,35 @@ class RoleServiceTest {
     @BeforeEach
     void setUp() {
         permission = Permission.builder()
-                .id(UUID.randomUUID())
-                .name("USER_READ")
-                .description("Permission to read users")
-                .createdAt(LocalDateTime.now())
-                .updatedAt(LocalDateTime.now())
-                .build();
+            .id("perm-" + System.nanoTime())
+            .name("USER_READ")
+            .description("Permission to read users")
+            .build();
 
         Set<Permission> permissions = new HashSet<>();
         permissions.add(permission);
 
         role = Role.builder()
-                .id(UUID.randomUUID())
-                .name("ADMIN")
-                .description("Administrator role")
-                .permissions(permissions)
-                .createdAt(LocalDateTime.now())
-                .updatedAt(LocalDateTime.now())
-                .build();
+            .id("role-" + System.nanoTime())
+            .name("ADMIN")
+            .description("Administrator role")
+            .permissionIds(permissions.stream().map(Permission::getId).collect(Collectors.toSet()))
+            .build();
 
         roleResponse = new RoleResponse(
-                role.getId(),
-                role.getName(),
-                role.getDescription(),
-                new HashSet<>()
+            role.getId(),
+            role.getName(),
+            role.getDescription(),
+            new HashSet<>()
         );
 
-        Set<UUID> permissionIds = new HashSet<>();
+        Set<String> permissionIds = new HashSet<>();
         permissionIds.add(permission.getId());
 
         createRoleRequest = new CreateRoleRequest(
-                "ADMIN",
-                "Administrator role",
-                permissionIds
+            "ADMIN",
+            "Administrator role",
+            permissionIds
         );
     }
 
@@ -101,7 +97,7 @@ class RoleServiceTest {
     @Test
     @DisplayName("Should get role by ID successfully")
     void testGetRoleById() {
-        UUID roleId = role.getId();
+        String roleId = role.getId();
 
         when(rolePersistencePort.findById(roleId)).thenReturn(Optional.of(role));
         when(roleMapper.roleToRoleResponse(role)).thenReturn(roleResponse);
@@ -116,7 +112,7 @@ class RoleServiceTest {
     @Test
     @DisplayName("Should throw exception when role not found by ID")
     void testGetRoleByIdNotFound() {
-        UUID roleId = UUID.randomUUID();
+        String roleId = "role-not-found";
 
         when(rolePersistencePort.findById(roleId)).thenReturn(Optional.empty());
 
@@ -157,7 +153,7 @@ class RoleServiceTest {
     @Test
     @DisplayName("Should delete role successfully")
     void testDeleteRole() {
-        UUID roleId = role.getId();
+        String roleId = role.getId();
 
         when(rolePersistencePort.findById(roleId)).thenReturn(Optional.of(role));
         doNothing().when(rolePersistencePort).deleteById(roleId);
@@ -170,7 +166,7 @@ class RoleServiceTest {
     @Test
     @DisplayName("Should throw exception when deleting non-existent role")
     void testDeleteRoleNotFound() {
-        UUID roleId = UUID.randomUUID();
+        String roleId = "role-not-found";
 
         when(rolePersistencePort.findById(roleId)).thenReturn(Optional.empty());
 
@@ -178,16 +174,16 @@ class RoleServiceTest {
             roleService.deleteRole(roleId);
         });
 
-        verify(rolePersistencePort, never()).deleteById(any(UUID.class));
+        verify(rolePersistencePort, never()).deleteById(any(String.class));
     }
 
     @Test
     @DisplayName("Should handle empty permission IDs")
     void testCreateRoleWithEmptyPermissions() {
         CreateRoleRequest requestWithoutPermissions = new CreateRoleRequest(
-                "USER",
-                "User role",
-                new HashSet<>()
+            "USER",
+            "User role",
+            new HashSet<>()
         );
 
         when(rolePersistencePort.existsByName(requestWithoutPermissions.name())).thenReturn(false);
@@ -204,9 +200,9 @@ class RoleServiceTest {
     @DisplayName("Should handle null permission IDs")
     void testCreateRoleWithNullPermissions() {
         CreateRoleRequest requestWithNullPermissions = new CreateRoleRequest(
-                "USER",
-                "User role",
-                null
+            "USER",
+            "User role",
+            null
         );
 
         when(rolePersistencePort.existsByName(requestWithNullPermissions.name())).thenReturn(false);
@@ -235,11 +231,11 @@ class RoleServiceTest {
     @DisplayName("Should handle multiple roles")
     void testGetAllRolesMultiple() {
         Role salesRole = Role.builder()
-                .id(UUID.randomUUID())
-                .name("SALES")
-                .description("Sales role")
-                .permissions(new HashSet<>())
-                .build();
+            .id("role-sales")
+            .name("SALES")
+            .description("Sales role")
+            .permissionIds(new HashSet<>())
+            .build();
 
         RoleResponse salesResponse = new RoleResponse(
                 salesRole.getId(),
@@ -262,7 +258,7 @@ class RoleServiceTest {
     @Test
     @DisplayName("Should load permissions correctly")
     void testLoadPermissions() {
-        Set<UUID> permissionIds = new HashSet<>();
+        Set<String> permissionIds = new HashSet<>();
         permissionIds.add(permission.getId());
 
         when(rolePersistencePort.existsByName(createRoleRequest.name())).thenReturn(false);

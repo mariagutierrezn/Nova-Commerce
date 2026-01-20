@@ -10,11 +10,11 @@ public interface CategoryPersistencePort {
     
     Category save(Category category);
     
-    Optional<Category> findById(Long id);
+    Optional<Category> findById(String id);
     
     Page<Category> findAll(Pageable pageable);
     
-    void deleteById(Long id);
+    void deleteById(String id);
     
-    boolean existsById(Long id);
+    boolean existsById(String id);
 }

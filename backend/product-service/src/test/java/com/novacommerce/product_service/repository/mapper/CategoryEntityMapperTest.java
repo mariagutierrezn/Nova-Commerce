@@ -7,7 +7,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -24,14 +23,14 @@ class CategoryEntityMapperTest {
     void setUp() {
         
         categoryEntity = CategoryEntity.builder()
-                .id(1L)
+                .id("1")
                 .name("Electronics")
                 .description("Electronic devices")
                 .status("ACTIVE")
                 .build();
 
         category = Category.builder()
-                .id(1L)
+                .id("1")
                 .name("Electronics")
                 .description("Electronic devices")
                 .status("ACTIVE")
@@ -125,7 +124,7 @@ class CategoryEntityMapperTest {
     void testRoundTripMapping() {
         // Domain -> Entity -> Domain
         Category original = Category.builder()
-                .id(5L)
+                .id("5")
                 .name("Books")
                 .description("Books and reading materials")
                 .status("ACTIVE")

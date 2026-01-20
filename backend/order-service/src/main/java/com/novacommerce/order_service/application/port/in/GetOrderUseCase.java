@@ -13,12 +13,12 @@ public interface GetOrderUseCase {
     /**
      * Obtiene una orden por ID.
      */
-    Optional<Order> getOrderById(Long id);
+    Optional<Order> getOrderById(String id);
     
     /**
      * Obtiene todas las órdenes de un cliente.
      */
-    List<Order> getOrdersByCustomerId(Long customerId);
+    List<Order> getOrdersByCustomerId(String customerId);
     
     /**
      * Obtiene todas las órdenes.

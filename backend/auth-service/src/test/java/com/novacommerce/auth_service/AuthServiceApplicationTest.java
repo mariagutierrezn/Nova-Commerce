@@ -2,7 +2,6 @@ package com.novacommerce.auth_service;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 
@@ -35,9 +34,7 @@ class AuthServiceApplicationTest {
     @Test
     @DisplayName("Debe tener constructor público")
     void testPublicConstructor() {
-        assertDoesNotThrow(() -> {
-            new AuthServiceApplication();
-        });
+        assertDoesNotThrow(AuthServiceApplication::new);
     }
 
     @Test

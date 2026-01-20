@@ -2,18 +2,17 @@ package com.novacommerce.user_service.repository;
 
 
 import com.novacommerce.user_service.domain.model.Role;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
-import java.util.UUID;
 
 /**
  * Repositorio para la entidad Role.
  * Proporciona métodos de acceso a datos para roles del sistema.
  */
 @Repository
-public interface RoleRepository extends JpaRepository<Role, UUID> {
+public interface RoleRepository extends MongoRepository<Role, String> {
 
     /**
      * Busca un rol por nombre.

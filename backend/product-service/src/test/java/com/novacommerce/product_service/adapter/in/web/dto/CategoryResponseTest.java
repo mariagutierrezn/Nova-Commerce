@@ -14,7 +14,7 @@ class CategoryResponseTest {
     @BeforeEach
     void setUp() {
         response = CategoryResponse.builder()
-                .id(1L)
+                .id("1")
                 .name("Electronics")
                 .description("Electronic devices")
                 .status("ACTIVE")
@@ -25,7 +25,7 @@ class CategoryResponseTest {
     @DisplayName("Should create CategoryResponse with all fields")
     void testCategoryResponseCreation() {
         assertNotNull(response);
-        assertEquals(1L, response.getId());
+        assertEquals("1", response.getId());
         assertEquals("Electronics", response.getName());
         assertEquals("Electronic devices", response.getDescription());
         assertEquals("ACTIVE", response.getStatus());
@@ -34,8 +34,8 @@ class CategoryResponseTest {
     @Test
     @DisplayName("Should allow setting id")
     void testSetId() {
-        response.setId(2L);
-        assertEquals(2L, response.getId());
+        response.setId("2");
+        assertEquals("2", response.getId());
     }
 
     @Test
@@ -70,13 +70,13 @@ class CategoryResponseTest {
     @DisplayName("Should use builder pattern")
     void testBuilderPattern() {
         CategoryResponse built = CategoryResponse.builder()
-                .id(2L)
+                .id("2")
                 .name("Clothing")
                 .description("Clothing and fashion")
                 .status("ACTIVE")
                 .build();
 
-        assertEquals(2L, built.getId());
+        assertEquals("2", built.getId());
         assertEquals("Clothing", built.getName());
     }
 
@@ -98,12 +98,12 @@ class CategoryResponseTest {
     @DisplayName("Should create with all-args constructor")
     void testAllArgsConstructor() {
         CategoryResponse allArgs = new CategoryResponse(
-                3L,
+                "3",
                 "Books",
                 "Books and media",
                 "ACTIVE"
         );
-        assertEquals(3L, allArgs.getId());
+        assertEquals("3", allArgs.getId());
         assertEquals("Books", allArgs.getName());
         assertEquals("ACTIVE", allArgs.getStatus());
     }

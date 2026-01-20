@@ -15,22 +15,16 @@ spring:
     charset: UTF-8
     mode: console
 
-  datasource:
-    url: jdbc:postgresql://localhost:5432/nova_db
-    driver-class-name: org.postgresql.Driver
-    username: postgres
-    password: postgres
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/nova_db
 
-  jpa:
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
-    show-sql: true
-    hibernate:
-      ddl-auto: update
-
-  liquibase:
-    change-log: classpath:db/liquibase/changelog-master.yaml
-    enabled: true
-    drop-first: false
+  rabbitmq:
+    host: ${SPRING_RABBITMQ_HOST:localhost}
+    port: ${SPRING_RABBITMQ_PORT:5672}
+    username: ${SPRING_RABBITMQ_USERNAME:nova}
+    password: ${SPRING_RABBITMQ_PASSWORD:nova123}
+    virtual-host: ${SPRING_RABBITMQ_VIRTUAL_HOST:/nova}
 
   cloud:
     openfeign:
@@ -62,6 +56,13 @@ app:
       url: ${CUSTOMER_SERVICE_URL:http://localhost:8084}
     product-service:
       url: ${PRODUCT_SERVICE_URL:http://localhost:8083}
+
+  # Configuración de RabbitMQ
+  rabbitmq:
+    exchange: ${app.rabbitmq.exchange:nova.exchange}
+    routing-key:
+      order-created: ${app.rabbitmq.routing-key.order-created:order.created}
+      order-paid: ${app.rabbitmq.routing-key.order-paid:order.paid}
 
 # Configuración de OpenAPI/Swagger
 springdoc:

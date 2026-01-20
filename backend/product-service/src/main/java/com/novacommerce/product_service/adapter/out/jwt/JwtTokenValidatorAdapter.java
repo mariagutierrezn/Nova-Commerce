@@ -39,7 +39,6 @@ public class JwtTokenValidatorAdapter {
         return claims.getSubject();
     }
 
-    @SuppressWarnings("unchecked")
     public List<String> getRolesFromToken(String token) {
         Claims claims = extractClaims(token);
         // The token contains "authorities" as a comma-separated string, convert to list

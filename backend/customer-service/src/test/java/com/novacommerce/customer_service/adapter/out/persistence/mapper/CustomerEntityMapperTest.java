@@ -24,7 +24,7 @@ class CustomerEntityMapperTest {
     @DisplayName("givenCustomer_whenToEntity_thenEntityCreatedCorrectly")
     void givenCustomer_whenToEntity_thenEntityCreatedCorrectly() {
         // GIVEN
-        Customer customer = new Customer(1L, "Juan", "Pérez", "juan@example.com", "123456789",
+        Customer customer = new Customer("1", "Juan", "Pérez", "juan@example.com", "123456789",
             CustomerStatus.ACTIVE, LoyaltyLevel.GOLD);
 
         // WHEN
@@ -32,7 +32,7 @@ class CustomerEntityMapperTest {
 
         // THEN
         assertNotNull(entity);
-        assertEquals(1L, entity.getId());
+        assertEquals("1", entity.getId());
         assertEquals("Juan", entity.getFirstName());
         assertEquals("Pérez", entity.getLastName());
         assertEquals("juan@example.com", entity.getEmail());
@@ -46,7 +46,7 @@ class CustomerEntityMapperTest {
     void givenEntity_whenToDomain_thenCustomerCreatedCorrectly() {
         // GIVEN
         CustomerEntity entity = new CustomerEntity();
-        entity.setId(2L);
+        entity.setId("2");
         entity.setFirstName("María");
         entity.setLastName("García");
         entity.setEmail("maria@example.com");
@@ -59,7 +59,7 @@ class CustomerEntityMapperTest {
 
         // THEN
         assertNotNull(customer);
-        assertEquals(2L, customer.getId());
+        assertEquals("2", customer.getId());
         assertEquals("María", customer.getFirstName());
         assertEquals("García", customer.getLastName());
         assertEquals("maria@example.com", customer.getEmail());
@@ -72,7 +72,7 @@ class CustomerEntityMapperTest {
     @DisplayName("givenCustomerWithNullFields_whenToEntity_thenMapNullsCorrectly")
     void givenCustomerWithNullFields_whenToEntity_thenMapNullsCorrectly() {
         // GIVEN
-        Customer customer = new Customer(3L, "Carlos", "López", "carlos@example.com", null,
+        Customer customer = new Customer("3", "Carlos", "López", "carlos@example.com", null,
             CustomerStatus.ACTIVE, null);
 
         // WHEN
@@ -80,7 +80,7 @@ class CustomerEntityMapperTest {
 
         // THEN
         assertNotNull(entity);
-        assertEquals(3L, entity.getId());
+        assertEquals("3", entity.getId());
         assertEquals("Carlos", entity.getFirstName());
         assertNull(entity.getPhone());
         assertNull(entity.getLoyaltyLevel());
@@ -90,7 +90,7 @@ class CustomerEntityMapperTest {
     @DisplayName("givenEntityAndDomain_whenBidirectionalMapping_thenDataConsistency")
     void givenEntityAndDomain_whenBidirectionalMapping_thenDataConsistency() {
         // GIVEN
-        Customer originalCustomer = new Customer(4L, "Ana", "Rodríguez", "ana@example.com", "555123456",
+        Customer originalCustomer = new Customer("4", "Ana", "Rodríguez", "ana@example.com", "555123456",
             CustomerStatus.BLOCKED, LoyaltyLevel.PLATINUM);
 
         // WHEN - Customer -> Entity
@@ -115,7 +115,7 @@ class CustomerEntityMapperTest {
         // Test all customer statuses
         for (CustomerStatus status : CustomerStatus.values()) {
             // GIVEN
-            Customer customer = new Customer(5L, "Test", "User", "test@example.com", "123456",
+            Customer customer = new Customer("5", "Test", "User", "test@example.com", "123456",
                 status, LoyaltyLevel.GOLD);
 
             // WHEN
@@ -133,7 +133,7 @@ class CustomerEntityMapperTest {
         // Test all loyalty levels
         for (LoyaltyLevel level : LoyaltyLevel.values()) {
             // GIVEN
-            Customer customer = new Customer(6L, "Test", "User", "test@example.com", "123456",
+            Customer customer = new Customer("6", "Test", "User", "test@example.com", "123456",
                 CustomerStatus.ACTIVE, level);
 
             // WHEN

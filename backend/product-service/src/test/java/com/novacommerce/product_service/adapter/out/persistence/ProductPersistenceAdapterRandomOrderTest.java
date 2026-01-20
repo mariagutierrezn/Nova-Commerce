@@ -42,45 +42,45 @@ class ProductPersistenceAdapterRandomOrderTest {
     @BeforeEach
     void setUp() {
         entity1 = ProductEntity.builder()
-                .id(1L)
+                .id("1")
                 .name("Laptop")
                 .description("High-performance laptop")
                 .price(new BigDecimal("999.99"))
                 .productType(ProductType.PHYSICAL)
-                .categoryId(1L)
+                .categoryId("1")
                 .stockQuantity(10)
                 .status("ACTIVE")
                 .build();
 
         entity2 = ProductEntity.builder()
-                .id(2L)
+                .id("2")
                 .name("Mouse")
                 .description("Wireless mouse")
                 .price(new BigDecimal("25.99"))
                 .productType(ProductType.PHYSICAL)
-                .categoryId(2L)
+                .categoryId("2")
                 .stockQuantity(50)
                 .status("ACTIVE")
                 .build();
 
         product1 = Product.builder()
-                .id(1L)
+                .id("1")
                 .name("Laptop")
                 .description("High-performance laptop")
                 .price(new BigDecimal("999.99"))
                 .productType(ProductType.PHYSICAL)
-                .categoryId(1L)
+                .categoryId("1")
                 .stockQuantity(10)
                 .status("ACTIVE")
                 .build();
 
         product2 = Product.builder()
-                .id(2L)
+                .id("2")
                 .name("Mouse")
                 .description("Wireless mouse")
                 .price(new BigDecimal("25.99"))
                 .productType(ProductType.PHYSICAL)
-                .categoryId(2L)
+                .categoryId("2")
                 .stockQuantity(50)
                 .status("ACTIVE")
                 .build();
@@ -90,7 +90,7 @@ class ProductPersistenceAdapterRandomOrderTest {
     @DisplayName("Should find active products with stock in random order")
     void testFindActiveProductsWithStockRandomOrder() {
         List<ProductEntity> entities = Arrays.asList(entity1, entity2);
-        when(productRepository.findActiveProductsWithStockRandomOrder("ACTIVE", 0, 12))
+        when(productRepository.findByStatusAndStockQuantityGreaterThan("ACTIVE", 0))
                 .thenReturn(entities);
         when(productEntityMapper.toDomain(entity1)).thenReturn(product1);
         when(productEntityMapper.toDomain(entity2)).thenReturn(product2);
@@ -101,53 +101,53 @@ class ProductPersistenceAdapterRandomOrderTest {
         assertEquals(2, result.size());
         assertEquals("Laptop", result.get(0).getName());
         assertEquals("Mouse", result.get(1).getName());
-        verify(productRepository, times(1)).findActiveProductsWithStockRandomOrder("ACTIVE", 0, 12);
+        verify(productRepository, times(1)).findByStatusAndStockQuantityGreaterThan("ACTIVE", 0);
         verify(productEntityMapper, times(2)).toDomain(any(ProductEntity.class));
     }
 
     @Test
     @DisplayName("Should return empty list when no active products found")
     void testFindActiveProductsWithStockRandomOrderEmpty() {
-        when(productRepository.findActiveProductsWithStockRandomOrder("ACTIVE", 0, 12))
+        when(productRepository.findByStatusAndStockQuantityGreaterThan("ACTIVE", 0))
                 .thenReturn(Collections.emptyList());
 
         List<Product> result = productPersistenceAdapter.findActiveProductsWithStockRandomOrder(12);
 
         assertNotNull(result);
         assertTrue(result.isEmpty());
-        verify(productRepository, times(1)).findActiveProductsWithStockRandomOrder("ACTIVE", 0, 12);
+        verify(productRepository, times(1)).findByStatusAndStockQuantityGreaterThan("ACTIVE", 0);
         verify(productEntityMapper, never()).toDomain(any(ProductEntity.class));
     }
 
     @Test
     @DisplayName("Should use correct status filter")
     void testStatusFilter() {
-        when(productRepository.findActiveProductsWithStockRandomOrder("ACTIVE", 0, 12))
+        when(productRepository.findByStatusAndStockQuantityGreaterThan("ACTIVE", 0))
                 .thenReturn(Arrays.asList(entity1));
         when(productEntityMapper.toDomain(entity1)).thenReturn(product1);
 
         productPersistenceAdapter.findActiveProductsWithStockRandomOrder(12);
 
-        verify(productRepository, times(1)).findActiveProductsWithStockRandomOrder("ACTIVE", 0, 12);
+        verify(productRepository, times(1)).findByStatusAndStockQuantityGreaterThan("ACTIVE", 0);
     }
 
     @Test
     @DisplayName("Should use correct stock filter")
     void testStockFilter() {
-        when(productRepository.findActiveProductsWithStockRandomOrder("ACTIVE", 0, 12))
+        when(productRepository.findByStatusAndStockQuantityGreaterThan("ACTIVE", 0))
                 .thenReturn(Arrays.asList(entity1));
         when(productEntityMapper.toDomain(entity1)).thenReturn(product1);
 
         productPersistenceAdapter.findActiveProductsWithStockRandomOrder(12);
 
         // Verify that minStock is 0 (stockQuantity > 0)
-        verify(productRepository, times(1)).findActiveProductsWithStockRandomOrder("ACTIVE", 0, 12);
+        verify(productRepository, times(1)).findByStatusAndStockQuantityGreaterThan("ACTIVE", 0);
     }
 
     @Test
     @DisplayName("Should respect limit parameter")
     void testLimitParameter() {
-        when(productRepository.findActiveProductsWithStockRandomOrder("ACTIVE", 0, 5))
+        when(productRepository.findByStatusAndStockQuantityGreaterThan("ACTIVE", 0))
                 .thenReturn(Arrays.asList(entity1));
         when(productEntityMapper.toDomain(entity1)).thenReturn(product1);
 
@@ -155,14 +155,14 @@ class ProductPersistenceAdapterRandomOrderTest {
 
         assertNotNull(result);
         assertEquals(1, result.size());
-        verify(productRepository, times(1)).findActiveProductsWithStockRandomOrder("ACTIVE", 0, 5);
+        verify(productRepository, times(1)).findByStatusAndStockQuantityGreaterThan("ACTIVE", 0);
     }
 
     @Test
     @DisplayName("Should map all entities to domain")
     void testEntityToDomainMapping() {
         List<ProductEntity> entities = Arrays.asList(entity1, entity2);
-        when(productRepository.findActiveProductsWithStockRandomOrder("ACTIVE", 0, 12))
+        when(productRepository.findByStatusAndStockQuantityGreaterThan("ACTIVE", 0))
                 .thenReturn(entities);
         when(productEntityMapper.toDomain(entity1)).thenReturn(product1);
         when(productEntityMapper.toDomain(entity2)).thenReturn(product2);
@@ -177,7 +177,7 @@ class ProductPersistenceAdapterRandomOrderTest {
     @Test
     @DisplayName("Should handle large limit")
     void testLargeLimit() {
-        when(productRepository.findActiveProductsWithStockRandomOrder("ACTIVE", 0, 100))
+        when(productRepository.findByStatusAndStockQuantityGreaterThan("ACTIVE", 0))
                 .thenReturn(Arrays.asList(entity1, entity2));
         when(productEntityMapper.toDomain(entity1)).thenReturn(product1);
         when(productEntityMapper.toDomain(entity2)).thenReturn(product2);
@@ -186,13 +186,13 @@ class ProductPersistenceAdapterRandomOrderTest {
 
         assertNotNull(result);
         assertEquals(2, result.size());
-        verify(productRepository, times(1)).findActiveProductsWithStockRandomOrder("ACTIVE", 0, 100);
+        verify(productRepository, times(1)).findByStatusAndStockQuantityGreaterThan("ACTIVE", 0);
     }
 
     @Test
     @DisplayName("Should handle limit of 1")
     void testLimitOne() {
-        when(productRepository.findActiveProductsWithStockRandomOrder("ACTIVE", 0, 1))
+        when(productRepository.findByStatusAndStockQuantityGreaterThan("ACTIVE", 0))
                 .thenReturn(Arrays.asList(entity1));
         when(productEntityMapper.toDomain(entity1)).thenReturn(product1);
 
@@ -201,14 +201,14 @@ class ProductPersistenceAdapterRandomOrderTest {
         assertNotNull(result);
         assertEquals(1, result.size());
         assertEquals("Laptop", result.get(0).getName());
-        verify(productRepository, times(1)).findActiveProductsWithStockRandomOrder("ACTIVE", 0, 1);
+        verify(productRepository, times(1)).findByStatusAndStockQuantityGreaterThan("ACTIVE", 0);
     }
 
     @Test
     @DisplayName("Should return products in order returned by repository")
     void testOrderPreservation() {
         List<ProductEntity> entities = Arrays.asList(entity2, entity1); // Reversed order
-        when(productRepository.findActiveProductsWithStockRandomOrder("ACTIVE", 0, 12))
+        when(productRepository.findByStatusAndStockQuantityGreaterThan("ACTIVE", 0))
                 .thenReturn(entities);
         when(productEntityMapper.toDomain(entity2)).thenReturn(product2);
         when(productEntityMapper.toDomain(entity1)).thenReturn(product1);

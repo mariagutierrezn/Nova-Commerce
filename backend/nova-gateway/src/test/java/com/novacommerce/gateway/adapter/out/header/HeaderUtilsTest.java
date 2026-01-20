@@ -1,10 +1,7 @@
 package com.novacommerce.gateway.adapter.out.header;
 
+import com.novacommerce.gateway.routing.RouteConstants;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.server.reactive.ServerHttpRequest;
-import org.springframework.test.web.reactive.server.WebTestClient;
-import org.springframework.web.server.ServerWebExchange;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -12,24 +9,22 @@ class HeaderUtilsTest {
 
     @Test
     void testHeaderConstantValuesAreDefined() {
-        // Verify that the constants are properly defined
-        assertEquals("Authorization", "Authorization");
-        assertEquals("X-Username", "X-Username");
-        assertEquals("X-Authorities", "X-Authorities");
-        assertEquals("Bearer ", "Bearer ");
+        // Verify that the constants from RouteConstants are properly defined
+        assertEquals("Authorization", RouteConstants.HEADER_AUTHORIZATION);
+        assertEquals("X-Username", RouteConstants.HEADER_USERNAME);
+        assertEquals("X-Authorities", RouteConstants.HEADER_AUTHORITIES);
+        assertEquals("Bearer ", RouteConstants.BEARER_PREFIX);
     }
 
     @Test
     void testConstructorThrowsException() {
-        try {
+        Exception exception = assertThrows(Exception.class, () -> {
             java.lang.reflect.Constructor<?> constructor = HeaderUtils.class.getDeclaredConstructor();
             constructor.setAccessible(true);
             constructor.newInstance();
-            fail("Should throw UnsupportedOperationException");
-        } catch (Exception e) {
-            assertTrue(e.getCause() instanceof UnsupportedOperationException,
-                "Constructor should throw UnsupportedOperationException");
-        }
+        });
+        assertTrue(exception.getCause() instanceof UnsupportedOperationException,
+            "Constructor should throw UnsupportedOperationException");
     }
 
     @Test

@@ -56,7 +56,7 @@ Se ha implementado el endpoint público de registro de clientes siguiendo el flu
 
 #### 7. **Configuración de Aplicación**
 - `application.yaml` - Actualizado con:
-  - Autoconfiguración excluida para DataSource, JPA, Redis
+  - Autoconfiguración excluida para DataSource, JPA (no usa base de datos propia)
   - URLs de servicios: `app.services.user-service.url` y `app.services.customer-service.url`
 
 ## 🔄 Flujo de Ejecución

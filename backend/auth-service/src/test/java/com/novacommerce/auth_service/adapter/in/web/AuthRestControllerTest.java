@@ -60,18 +60,9 @@ class AuthRestControllerTest {
     @DisplayName("Should register client successfully (201)")
     void testRegisterPublicSuccess() throws Exception {
         // Given
-        RegisterRequest request = RegisterRequest.builder()
-            .username("newuser")
-            .email("newuser@example.com")
-            .password("StrongPass123")
-            .firstName("New")
-            .lastName("User")
-            .phone("3114483021")
-            .build();
-
         RegisterResponse response = RegisterResponse.builder()
             .userId("7eea2162-ff23-4d9e-b431-643e4dda2d0c")
-            .customerId(5L)
+            .customerId("5")
             .email("newuser@example.com")
             .fullName("New User")
             .message("Registro exitoso")
@@ -86,7 +77,7 @@ class AuthRestControllerTest {
                 .content("{\"username\":\"newuser\",\"email\":\"newuser@example.com\",\"password\":\"StrongPass123\",\"firstName\":\"New\",\"lastName\":\"User\",\"phone\":\"3114483021\"}"))
             .andExpect(status().isCreated())
             .andExpect(jsonPath("$.userId").value("7eea2162-ff23-4d9e-b431-643e4dda2d0c"))
-            .andExpect(jsonPath("$.customerId").value(5))
+            .andExpect(jsonPath("$.customerId").value("5"))
             .andExpect(jsonPath("$.email").value("newuser@example.com"))
             .andExpect(jsonPath("$.fullName").value("New User"))
             .andExpect(jsonPath("$.loginUrl").value("/api/auth/login"));

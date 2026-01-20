@@ -11,7 +11,7 @@ class OrderItemTest {
     @DisplayName("GIVEN valid item WHEN calculateSubTotal THEN multiplies quantity by unit price")
     void calculateSubTotal() {
         OrderItem item = OrderItem.builder()
-                .productId(1L)
+                .productId("1")
                 .quantity(3)
                 .unitPrice(Money.of(12.5))
                 .build();
@@ -22,7 +22,7 @@ class OrderItemTest {
     @DisplayName("GIVEN invalid quantity WHEN calculateSubTotal THEN throws")
     void invalidQuantitySubtotal() {
         OrderItem item = OrderItem.builder()
-                .productId(1L)
+                .productId("1")
                 .quantity(0)
                 .unitPrice(Money.of(10))
                 .build();
@@ -35,10 +35,10 @@ class OrderItemTest {
         OrderItem noProduct = OrderItem.builder().quantity(1).unitPrice(Money.of(1)).build();
         assertThrows(IllegalArgumentException.class, noProduct::validate);
 
-        OrderItem zeroQty = OrderItem.builder().productId(1L).quantity(0).unitPrice(Money.of(1)).build();
+        OrderItem zeroQty = OrderItem.builder().productId("1").quantity(0).unitPrice(Money.of(1)).build();
         assertThrows(IllegalArgumentException.class, zeroQty::validate);
 
-        OrderItem zeroPrice = OrderItem.builder().productId(1L).quantity(1).unitPrice(Money.zero()).build();
+        OrderItem zeroPrice = OrderItem.builder().productId("1").quantity(1).unitPrice(Money.zero()).build();
         assertThrows(IllegalArgumentException.class, zeroPrice::validate);
     }
 }

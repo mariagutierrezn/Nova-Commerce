@@ -7,8 +7,8 @@ import java.util.Optional;
 
 public interface ManageCustomersUseCase {
     List<Customer> findAll();
-    Optional<Customer> findById(Long id);
+    Optional<Customer> findById(String id);
     Customer create(Customer customer);
-    Customer update(Long id, Customer customer);
-    void delete(Long id);
+    Customer update(String id, Customer customer);
+    void delete(String id);
 }

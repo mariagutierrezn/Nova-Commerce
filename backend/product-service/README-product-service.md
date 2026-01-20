@@ -47,7 +47,7 @@ product-service/
 │       ├── CategoryException
 │       └── ResourceNotFoundException
 ├── repository/
-│   ├── entity/            # JPA Entities
+│   ├── entity/            # Documentos MongoDB
 │   │   ├── ProductEntity
 │   │   └── CategoryEntity
 │   ├── mapper/            # Entity Mappers
@@ -68,7 +68,7 @@ product-service/
 - ✅ **JWT Authentication**: Validación de tokens JWT desde gateway
 - ✅ **Role-Based Access**: Control de acceso basado en roles (ADMIN, USER)
 - ✅ **API Key Protection**: Protección de endpoints internos
-- ✅ **Database Migrations**: Liquibase para versionado de esquema
+- ✅ **Base de Datos**: MongoDB con colecciones dinámicas
 - ✅ **MapStruct**: Mapeo eficiente entre capas
 - ✅ **OpenAPI/Swagger**: Documentación automática de API
 - ✅ **Exception Handling**: Manejo global de excepciones
@@ -132,9 +132,8 @@ product-service/
 - **Java 17**
 - **Spring Boot 3.4.3**
 - **Spring Security 6.4.3** - JWT validation
-- **Spring Data JPA** - Persistencia
-- **PostgreSQL** - Base de datos
-- **Liquibase** - Migraciones de DB
+- **Spring Data MongoDB** - Persistencia
+- **MongoDB** - Base de datos NoSQL
 - **MapStruct 1.5.5** - Mapeo de objetos
 - **Lombok** - Reducción de boilerplate
 - **SpringDoc OpenAPI 2.7.0** - Documentación
@@ -146,11 +145,8 @@ product-service/
 ### Variables de Entorno
 
 ```bash
-# Database
-DB_URL=jdbc:postgresql://localhost:5432/product_db
-DB_USERNAME=novacommerce
-DB_PASSWORD=novacommerce123
-DB_POOL_SIZE=10
+# Database MongoDB
+SPRING_DATA_MONGODB_URI=mongodb://localhost:27017/nova_db
 
 # Server
 SERVER_PORT=8083
@@ -162,7 +158,6 @@ INTERNAL_API_KEY=nova-internal-service-key-2024
 
 # Logging
 LOG_LEVEL=INFO
-SQL_LOG_LEVEL=INFO
 ```
 
 ### Perfiles de Spring
@@ -173,21 +168,25 @@ SQL_LOG_LEVEL=INFO
 
 ## 🗄️ Base de Datos
 
-### Crear Base de Datos
+### Configurar MongoDB
 
-```sql
-CREATE DATABASE product_db;
-CREATE USER novacommerce WITH PASSWORD 'novacommerce123';
-GRANT ALL PRIVILEGES ON DATABASE product_db TO novacommerce;
+MongoDB puede ejecutarse localmente o usando Docker:
+
+```bash
+# Con Docker
+docker run -d --name nova-mongodb \
+  -p 27017:27017 \
+  -e MONGO_INITDB_DATABASE=nova_db \
+  mongo:7.0
 ```
 
-### Migraciones Liquibase
+### Colecciones MongoDB
 
-Las migraciones se ejecutan automáticamente al iniciar:
+Las colecciones se crean automáticamente al iniciar:
+- **categories**: Categorías de productos
+- **products**: Productos del catálogo
 
-1. **001-create-category-table.yaml**: Tabla categories
-2. **002-create-product-table.yaml**: Tabla products + FK
-3. **003-seed-initial-data.yaml**: Datos iniciales (4 categorías, 4 productos)
+El servicio incluye seed de datos iniciales si está habilitado (SEED_ENABLED=true).
 
 ## 🚀 Ejecución
 

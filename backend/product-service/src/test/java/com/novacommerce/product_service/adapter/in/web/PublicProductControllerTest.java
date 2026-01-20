@@ -5,7 +5,6 @@ import com.novacommerce.product_service.adapter.in.web.mapper.PublicProductDtoMa
 import com.novacommerce.product_service.application.port.in.GetPublicProductsUseCase;
 import com.novacommerce.product_service.domain.model.Product;
 import com.novacommerce.product_service.domain.model.ProductType;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import com.novacommerce.product_service.repository.mapper.ProductEntityMapper;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
@@ -34,9 +32,6 @@ class PublicProductControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @Autowired
-    private ObjectMapper objectMapper;
-
     @MockBean
     private GetPublicProductsUseCase getPublicProductsUseCase;
 
@@ -51,29 +46,29 @@ class PublicProductControllerTest {
     @BeforeEach
     void setUp() {
         product1 = Product.builder()
-                .id(1L)
+                .id("1")
                 .name("Laptop")
                 .description("High-performance laptop")
                 .price(new BigDecimal("999.99"))
                 .productType(ProductType.PHYSICAL)
-                .categoryId(1L)
+                .categoryId("1")
                 .stockQuantity(10)
                 .status("ACTIVE")
                 .build();
 
         product2 = Product.builder()
-                .id(2L)
+                .id("2")
                 .name("Mouse")
                 .description("Wireless mouse")
                 .price(new BigDecimal("25.99"))
                 .productType(ProductType.PHYSICAL)
-                .categoryId(2L)
+                .categoryId("2")
                 .stockQuantity(50)
                 .status("ACTIVE")
                 .build();
 
         response1 = PublicProductResponse.builder()
-                .id(1L)
+                .id("1")
                 .name("Laptop")
                 .description("High-performance laptop")
                 .price(new BigDecimal("999.99"))
@@ -81,7 +76,7 @@ class PublicProductControllerTest {
                 .build();
 
         response2 = PublicProductResponse.builder()
-                .id(2L)
+                .id("2")
                 .name("Mouse")
                 .description("Wireless mouse")
                 .price(new BigDecimal("25.99"))
@@ -182,7 +177,7 @@ class PublicProductControllerTest {
 
         mockMvc.perform(get("/api/public/products/home"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id", is(1)))
+                .andExpect(jsonPath("$[0].id", is("1")))
                 .andExpect(jsonPath("$[0].name", is("Laptop")))
                 .andExpect(jsonPath("$[0].description", is("High-performance laptop")))
                 .andExpect(jsonPath("$[0].price", is(999.99)))
@@ -208,7 +203,7 @@ class PublicProductControllerTest {
     @DisplayName("Should handle all ProductType enums")
     void testAllProductTypes() throws Exception {
         Product digitalProduct = Product.builder()
-                .id(3L)
+                .id("3")
                 .name("E-Book")
                 .description("Digital book")
                 .price(new BigDecimal("9.99"))
@@ -218,7 +213,7 @@ class PublicProductControllerTest {
                 .build();
 
         PublicProductResponse digitalResponse = PublicProductResponse.builder()
-                .id(3L)
+                .id("3")
                 .name("E-Book")
                 .description("Digital book")
                 .price(new BigDecimal("9.99"))

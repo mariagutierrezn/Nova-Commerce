@@ -33,8 +33,8 @@ class InternalCustomerControllerTest {
     @DisplayName("givenExistingCustomerId_whenGetByIdInternal_thenReturnCustomer")
     void givenExistingCustomerId_whenGetByIdInternal_thenReturnCustomer() {
         // GIVEN
-        Long customerId = 1L;
-        Customer customer = new Customer(1L, "Juan", "Pérez", "juan@example.com", "123456789",
+        String customerId = "1";
+        Customer customer = new Customer("1", "Juan", "Pérez", "juan@example.com", "123456789",
             CustomerStatus.ACTIVE, LoyaltyLevel.GOLD);
 
         when(manageCustomersUseCase.findById(customerId)).thenReturn(Optional.of(customer));
@@ -45,7 +45,7 @@ class InternalCustomerControllerTest {
         // THEN
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
-        assertEquals(1L, response.getBody().id);
+        assertEquals("1", response.getBody().id);
         assertEquals("Juan", response.getBody().firstName);
         assertEquals("Pérez", response.getBody().lastName);
         assertEquals("juan@example.com", response.getBody().email);
@@ -59,7 +59,7 @@ class InternalCustomerControllerTest {
     @DisplayName("givenNonExistentCustomerId_whenGetByIdInternal_thenReturnNotFound")
     void givenNonExistentCustomerId_whenGetByIdInternal_thenReturnNotFound() {
         // GIVEN
-        Long customerId = 999L;
+        String customerId = "999";
         when(manageCustomersUseCase.findById(customerId)).thenReturn(Optional.empty());
 
         // WHEN
@@ -75,8 +75,8 @@ class InternalCustomerControllerTest {
     @DisplayName("givenCustomerWithInactiveStatus_whenGetByIdInternal_thenReturnInactiveStatus")
     void givenCustomerWithInactiveStatus_whenGetByIdInternal_thenReturnInactiveStatus() {
         // GIVEN
-        Long customerId = 2L;
-        Customer customer = new Customer(2L, "María", "García", "maria@example.com", "987654321",
+        String customerId = "2";
+        Customer customer = new Customer("2", "María", "García", "maria@example.com", "987654321",
             CustomerStatus.INACTIVE, LoyaltyLevel.SILVER);
 
         when(manageCustomersUseCase.findById(customerId)).thenReturn(Optional.of(customer));
@@ -95,8 +95,8 @@ class InternalCustomerControllerTest {
     @DisplayName("givenCustomerWithBlockedStatus_whenGetByIdInternal_thenReturnBlockedStatus")
     void givenCustomerWithBlockedStatus_whenGetByIdInternal_thenReturnBlockedStatus() {
         // GIVEN
-        Long customerId = 3L;
-        Customer customer = new Customer(3L, "Carlos", "López", "carlos@example.com", "555123456",
+        String customerId = "3";
+        Customer customer = new Customer("3", "Carlos", "López", "carlos@example.com", "555123456",
             CustomerStatus.BLOCKED, LoyaltyLevel.BRONZE);
 
         when(manageCustomersUseCase.findById(customerId)).thenReturn(Optional.of(customer));
@@ -114,8 +114,8 @@ class InternalCustomerControllerTest {
     @DisplayName("givenCustomerWithNullPhone_whenGetByIdInternal_thenReturnNullPhone")
     void givenCustomerWithNullPhone_whenGetByIdInternal_thenReturnNullPhone() {
         // GIVEN
-        Long customerId = 4L;
-        Customer customer = new Customer(4L, "Ana", "Rodríguez", "ana@example.com", null,
+        String customerId = "4";
+        Customer customer = new Customer("4", "Ana", "Rodríguez", "ana@example.com", null,
             CustomerStatus.ACTIVE, LoyaltyLevel.PLATINUM);
 
         when(manageCustomersUseCase.findById(customerId)).thenReturn(Optional.of(customer));
@@ -135,8 +135,8 @@ class InternalCustomerControllerTest {
         // Test all loyalty levels
         for (LoyaltyLevel level : LoyaltyLevel.values()) {
             // GIVEN
-            Long customerId = 5L;
-            Customer customer = new Customer(5L, "Test", "User", "test@example.com", null,
+            String customerId = "5";
+            Customer customer = new Customer("5", "Test", "User", "test@example.com", null,
                 CustomerStatus.ACTIVE, level);
 
             when(manageCustomersUseCase.findById(customerId)).thenReturn(Optional.of(customer));

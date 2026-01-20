@@ -41,7 +41,7 @@ public class CustomerRestController {
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_READ')")
     @Operation(summary = "Obtener cliente por ID", description = "Retorna el cliente correspondiente al identificador proporcionado")
-    public ResponseEntity<CustomerDto> getById(@PathVariable Long id) {
+    public ResponseEntity<CustomerDto> getById(@PathVariable String id) {
         Optional<Customer> opt = manageCustomersUseCase.findById(id);
         return opt.map(customer -> ResponseEntity.ok(mapper.toDto(customer)))
                 .orElseGet(() -> ResponseEntity.notFound().build());
@@ -58,7 +58,7 @@ public class CustomerRestController {
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_UPDATE')")
     @Operation(summary = "Actualizar cliente", description = "Actualiza los datos de un cliente existente")
-    public ResponseEntity<CustomerDto> update(@PathVariable Long id, @Valid @RequestBody CustomerDto dto) {
+    public ResponseEntity<CustomerDto> update(@PathVariable String id, @Valid @RequestBody CustomerDto dto) {
         Customer updated = manageCustomersUseCase.update(id, mapper.toDomain(dto));
         return ResponseEntity.ok(mapper.toDto(updated));
     }
@@ -66,7 +66,7 @@ public class CustomerRestController {
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_DELETE')")
     @Operation(summary = "Eliminar cliente", description = "Elimina un cliente por su identificador")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable String id) {
         manageCustomersUseCase.delete(id);
         return ResponseEntity.noContent().build();
     }

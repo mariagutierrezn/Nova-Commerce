@@ -3,7 +3,6 @@ package com.novacommerce.user_service.web.api.dto.response;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Set;
-import java.util.UUID;
 
 /**
  * DTO de respuesta para información de rol.
@@ -11,7 +10,7 @@ import java.util.UUID;
  */
 public record RoleResponse(
     @JsonProperty("id")
-    UUID id,
+    String id,
 
     @JsonProperty("name")
     String name,
@@ -19,6 +18,6 @@ public record RoleResponse(
     @JsonProperty("description")
     String description,
 
-    @JsonProperty("permissions")
-    Set<PermissionResponse> permissions
+    @JsonProperty("permission_ids")
+    Set<String> permissionIds
 ) {}

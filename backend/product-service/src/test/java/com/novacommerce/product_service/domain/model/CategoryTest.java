@@ -14,7 +14,7 @@ class CategoryTest {
     @BeforeEach
     void setUp() {
         category = Category.builder()
-                .id(1L)
+                .id("1")
                 .name("Electronics")
                 .description("Electronic devices and accessories")
                 .status("ACTIVE")
@@ -25,7 +25,7 @@ class CategoryTest {
     @DisplayName("Should create category with all required fields")
     void testCategoryCreation() {
         assertNotNull(category);
-        assertEquals(1L, category.getId());
+        assertEquals("1", category.getId());
         assertEquals("Electronics", category.getName());
         assertEquals("Electronic devices and accessories", category.getDescription());
         assertEquals("ACTIVE", category.getStatus());
@@ -56,8 +56,8 @@ class CategoryTest {
     @Test
     @DisplayName("Should allow setting category id")
     void testSetId() {
-        category.setId(5L);
-        assertEquals(5L, category.getId());
+        category.setId("5");
+        assertEquals("5", category.getId());
     }
 
     @Test
@@ -71,13 +71,13 @@ class CategoryTest {
     @DisplayName("Should use builder pattern correctly")
     void testBuilderPattern() {
         Category builtCategory = Category.builder()
-                .id(2L)
+                .id("2")
                 .name("Clothing")
                 .description("Clothing and fashion")
                 .status("ACTIVE")
                 .build();
 
-        assertEquals(2L, builtCategory.getId());
+        assertEquals("2", builtCategory.getId());
         assertEquals("Clothing", builtCategory.getName());
         assertEquals("Clothing and fashion", builtCategory.getDescription());
         assertEquals("ACTIVE", builtCategory.getStatus());
@@ -87,11 +87,11 @@ class CategoryTest {
     @DisplayName("Should create category with minimal fields using builder")
     void testBuilderWithMinimalFields() {
         Category minimalCategory = Category.builder()
-                .id(3L)
+                .id("3")
                 .name("Books")
                 .build();
 
-        assertEquals(3L, minimalCategory.getId());
+        assertEquals("3", minimalCategory.getId());
         assertEquals("Books", minimalCategory.getName());
         assertNull(minimalCategory.getDescription());
         assertNull(minimalCategory.getStatus());
@@ -109,8 +109,8 @@ class CategoryTest {
     @Test
     @DisplayName("Should handle all-args constructor")
     void testAllArgsConstructor() {
-        Category allArgsCategory = new Category(4L, "Furniture", "Home furniture", "ACTIVE");
-        assertEquals(4L, allArgsCategory.getId());
+        Category allArgsCategory = new Category("4", "Furniture", "Home furniture", "ACTIVE");
+        assertEquals("4", allArgsCategory.getId());
         assertEquals("Furniture", allArgsCategory.getName());
         assertEquals("Home furniture", allArgsCategory.getDescription());
         assertEquals("ACTIVE", allArgsCategory.getStatus());
@@ -119,8 +119,8 @@ class CategoryTest {
     @Test
     @DisplayName("Should have correct equals and hashCode")
     void testEqualsAndHashCode() {
-        Category category1 = new Category(1L, "Electronics", "Devices", "ACTIVE");
-        Category category2 = new Category(1L, "Electronics", "Devices", "ACTIVE");
+        Category category1 = new Category("1", "Electronics", "Devices", "ACTIVE");
+        Category category2 = new Category("1", "Electronics", "Devices", "ACTIVE");
 
         assertEquals(category1, category2);
         assertEquals(category1.hashCode(), category2.hashCode());

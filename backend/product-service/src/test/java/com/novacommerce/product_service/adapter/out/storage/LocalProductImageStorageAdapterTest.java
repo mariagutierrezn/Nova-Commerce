@@ -52,7 +52,7 @@ class LocalProductImageStorageAdapterTest {
                 "test image content".getBytes()
         );
 
-        String imageUrl = storageAdapter.storeImage(1L, imageFile);
+        String imageUrl = storageAdapter.storeImage("1", imageFile);
 
         assertNotNull(imageUrl);
         assertTrue(imageUrl.startsWith("http://localhost:8083/images/products/1/"));
@@ -77,7 +77,7 @@ class LocalProductImageStorageAdapterTest {
         Path productDir = Paths.get(uploadPath, "1");
         assertFalse(Files.exists(productDir));
 
-        storageAdapter.storeImage(1L, imageFile);
+        storageAdapter.storeImage("1", imageFile);
 
         assertTrue(Files.exists(productDir));
     }
@@ -92,7 +92,7 @@ class LocalProductImageStorageAdapterTest {
                 "test image content".getBytes()
         );
 
-        String imageUrl = storageAdapter.storeImage(1L, imageFile);
+        String imageUrl = storageAdapter.storeImage("1", imageFile);
 
         assertTrue(imageUrl.endsWith(".png"));
     }
@@ -107,7 +107,7 @@ class LocalProductImageStorageAdapterTest {
                 "test image content".getBytes()
         );
 
-        String imageUrl = storageAdapter.storeImage(1L, imageFile);
+        String imageUrl = storageAdapter.storeImage("1", imageFile);
 
         assertTrue(imageUrl.endsWith(".webp"));
     }
@@ -129,8 +129,8 @@ class LocalProductImageStorageAdapterTest {
                 "test image content".getBytes()
         );
 
-        String imageUrl1 = storageAdapter.storeImage(1L, imageFile1);
-        String imageUrl2 = storageAdapter.storeImage(1L, imageFile2);
+        String imageUrl1 = storageAdapter.storeImage("1", imageFile1);
+        String imageUrl2 = storageAdapter.storeImage("1", imageFile2);
 
         assertNotEquals(imageUrl1, imageUrl2);
     }
@@ -152,8 +152,8 @@ class LocalProductImageStorageAdapterTest {
                 "second image".getBytes()
         );
 
-        String imageUrl1 = storageAdapter.storeImage(1L, imageFile1);
-        String imageUrl2 = storageAdapter.storeImage(1L, imageFile2);
+        String imageUrl1 = storageAdapter.storeImage("1", imageFile1);
+        String imageUrl2 = storageAdapter.storeImage("1", imageFile2);
 
         // Both should be stored (different UUIDs)
         assertNotEquals(imageUrl1, imageUrl2);
@@ -170,7 +170,7 @@ class LocalProductImageStorageAdapterTest {
                 "test image content".getBytes()
         );
 
-        String imageUrl = storageAdapter.storeImage(1L, imageFile);
+        String imageUrl = storageAdapter.storeImage("1", imageFile);
         
         // Verify file exists
         String relativePath = imageUrl.replace(baseUrl + "/images/products/", "");
@@ -343,7 +343,7 @@ class LocalProductImageStorageAdapterTest {
                 "test image content".getBytes()
         );
 
-        String imageUrl = storageAdapter.storeImage(1L, imageFile);
+        String imageUrl = storageAdapter.storeImage("1", imageFile);
 
         assertTrue(imageUrl.endsWith(".jpg")); // Default extension
     }

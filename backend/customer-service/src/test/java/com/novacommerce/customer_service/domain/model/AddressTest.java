@@ -29,8 +29,8 @@ class AddressTest {
     @DisplayName("givenAddress_whenAllArgsConstructor_thenCreateWithValues")
     void givenAddress_whenAllArgsConstructor_thenCreateWithValues() {
         // GIVEN
-        Long id = 1L;
-        Long customerId = 100L;
+        String id = "1";
+        String customerId = "100";
         String street = "Main Street 123";
         String city = "New York";
         String state = "NY";
@@ -41,8 +41,8 @@ class AddressTest {
         Address address = new Address(id, customerId, street, city, state, zipCode, country);
 
         // THEN
-        assertEquals(1L, address.getId());
-        assertEquals(100L, address.getCustomerId());
+        assertEquals("1", address.getId());
+        assertEquals("100", address.getCustomerId());
         assertEquals("Main Street 123", address.getStreet());
         assertEquals("New York", address.getCity());
         assertEquals("NY", address.getState());
@@ -57,8 +57,8 @@ class AddressTest {
         Address address = new Address();
 
         // WHEN
-        address.setId(2L);
-        address.setCustomerId(200L);
+        address.setId("2");
+        address.setCustomerId("200");
         address.setStreet("Second Avenue 456");
         address.setCity("Los Angeles");
         address.setState("CA");
@@ -66,8 +66,8 @@ class AddressTest {
         address.setCountry("United States");
 
         // THEN
-        assertEquals(2L, address.getId());
-        assertEquals(200L, address.getCustomerId());
+        assertEquals("2", address.getId());
+        assertEquals("200", address.getCustomerId());
         assertEquals("Second Avenue 456", address.getStreet());
         assertEquals("Los Angeles", address.getCity());
         assertEquals("CA", address.getState());
@@ -79,11 +79,11 @@ class AddressTest {
     @DisplayName("givenAddress_whenGetters_thenReturnValues")
     void givenAddress_whenGetters_thenReturnValues() {
         // GIVEN
-        Address address = new Address(3L, 300L, "Third Street 789", "Chicago", "IL", "60601", "United States");
+        Address address = new Address("3", "300", "Third Street 789", "Chicago", "IL", "60601", "United States");
 
         // WHEN & THEN
-        assertEquals(3L, address.getId());
-        assertEquals(300L, address.getCustomerId());
+        assertEquals("3", address.getId());
+        assertEquals("300", address.getCustomerId());
         assertEquals("Third Street 789", address.getStreet());
         assertEquals("Chicago", address.getCity());
         assertEquals("IL", address.getState());
@@ -95,7 +95,7 @@ class AddressTest {
     @DisplayName("givenAddress_whenNullFields_thenAllowNull")
     void givenAddress_whenNullFields_thenAllowNull() {
         // GIVEN
-        Address address = new Address(4L, 400L, null, null, null, null, null);
+        Address address = new Address("4", "400", null, null, null, null, null);
 
         // WHEN & THEN
         assertNull(address.getStreet());
@@ -131,8 +131,8 @@ class AddressTest {
     void givenAddress_whenMultipleUpdates_thenFinalStateCorrect() {
         // GIVEN
         Address address = new Address();
-        address.setId(5L);
-        address.setCustomerId(500L);
+        address.setId("5");
+        address.setCustomerId("500");
         address.setCity("Boston");
 
         // WHEN
@@ -141,8 +141,8 @@ class AddressTest {
         address.setZipCode("02138");
 
         // THEN
-        assertEquals(5L, address.getId());
-        assertEquals(500L, address.getCustomerId());
+        assertEquals("5", address.getId());
+        assertEquals("500", address.getCustomerId());
         assertEquals("Cambridge", address.getCity());
         assertEquals("MA", address.getState());
         assertEquals("02138", address.getZipCode());
@@ -169,8 +169,8 @@ class AddressTest {
     @DisplayName("givenMultipleAddresses_whenCreated_thenIndependent")
     void givenMultipleAddresses_whenCreated_thenIndependent() {
         // GIVEN
-        Address address1 = new Address(1L, 100L, "Street 1", "City 1", "ST", "12345", "Country 1");
-        Address address2 = new Address(2L, 200L, "Street 2", "City 2", "ST", "54321", "Country 2");
+        Address address1 = new Address("1", "100", "Street 1", "City 1", "ST", "12345", "Country 1");
+        Address address2 = new Address("2", "200", "Street 2", "City 2", "ST", "54321", "Country 2");
 
         // WHEN & THEN
         assertNotEquals(address1.getId(), address2.getId());
@@ -184,7 +184,7 @@ class AddressTest {
     @DisplayName("givenAddress_whenInternationalData_thenStoreCorrectly")
     void givenAddress_whenInternationalData_thenStoreCorrectly() {
         // GIVEN
-        Address address = new Address(1L, 100L, "Calle Principal 123", "Madrid", "MD", "28001", "España");
+        Address address = new Address("1", "100", "Calle Principal 123", "Madrid", "MD", "28001", "España");
 
         // WHEN & THEN
         assertEquals("Calle Principal 123", address.getStreet());

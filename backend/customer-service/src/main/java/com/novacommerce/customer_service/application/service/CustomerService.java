@@ -22,7 +22,7 @@ public class CustomerService implements ManageCustomersUseCase {
     }
 
     @Override
-    public Optional<Customer> findById(Long id) {
+    public Optional<Customer> findById(String id) {
         return persistencePort.findById(id);
     }
 
@@ -38,7 +38,7 @@ public class CustomerService implements ManageCustomersUseCase {
     }
 
     @Override
-    public Customer update(Long id, Customer customer) {
+    public Customer update(String id, Customer customer) {
         Optional<Customer> existingOpt = persistencePort.findById(id);
         if (existingOpt.isEmpty()) {
             throw new IllegalArgumentException("Cliente no encontrado");
@@ -52,7 +52,7 @@ public class CustomerService implements ManageCustomersUseCase {
     }
 
     @Override
-    public void delete(Long id) {
+    public void delete(String id) {
         Optional<Customer> existingOpt = persistencePort.findById(id);
         if (existingOpt.isEmpty()) {
             return;

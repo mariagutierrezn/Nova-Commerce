@@ -20,24 +20,20 @@ jobs:
     name: Build and Test
     runs-on: ubuntu-latest
     env:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/testdb
-      SPRING_DATASOURCE_USERNAME: testuser
-      SPRING_DATASOURCE_PASSWORD: testpass
+      SPRING_DATA_MONGODB_URI: mongodb://localhost:27017/testdb
       SPRING_PROFILES_ACTIVE: ci
       JWT_SECRET: NovaCommerceCISecretKeyForJWTTokenValidationMustBeLongHS512
       INTERNAL_API_KEY: nova-internal-service-key-2024
 
     services:
-      postgres:
-        image: postgres:16-alpine
-        env:
-          POSTGRES_DB: testdb
-          POSTGRES_USER: testuser
-          POSTGRES_PASSWORD: testpass
+      mongodb:
+        image: mongo:7.0
         ports:
-          - 5432:5432
+          - 27017:27017
+        env:
+          MONGO_INITDB_DATABASE: testdb
         options: >-
-          --health-cmd pg_isready
+          --health-cmd "mongosh --eval 'db.adminCommand(\"ping\")'"
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
@@ -63,12 +59,12 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
-      # 3.1 Esperar a que PostgreSQL esté listo
-      - name: Wait for PostgreSQL readiness
+      # 3.1 Esperar a que MongoDB esté listo
+      - name: Wait for MongoDB readiness
         run: |
-          echo "=== Esperando PostgreSQL en localhost:5432 ==="
-          timeout 60 bash -c 'until echo > /dev/tcp/127.0.0.1/5432; do echo "PostgreSQL aún no está listo..."; sleep 2; done'
-          echo "✓ PostgreSQL está listo"
+          echo "=== Esperando MongoDB en localhost:27017 ==="
+          timeout 60 bash -c 'until mongosh --eval "db.adminCommand(\"ping\")" > /dev/null 2>&1; do echo "MongoDB aún no está listo..."; sleep 2; done'
+          echo "✓ MongoDB está listo"
 
       # 4. Verificar estructura del monorepo
       - name: Verify monorepo structure

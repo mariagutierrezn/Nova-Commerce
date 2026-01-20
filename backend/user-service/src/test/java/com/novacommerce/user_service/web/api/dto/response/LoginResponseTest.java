@@ -1,19 +1,12 @@
 package com.novacommerce.user_service.web.api.dto.response;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
 @DisplayName("LoginResponse Tests")
 class LoginResponseTest {
-
-    @Autowired
-    private ObjectMapper objectMapper;
 
     @Test
     @DisplayName("Should create LoginResponse with all fields")

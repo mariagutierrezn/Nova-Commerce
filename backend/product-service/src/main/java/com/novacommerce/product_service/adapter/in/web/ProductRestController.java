@@ -41,7 +41,7 @@ public class ProductRestController {
     @GetMapping("/{id}")
     @Operation(summary = "Get product by ID")
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
-    public ResponseEntity<ProductResponse> getProductById(@PathVariable Long id) {
+    public ResponseEntity<ProductResponse> getProductById(@PathVariable String id) {
         var product = manageProductsUseCase.getProductById(id);
         return ResponseEntity.ok(productDtoMapper.toResponse(product));
     }
@@ -50,7 +50,7 @@ public class ProductRestController {
     @Operation(summary = "Get products by category")
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<Page<ProductResponse>> getProductsByCategory(
-            @PathVariable Long categoryId,
+            @PathVariable String categoryId,
             @PageableDefault(size = 20, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
         
         var products = manageProductsUseCase.getProductsByCategoryId(categoryId, pageable)
@@ -72,7 +72,7 @@ public class ProductRestController {
     @Operation(summary = "Update product")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ProductResponse> updateProduct(
-            @PathVariable Long id,
+            @PathVariable String id,
             @Valid @RequestBody ProductRequest request) {
         
         var product = productDtoMapper.toDomain(request);
@@ -83,7 +83,7 @@ public class ProductRestController {
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete product")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteProduct(@PathVariable String id) {
         manageProductsUseCase.deleteProduct(id);
         return ResponseEntity.noContent().build();
     }

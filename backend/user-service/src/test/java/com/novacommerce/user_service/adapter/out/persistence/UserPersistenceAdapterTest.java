@@ -17,7 +17,6 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -34,11 +33,11 @@ class UserPersistenceAdapterTest {
     private UserPersistenceAdapter adapter;
 
     private User testUser;
-    private UUID userId;
+    private String userId;
 
     @BeforeEach
     void setUp() {
-        userId = UUID.randomUUID();
+        userId = "user-123";
         testUser = User.builder()
             .id(userId)
             .username("testuser")
@@ -46,7 +45,7 @@ class UserPersistenceAdapterTest {
             .password("encodedPassword")
             .enabled(true)
             .locked(false)
-            .roles(Set.of())
+            .roleIds(Set.of())
             .build();
     }
 

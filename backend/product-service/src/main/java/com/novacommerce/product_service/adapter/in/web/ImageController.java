@@ -32,14 +32,14 @@ public class ImageController {
 
     @GetMapping("/products/{productId}/{filename}")
     public ResponseEntity<Resource> getProductImage(
-            @PathVariable Long productId,
+            @PathVariable String productId,
             @PathVariable String filename) {
         
         try {
             log.info("Requesting image: {}/{}", productId, filename);
             
             // Construir la ruta del archivo
-            Path filePath = Paths.get(uploadPath, productId.toString(), filename);
+            Path filePath = Paths.get(uploadPath, productId, filename);
             
             // Verificar que el archivo existe
             if (!Files.exists(filePath)) {

@@ -30,7 +30,7 @@ class CategoryDtoMapperTest {
                 .build();
 
         category = Category.builder()
-                .id(1L)
+                .id("1")
                 .name("Electronics")
                 .description("Electronic devices")
                 .status("ACTIVE")
@@ -102,7 +102,7 @@ class CategoryDtoMapperTest {
     @DisplayName("Should map response with all fields")
     void testResponseMapping() {
         CategoryResponse response = mapper.toResponse(category);
-        assertEquals(1L, response.getId());
+        assertEquals("1", response.getId());
         assertEquals("Electronics", response.getName());
         assertEquals("Electronic devices", response.getDescription());
         assertEquals("ACTIVE", response.getStatus());
@@ -128,14 +128,14 @@ class CategoryDtoMapperTest {
     @DisplayName("Should response map with id from category")
     void testResponseWithCategoryId() {
         Category category2 = Category.builder()
-                .id(5L)
+                .id("5")
                 .name("Books")
                 .description("Books")
                 .status("ACTIVE")
                 .build();
 
         CategoryResponse response = mapper.toResponse(category2);
-        assertEquals(5L, response.getId());
+        assertEquals("5", response.getId());
         assertEquals("Books", response.getName());
     }
 }

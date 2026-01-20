@@ -39,7 +39,7 @@ public class LocalProductImageStorageAdapter implements ProductImageStoragePort 
     private String baseUrl;
 
     @Override
-    public String storeImage(Long productId, MultipartFile imageFile) throws IOException {
+    public String storeImage(String productId, MultipartFile imageFile) throws IOException {
         log.info("Storing image for product ID: {}", productId);
 
         // Validar el archivo
@@ -48,7 +48,7 @@ public class LocalProductImageStorageAdapter implements ProductImageStoragePort 
         }
 
         // Crear directorio si no existe
-        Path productDirectory = Paths.get(uploadPath, productId.toString());
+        Path productDirectory = Paths.get(uploadPath, productId);
         if (!Files.exists(productDirectory)) {
             Files.createDirectories(productDirectory);
             log.debug("Created directory: {}", productDirectory);
@@ -67,7 +67,7 @@ public class LocalProductImageStorageAdapter implements ProductImageStoragePort 
         log.info("Image saved to: {}", filePath);
 
         // Retornar URL pública
-        String imageUrl = String.format("%s/images/products/%d/%s", baseUrl, productId, filename);
+        String imageUrl = String.format("%s/images/products/%s/%s", baseUrl, productId, filename);
         log.info("Image URL: {}", imageUrl);
         return imageUrl;
     }

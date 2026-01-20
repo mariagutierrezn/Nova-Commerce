@@ -57,7 +57,7 @@ order-service/
 │
 └── resources/
     ├── application.yaml
-    └── db/liquibase/
+    └── (sin migraciones - MongoDB usa colecciones dinámicas)
         ├── changelog-master.yaml
         └── changes/
             ├── 001-create-orders-table.yaml

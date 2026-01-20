@@ -20,7 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.UUID;
+// ...existing imports...
 
 /**
  * Adaptador de entrada REST para gestión de usuarios.
@@ -67,7 +67,7 @@ public class UserRestController {
         @ApiResponse(responseCode = "403", description = "No tiene permisos"),
         @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
     })
-    public ResponseEntity<UserResponse> getUserById(@PathVariable UUID id) {
+    public ResponseEntity<UserResponse> getUserById(@PathVariable String id) {
         log.info("Solicitud de usuario: {}", id);
         UserResponse user = manageUsersUseCase.getUserById(id);
         return ResponseEntity.ok(user);
@@ -109,7 +109,7 @@ public class UserRestController {
         @ApiResponse(responseCode = "409", description = "Username/Email ya existe")
     })
     public ResponseEntity<UserResponse> updateUser(
-        @PathVariable UUID id,
+        @PathVariable String id,
         @Valid @RequestBody CreateUserRequest updateUserRequest
     ) {
         log.info("Solicitud de actualización de usuario: {}", id);
@@ -129,7 +129,7 @@ public class UserRestController {
         @ApiResponse(responseCode = "403", description = "No tiene permisos (requiere ADMIN)"),
         @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
     })
-    public ResponseEntity<Void> deleteUser(@PathVariable UUID id) {
+    public ResponseEntity<Void> deleteUser(@PathVariable String id) {
         log.info("Solicitud de eliminación de usuario: {}", id);
         manageUsersUseCase.deleteUser(id);
         return ResponseEntity.noContent().build();

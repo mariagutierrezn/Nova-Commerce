@@ -24,7 +24,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
@@ -73,18 +72,18 @@ class OrderRestControllerTest {
     UpdateOrderStatusUseCase updateOrderStatusUseCase;
 
     private Order sampleOrder() {
-        Order o = Order.builder().id(1L).customerId(3L).status(OrderStatus.CREATED).build();
+        Order o = Order.builder().id("1").customerId("3").status(OrderStatus.CREATED).build();
         o.addItem(OrderItem.builder()
-                .id(1L)
-                .productId(1L)
+                .id("1")
+                .productId("1")
                 .productName("A")
                 .quantity(2)
                 .unitPrice(Money.of(10))
                 .productType("ELECTRONICS")
                 .build());
         o.addItem(OrderItem.builder()
-                .id(2L)
-                .productId(2L)
+                .id("2")
+                .productId("2")
                 .productName("B")
                 .quantity(1)
                 .unitPrice(Money.of(5.5))
@@ -101,10 +100,10 @@ class OrderRestControllerTest {
         when(createOrderUseCase.createOrder(any(Order.class))).thenReturn(created);
 
         CreateOrderRequest req = CreateOrderRequest.builder()
-                .customerId(3L)
+                .customerId("3")
                 .items(List.of(
                         OrderItemRequest.builder()
-                                .productId(1L)
+                                .productId("1")
                                 .quantity(2)
                                 .unitPrice(new BigDecimal("10.00"))
                                 .build()
@@ -123,8 +122,8 @@ class OrderRestControllerTest {
     @DisplayName("GET /api/orders/{id} — invokes getOrderUseCase")
     void getOrderById() throws Exception {
         // GIVEN
-        when(getOrderUseCase.getOrderById(1L)).thenReturn(Optional.of(sampleOrder()));
-        when(getOrderUseCase.getOrderById(99L)).thenReturn(Optional.empty());
+        when(getOrderUseCase.getOrderById("1")).thenReturn(Optional.of(sampleOrder()));
+        when(getOrderUseCase.getOrderById("99")).thenReturn(Optional.empty());
 
         // WHEN & THEN - Order exists
         mvc.perform(get("/api/orders/1"))
@@ -141,7 +140,7 @@ class OrderRestControllerTest {
         // GIVEN
         Order updated = sampleOrder();
         updated.setStatus(OrderStatus.PAID);
-        when(updateOrderStatusUseCase.updateOrderStatus(eq(1L), eq(OrderStatus.PAID)))
+        when(updateOrderStatusUseCase.updateOrderStatus(eq("1"), eq(OrderStatus.PAID)))
                 .thenReturn(updated);
 
         UpdateOrderStatusRequest req = new UpdateOrderStatusRequest();

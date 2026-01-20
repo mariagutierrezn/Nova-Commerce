@@ -21,22 +21,9 @@ spring:
     charset: UTF-8
     mode: console
 
-  datasource:
-    url: jdbc:postgresql://localhost:5432/nova_db
-    driver-class-name: org.postgresql.Driver
-    username: postgres
-    password: postgres
-
-  jpa:
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
-    show-sql: true
-    hibernate:
-      ddl-auto: update
-
-  liquibase:
-    change-log: classpath:db/liquibase/changelog-master.yaml
-    enabled: true
-    drop-first: false
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/nova_db
 
 # Configuración de la aplicación
 app:

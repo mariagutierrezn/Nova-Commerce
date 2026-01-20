@@ -17,12 +17,12 @@ class ProductResponseTest {
     @BeforeEach
     void setUp() {
         response = ProductResponse.builder()
-                .id(1L)
+                .id("1")
                 .name("Laptop")
                 .description("High-performance laptop")
                 .price(new BigDecimal("999.99"))
                 .productType(ProductType.PHYSICAL)
-                .categoryId(1L)
+                .categoryId("1")
                 .stockQuantity(10)
                 .status("ACTIVE")
                 .build();
@@ -32,12 +32,12 @@ class ProductResponseTest {
     @DisplayName("Should create ProductResponse with all fields")
     void testProductResponseCreation() {
         assertNotNull(response);
-        assertEquals(1L, response.getId());
+        assertEquals("1", response.getId());
         assertEquals("Laptop", response.getName());
         assertEquals("High-performance laptop", response.getDescription());
         assertEquals(new BigDecimal("999.99"), response.getPrice());
         assertEquals(ProductType.PHYSICAL, response.getProductType());
-        assertEquals(1L, response.getCategoryId());
+        assertEquals("1", response.getCategoryId());
         assertEquals(10, response.getStockQuantity());
         assertEquals("ACTIVE", response.getStatus());
     }
@@ -45,8 +45,8 @@ class ProductResponseTest {
     @Test
     @DisplayName("Should allow setting id")
     void testSetId() {
-        response.setId(2L);
-        assertEquals(2L, response.getId());
+        response.setId("2");
+        assertEquals("2", response.getId());
     }
 
     @Test
@@ -81,16 +81,16 @@ class ProductResponseTest {
     @DisplayName("Should use builder pattern")
     void testBuilderPattern() {
         ProductResponse built = ProductResponse.builder()
-                .id(2L)
+                .id("2")
                 .name("Mouse")
                 .price(new BigDecimal("25.99"))
                 .productType(ProductType.PHYSICAL)
-                .categoryId(2L)
+                .categoryId("2")
                 .stockQuantity(100)
                 .status("ACTIVE")
                 .build();
 
-        assertEquals(2L, built.getId());
+        assertEquals("2", built.getId());
         assertEquals("Mouse", built.getName());
     }
 

@@ -1,0 +1,39 @@
+ ███╗   ██╗ ██████╗ ██╗   ██╗ █████╗
+ ████╗  ██║██╔═══██╗██║   ██║██╔══██╗
+ ██╔██╗ ██║██║   ██║██║   ██║███████║
+ ██║╚██╗██║██║   ██║██║   ██║██╔══██║
+ ██║ ╚████║╚██████╔╝╚██████╔╝██║  ██║
+ ╚═╝  ╚═══╝ ╚═════╝  ╚═════╝ ╚═╝  ╚═╝
+
+        N O V A   —   N O V A C O M M E R C E
+
+ Plataforma E-Commerce | NOTIFICATION SERVICE Worker
+
+ Realizado por: Leonardo Pérez
+ Email: yesid.perez@sofka.com.co
+ ════════════════════════════════════════════════════════════════════════════
+
+╚════════════════════════════════════════════════════════════════════════════╝
+
+ ▶ Service Name    : ${spring.application.name}
+ ▶ Product Name    : ${app.name}
+ ▶ Version         : ${app.version}
+ ▶ Profile         : ${spring.profiles.active:default}
+ ▶ Port            : ${server.port}
+ ▶ Spring Boot     : ${spring-boot.version}
+
+  📡 Endpoints:
+    • API Docs     → http://localhost:${server.port}/v3/api-docs
+    • Swagger UI   → http://localhost:${server.port}/swagger-ui.html
+    • Health       → http://localhost:${server.port}/actuator/health
+
+  🔐 Security: No authentication required (internal worker)
+  📊 Database: None (stateless worker)
+  📨 Messaging: RabbitMQ (async event processing)
+
+  ════════════════════════════════════════════════════════════════════════════
+
+  🚀 Notification Service started successfully
+  ℹ  For more information, visit: https://novacommerce.com
+
+  ════════════════════════════════════════════════════════════════════════════

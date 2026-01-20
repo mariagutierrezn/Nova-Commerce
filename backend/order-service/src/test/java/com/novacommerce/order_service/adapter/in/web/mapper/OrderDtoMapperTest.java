@@ -23,15 +23,15 @@ class OrderDtoMapperTest {
     @DisplayName("GIVEN CreateOrderRequest WHEN toDomain THEN builds Order with items and money")
     void toDomain() {
         CreateOrderRequest req = CreateOrderRequest.builder()
-                .customerId(3L)
+                .customerId("3")
                 .items(List.of(
-                        OrderItemRequest.builder().productId(1L).quantity(2).unitPrice(new BigDecimal("10.00")).build(),
-                        OrderItemRequest.builder().productId(2L).quantity(1).unitPrice(new BigDecimal("5.50")).build()
+                        OrderItemRequest.builder().productId("1").quantity(2).unitPrice(new BigDecimal("10.00")).build(),
+                        OrderItemRequest.builder().productId("2").quantity(1).unitPrice(new BigDecimal("5.50")).build()
                 ))
                 .build();
 
         Order order = mapper.toDomain(req);
-        assertEquals(3L, order.getCustomerId());
+        assertEquals("3", order.getCustomerId());
         assertEquals(2, order.getItems().size());
         assertEquals("25.50", order.getTotalBeforeDiscount().toString());
     }
@@ -39,13 +39,13 @@ class OrderDtoMapperTest {
     @Test
     @DisplayName("GIVEN Order WHEN toResponse THEN maps fields and calculates subtotals")
     void toResponse() {
-        Order o = Order.builder().id(10L).customerId(3L).status(OrderStatus.CREATED).build();
-        o.addItem(OrderItem.builder().id(1L).productId(1L).productName("A").quantity(2).unitPrice(Money.of(10)).productType("ELECTRONICS").build());
-        o.addItem(OrderItem.builder().id(2L).productId(2L).productName("B").quantity(1).unitPrice(Money.of(5.5)).productType("FOOD").build());
+        Order o = Order.builder().id("10").customerId("3").status(OrderStatus.CREATED).build();
+        o.addItem(OrderItem.builder().id("1").productId("1").productName("A").quantity(2).unitPrice(Money.of(10)).productType("ELECTRONICS").build());
+        o.addItem(OrderItem.builder().id("2").productId("2").productName("B").quantity(1).unitPrice(Money.of(5.5)).productType("FOOD").build());
         o.applyDiscount(Money.of(3));
 
         OrderResponse resp = mapper.toResponse(o);
-        assertEquals(10L, resp.getId());
+        assertEquals("10", resp.getId());
         assertEquals("CREATED", resp.getStatus());
         assertEquals(new BigDecimal("25.50"), resp.getTotalBeforeDiscount());
         assertEquals(new BigDecimal("22.50"), resp.getTotalAfterDiscount());

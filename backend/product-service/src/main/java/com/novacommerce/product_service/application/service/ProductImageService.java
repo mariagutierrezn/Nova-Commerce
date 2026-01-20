@@ -25,7 +25,7 @@ public class ProductImageService implements UploadProductImageUseCase {
 
     @Override
     @Transactional
-    public String uploadProductImage(Long productId, MultipartFile imageFile) throws IOException {
+    public String uploadProductImage(String productId, MultipartFile imageFile) throws IOException {
         log.info("Uploading image for product ID: {}", productId);
 
         // Validar que el producto exista

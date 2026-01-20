@@ -10,11 +10,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.UUID;
+// ...existing imports...
 
 /**
  * Adaptador de salida para persistencia de roles.
- * Implementa RolePersistencePort usando Spring Data JPA.
+ * Implementa RolePersistencePort usando Spring Data MongoDB.
  */
 @Component
 @RequiredArgsConstructor
@@ -28,7 +28,7 @@ public class RolePersistenceAdapter implements RolePersistencePort {
     }
 
     @Override
-    public Optional<Role> findById(UUID id) {
+    public Optional<Role> findById(String id) {
         return roleRepository.findById(id);
     }
 
@@ -38,7 +38,7 @@ public class RolePersistenceAdapter implements RolePersistencePort {
     }
 
     @Override
-    public Set<Role> findAllById(Set<UUID> ids) {
+    public Set<Role> findAllById(Set<String> ids) {
         return new HashSet<>(roleRepository.findAllById(ids));
     }
 
@@ -53,7 +53,7 @@ public class RolePersistenceAdapter implements RolePersistencePort {
     }
 
     @Override
-    public void deleteById(UUID id) {
+    public void deleteById(String id) {
         roleRepository.deleteById(id);
     }
 }

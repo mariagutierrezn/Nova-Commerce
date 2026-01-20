@@ -2,14 +2,14 @@
 
 Microservicio de gestión de usuarios, roles y permisos para Nova Commerce.
 
-**Función principal:** Almacena y gestiona usuarios en PostgreSQL. Proporciona endpoints para CRUD de usuarios/roles y validación de credenciales vía endpoint interno que Auth-Service utiliza.
+**Función principal:** Almacena y gestiona usuarios en MongoDB. Proporciona endpoints para CRUD de usuarios/roles y validación de credenciales vía endpoint interno que Auth-Service utiliza.
 
 ```
 Cliente (credenciales)
   ↓
 API Gateway (8080)
   ↓
-Auth-Service (8081) ──(Feign)──→ User-Service (8082, PostgreSQL)
+Auth-Service (8081) ──(Feign)──→ User-Service (8082, MongoDB)
                                       ↑
                        /internal/users/validate
                         (validación interna)
@@ -24,7 +24,7 @@ API Gateway valida JWT localmente → Enruta a:
 
 - Java 17+
 - Maven 3.6+
-- **PostgreSQL 12+** (base de datos obligatoria)
+- **MongoDB 7.0+** (base de datos obligatoria)
 - IDE: IntelliJ IDEA o VS Code
 
 ## 🚀 Instalación y Configuración
@@ -35,16 +35,19 @@ git clone https://github.com/LeonardoPerezSoft/Nova-Commerce.git
 cd backend/user-service
 ```
 
-### 2. Configurar la base de datos PostgreSQL
+### 2. Configurar MongoDB
 
-```sql
--- Crear base de datos
-CREATE DATABASE nova_db;
+MongoDB puede ejecutarse localmente o usando Docker:
 
--- Conectar a la base de datos
-\c nova_db;
+```bash
+# Con Docker
+docker run -d --name nova-mongodb \
+  -p 27017:27017 \
+  -e MONGO_INITDB_DATABASE=nova_db \
+  mongo:7.0
 
--- Las tablas se crean automáticamente con Liquibase
+# O instalar MongoDB localmente en tu sistema
+# MongoDB creará automáticamente las colecciones al iniciar el servicio
 ```
 
 ### 3. Compilar y ejecutar
@@ -72,10 +75,8 @@ java -jar target/user-service-0.0.1-SNAPSHOT.jar
 ### 4. Configurar variables de entorno (opcional)
 
 ```bash
-# Base de datos PostgreSQL
-DB_URL=jdbc:postgresql://localhost:5432/nova_db
-DB_USERNAME=postgres
-DB_PASSWORD=postgres
+# Base de datos MongoDB
+SPRING_DATA_MONGODB_URI=mongodb://localhost:27017/nova_db
 
 # Seed de datos iniciales
 SEED_ENABLED=true
@@ -93,10 +94,9 @@ APP_VERSION=1.0.0
 ## 🛠️ Tecnologías
 
 - **Spring Boot**: 3.4.3
-- **Spring Data JPA**: Acceso a datos con Hibernate
+- **Spring Data MongoDB**: Acceso a datos con MongoDB
 - **Spring Security**: BCrypt para hash de contraseñas + JWT validation
-- **PostgreSQL**: Base de datos relacional
-- **Liquibase**: Migraciones de base de datos
+- **MongoDB**: Base de datos NoSQL
 - **Lombok**: Reducción de boilerplate
 - **MapStruct**: 1.5.5.Final (mapeo de DTOs)
 - **SpringDoc OpenAPI**: 2.7.0 (Swagger)
@@ -158,15 +158,15 @@ user-service/
 │   │   │   │   └── MapperConfig.java
 │   │   │   ├── domain/                     # Dominio (entidades + excepciones)
 │   │   │   │   ├── model/
-│   │   │   │   │   ├── User.java           # Entidad JPA
-│   │   │   │   │   ├── Role.java           # Entidad JPA
-│   │   │   │   │   ├── Permission.java     # Entidad JPA
+│   │   │   │   │   ├── User.java           # Documento MongoDB
+│   │   │   │   │   ├── Role.java           # Documento MongoDB
+│   │   │   │   │   ├── Permission.java     # Documento MongoDB
 │   │   │   │   │   └── Token.java          ✨ NUEVO - Modelo dominio JWT
 │   │   │   │   ├── enums/
 │   │   │   │   │   └── UserStatusEnum.java
 │   │   │   │   └── exception/
 │   │   │   │       └── SecurityException.java  ✨ NUEVA
-│   │   │   ├── repository/                 # Spring Data JPA
+│   │   │   ├── repository/                 # Spring Data MongoDB
 │   │   │   │   ├── UserRepository.java
 │   │   │   │   ├── RoleRepository.java
 │   │   │   │   └── PermissionRepository.java
@@ -195,7 +195,7 @@ user-service/
 │   │   └── resources/
 │   │       ├── application.yaml            ✨ ACTUALIZADO - JWT config
 │   │       ├── banner.txt
-│   │       └── db/liquibase/
+│   │       └── (sin migraciones - MongoDB usa colecciones dinámicas)
 │   │           ├── changelog-master.yaml
 │   │           └── changes/
 │   │               ├── 001-create-permissions-table.yaml
@@ -246,17 +246,14 @@ export INTERNAL_API_KEY="clave-unica-para-comunicacion-interna"
 
 ## 🗄️ Base de Datos
 
-### Migraciones Liquibase
+### Colecciones MongoDB
 
-Las migraciones se aplican automáticamente al iniciar usando Liquibase:
+Las colecciones se crean automáticamente al iniciar el servicio:
+- **users**: Usuarios del sistema
+- **roles**: Roles disponibles
+- **permissions**: Permisos del sistema
 
-```yaml
-spring:
-  liquibase:
-    change-log: classpath:db/liquibase/changelog-master.yaml
-    enabled: true
-    drop-first: false
-```
+El servicio incluye seed de datos iniciales si está habilitado (SEED_ENABLED=true).
 
 ### Esquema de Tablas
 
@@ -467,16 +464,16 @@ curl -X POST http://localhost:8080/api/users \
 
 ### Error: "Cannot connect to database"
 ```bash
-# Verificar que PostgreSQL esté corriendo
-sudo systemctl status postgresql   # Linux
-net start postgresql-x64-14         # Windows
+# Verificar que MongoDB esté corriendo
+sudo systemctl status mongod   # Linux
+# O si usas Docker:
+docker ps | grep mongo
 
-# Verificar credenciales en application.yaml
+# Verificar URI de conexión en application.yaml
 spring:
-  datasource:
-    url: jdbc:postgresql://localhost:5432/nova_db
-    username: postgres
-    password: postgres
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/nova_db
 ```
 
 ### Error: "Port 8082 already in use"
@@ -486,17 +483,16 @@ server:
   port: 8083
 ```
 
-### Error: "Liquibase migration failed"
+### Error: "MongoDB connection failed"
 ```bash
-# Ver logs detallados de Liquibase
-# Si necesitas recrear la base de datos:
-DROP DATABASE nova_db;
-CREATE DATABASE nova_db;
+# Verificar que MongoDB esté activo
+mongosh --eval "db.adminCommand('ping')"
 
-# O deshabilitar Liquibase temporalmente:
-spring:
-  liquibase:
-    enabled: false
+# Si usas Docker, verificar el contenedor:
+docker logs nova-mongodb
+
+# Si necesitas recrear la base de datos, simplemente elimina las colecciones:
+mongosh nova_db --eval "db.dropDatabase()"
 ```
 
 ### Error: "release version 17 not supported"
@@ -552,7 +548,7 @@ public interface UserServiceClient {
 **Flujo de login:**
 1. Cliente → `POST /api/auth/login` (Gateway → Auth-Service)
 2. Auth-Service → `POST /internal/users/validate` (Feign → User-Service)
-3. User-Service valida credenciales contra PostgreSQL
+3. User-Service valida credenciales contra MongoDB
 4. User-Service retorna datos del usuario (roles, permisos)
 5. Auth-Service genera JWT con esa información
 6. Cliente recibe JWT

@@ -16,12 +16,12 @@ class ProductTest {
     @BeforeEach
     void setUp() {
         product = Product.builder()
-                .id(1L)
+                .id("1")
                 .name("Laptop")
                 .description("High-performance laptop")
                 .price(new BigDecimal("999.99"))
                 .productType(ProductType.PHYSICAL)
-                .categoryId(1L)
+                .categoryId("1")
                 .stockQuantity(10)
                 .status("ACTIVE")
                 .build();
@@ -31,12 +31,12 @@ class ProductTest {
     @DisplayName("Should create product with all required fields")
     void testProductCreation() {
         assertNotNull(product);
-        assertEquals(1L, product.getId());
+        assertEquals("1", product.getId());
         assertEquals("Laptop", product.getName());
         assertEquals("High-performance laptop", product.getDescription());
         assertEquals(new BigDecimal("999.99"), product.getPrice());
         assertEquals(ProductType.PHYSICAL, product.getProductType());
-        assertEquals(1L, product.getCategoryId());
+        assertEquals("1", product.getCategoryId());
         assertEquals(10, product.getStockQuantity());
         assertEquals("ACTIVE", product.getStatus());
     }
@@ -80,8 +80,8 @@ class ProductTest {
     @Test
     @DisplayName("Should allow setting category ID")
     void testSetCategoryId() {
-        product.setCategoryId(5L);
-        assertEquals(5L, product.getCategoryId());
+        product.setCategoryId("5");
+        assertEquals("5", product.getCategoryId());
     }
 
     @Test
@@ -109,17 +109,17 @@ class ProductTest {
     @DisplayName("Should use builder pattern correctly")
     void testBuilderPattern() {
         Product builtProduct = Product.builder()
-                .id(2L)
+                .id("2")
                 .name("Keyboard")
                 .description("Mechanical keyboard")
                 .price(new BigDecimal("150.00"))
                 .productType(ProductType.PHYSICAL)
-                .categoryId(2L)
+                .categoryId("2")
                 .stockQuantity(25)
                 .status("ACTIVE")
                 .build();
 
-        assertEquals(2L, builtProduct.getId());
+        assertEquals("2", builtProduct.getId());
         assertEquals("Keyboard", builtProduct.getName());
         assertEquals(ProductType.PHYSICAL, builtProduct.getProductType());
     }

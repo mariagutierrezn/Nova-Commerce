@@ -9,10 +9,10 @@ class OrderTest {
 
     private Order sampleOrder() {
         Order order = Order.builder()
-                .customerId(10L)
+                .customerId("10")
                 .build();
-        order.addItem(OrderItem.builder().productId(1L).quantity(2).unitPrice(Money.of(50)).build());
-        order.addItem(OrderItem.builder().productId(2L).quantity(1).unitPrice(Money.of(30)).build());
+        order.addItem(OrderItem.builder().productId("1").quantity(2).unitPrice(Money.of(50)).build());
+        order.addItem(OrderItem.builder().productId("2").quantity(1).unitPrice(Money.of(30)).build());
         return order;
     }
 

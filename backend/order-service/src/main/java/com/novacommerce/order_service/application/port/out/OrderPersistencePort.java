@@ -18,12 +18,12 @@ public interface OrderPersistencePort {
     /**
      * Busca una orden por ID.
      */
-    Optional<Order> findById(Long id);
+    Optional<Order> findById(String id);
     
     /**
      * Busca todas las órdenes de un cliente.
      */
-    List<Order> findByCustomerId(Long customerId);
+    List<Order> findByCustomerId(String customerId);
     
     /**
      * Busca todas las órdenes.
@@ -33,5 +33,5 @@ public interface OrderPersistencePort {
     /**
      * Elimina una orden.
      */
-    void deleteById(Long id);
+    void deleteById(String id);
 }

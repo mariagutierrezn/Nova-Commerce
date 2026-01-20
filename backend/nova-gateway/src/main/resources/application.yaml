@@ -33,39 +33,39 @@ app:
 gateway:
   routes:
     auth-service:
-      uri: http://localhost:8081
+      uri: ${AUTH_SERVICE_URL:http://localhost:8081}
       path: /api/auth/**
 
     user-service-users:
-      uri: http://localhost:8082
+      uri: ${USER_SERVICE_URL:http://localhost:8082}
       path: /api/users/**
 
     user-service-roles:
-      uri: http://localhost:8082
+      uri: ${USER_SERVICE_URL:http://localhost:8082}
       path: /api/roles/**
 
     product-service-products:
-      uri: http://localhost:8083
+      uri: ${PRODUCT_SERVICE_URL:http://localhost:8083}
       path: /api/products/**
 
     product-service-images:
-      uri: http://localhost:8083
+      uri: ${PRODUCT_SERVICE_URL:http://localhost:8083}
       path: /images/**
 
     product-service-categories:
-      uri: http://localhost:8083
+      uri: ${PRODUCT_SERVICE_URL:http://localhost:8083}
       path: /api/categories/**
 
     product-service-public:
-      uri: http://localhost:8083
+      uri: ${PRODUCT_SERVICE_URL:http://localhost:8083}
       path: /api/public/products/**
 
     customer-service-customers:
-      uri: http://localhost:8084
+      uri: ${CUSTOMER_SERVICE_URL:http://localhost:8084}
       path: /api/customers/**
 
     order-service-orders:
-      uri: http://localhost:8085
+      uri: ${ORDER_SERVICE_URL:http://localhost:8085}
       path: /api/orders/**
 
   public-paths:

@@ -856,6 +856,6 @@ Como administrador, Quiero habilitar/deshabilitar usuarios sin eliminar sus dato
 - **Hexagonal Architecture**: Puertos (UserPersistencePort, RolePersistencePort, PasswordEncoderPort, ValidateUserCredentialsUseCase) desacoplan dominio de infraestructura
 - **Security**: BCrypt para passwords, JWT para autenticación de endpoints públicos, API Key para endpoint interno /internal/users/validate
 - **Data Seeding**: DataInitializer con @ConditionalOnProperty permite crear usuarios/roles/permisos base en entornos dev/staging
-- **Eager Loading**: @ManyToMany con FetchType.EAGER evita N+1 queries al cargar User con todos sus Roles y Permissions
+- **Data Loading**: MongoDB carga eficientemente User con todos sus Roles y Permissions mediante referencias embebidas
 - **Clean Architecture**: Servicios (UserService, RoleService) implementan casos de uso, adaptadores (UserPersistenceAdapter, PasswordEncoderAdapter) implementan puertos
-- **Database**: PostgreSQL con Liquibase para migraciones versionadas (permissions, roles, users, role_permission, user_role)
+- **Database**: MongoDB con colecciones dinámicas (permissions, roles, users)

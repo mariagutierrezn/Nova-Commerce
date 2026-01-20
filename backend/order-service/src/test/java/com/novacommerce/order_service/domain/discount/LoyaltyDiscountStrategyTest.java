@@ -16,7 +16,7 @@ class LoyaltyDiscountStrategyTest {
     @DisplayName("GIVEN GOLD loyalty WHEN apply THEN 15 percent discount")
     void applyGold() {
         DiscountContext ctx = DiscountContext.builder()
-                .customerId(1L)
+                .customerId("1")
                 .customerStatus("ACTIVE")
                 .customerLoyaltyLevel("GOLD")
                 .orderTotal(Money.of(200))
@@ -30,7 +30,7 @@ class LoyaltyDiscountStrategyTest {
     @DisplayName("GIVEN no loyalty WHEN apply THEN no discount")
     void notApplicable() {
         DiscountContext ctx = DiscountContext.builder()
-                .customerId(1L)
+                .customerId("1")
                 .customerStatus("ACTIVE")
                 .orderTotal(Money.of(200))
                 .build();

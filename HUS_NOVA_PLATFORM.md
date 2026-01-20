@@ -46,7 +46,7 @@ graph TB
     end
     
     subgraph "Capa de Datos"
-        DB[(PostgreSQL)]
+        DB[(MongoDB)]
     end
     
     GW --> AUTH
@@ -128,7 +128,7 @@ graph TB
 
 **Puerto:** 8082
 
-**Persistencia:** PostgreSQL
+**Persistencia:** MongoDB
 
 ---
 
@@ -148,7 +148,7 @@ graph TB
 
 **Puerto:** 8083
 
-**Persistencia:** PostgreSQL
+**Persistencia:** MongoDB
 
 ---
 
@@ -168,7 +168,7 @@ graph TB
 
 **Puerto:** 8084
 
-**Persistencia:** PostgreSQL
+**Persistencia:** MongoDB
 
 ---
 
@@ -191,7 +191,7 @@ graph TB
 
 **Puerto:** 8085
 
-**Persistencia:** PostgreSQL
+**Persistencia:** MongoDB
 
 **Dependencias:**
 - Customer Service (validación de cliente, nivel de lealtad)
@@ -248,7 +248,7 @@ sequenceDiagram
 - ✅ Creación y consulta de órdenes
 - ✅ Motor de descuentos con estrategias múltiples
 - ✅ Endpoints internos seguros con API Keys
-- ✅ Persistencia con PostgreSQL + Liquibase
+- ✅ Persistencia con MongoDB
 - ✅ Documentación OpenAPI/Swagger por servicio
 
 ### Funcionalidades Futuras 🔮
@@ -289,9 +289,8 @@ Cada microservicio implementa:
 
 ### Base de Datos
 
-- **Motor:** PostgreSQL
-- **Migraciones:** Liquibase
-- **Esquema:** Un schema por microservicio (aislamiento)
+- **Motor:** MongoDB
+- **Esquema:** Base de datos única (nova_db) con colecciones separadas por microservicio (aislamiento)
 
 ---
 

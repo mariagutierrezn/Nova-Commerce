@@ -21,7 +21,7 @@ API Gateway (8080) [Valida JWT, enruta, inyecta headers]
 
 **Roles de Servicios:**
 - **Auth-Service**: Genera JWT mediante validación con User-Service vía Feign Client
-- **User-Service**: Gestiona usuarios, roles y permisos (base de datos PostgreSQL)
+- **User-Service**: Gestiona usuarios, roles y permisos (base de datos MongoDB)
 - **Customer-Service**: Gestiona clientes, niveles de fidelidad, estado de cuenta
 - **Product-Service**: Catálogo de productos, gestión de inventario, categorías
 - **Order-Service**: Crea y gestiona órdenes, valida clientes/productos via Feign, aplica descuentos mediante Strategy Pattern
@@ -577,34 +577,34 @@ Actuator endpoints disponibles:
 
 ### Auth Service (8081)
 - **Rol**: Autenticación, generación de JWT
-- **DB**: PostgreSQL (nova_db)
+- **DB**: No tiene base de datos propia (usa User-Service vía Feign)
 - **Dependencias**: Feign a User-Service para validar credenciales
 - **Endpoints públicos**: `/api/auth/login`, `/api/auth/refresh`
 - **Documentación**: [README-AUTH-SERVICE.md](../auth-service/README-AUTH-SERVICE.md)
 
 ### User Service (8082)
 - **Rol**: Gestión de usuarios, roles, permisos
-- **DB**: PostgreSQL (nova_db)
+- **DB**: MongoDB (nova_db)
 - **Endpoints públicos**: `/api/users/**`, `/api/roles/**`
 - **Documentación**: [README-USER-SERVICE.md](../user-service/README-USER-SERVICE.md)
 
 ### Customer Service (8084)
 - **Rol**: Gestión de clientes, niveles de fidelidad
-- **DB**: PostgreSQL (nova_db)
+- **DB**: MongoDB (nova_db)
 - **Endpoints públicos**: `/api/customers/**`
 - **Endpoints internos**: `/internal/customers/{id}` (Feign, X-Internal-API-Key)
 - **Documentación**: [README-customer-service.md](../customer-service/README-customer-service.md)
 
 ### Product Service (8083)
 - **Rol**: Catálogo de productos, inventario
-- **DB**: PostgreSQL (nova_db)
+- **DB**: MongoDB (nova_db)
 - **Endpoints públicos**: `/api/products/**`
 - **Endpoints internos**: `/internal/products/{id}` (Feign, X-Internal-API-Key)
 - **Documentación**: [README-product-service.md](../product-service/README-product-service.md)
 
 ### Order Service (8085)
 - **Rol**: Gestión de órdenes, validaciones, descuentos
-- **DB**: PostgreSQL (nova_db)
+- **DB**: MongoDB (nova_db)
 - **Endpoints públicos**: `/api/orders/**`
 - **Validaciones**: Cliente (vía Feign), Productos (vía Feign), Stock
 - **Descuentos**: Strategy Pattern (ProductType, Loyalty, Season)

@@ -27,7 +27,7 @@ public class CategoryService implements ManageCategoriesUseCase {
 
     @Override
     @Transactional
-    public Category updateCategory(Long id, Category category) {
+    public Category updateCategory(String id, Category category) {
         log.info("Updating category with ID: {}", id);
         
         if (!categoryPersistencePort.existsById(id)) {
@@ -40,7 +40,7 @@ public class CategoryService implements ManageCategoriesUseCase {
 
     @Override
     @Transactional
-    public void deleteCategory(Long id) {
+    public void deleteCategory(String id) {
         log.info("Deleting category with ID: {}", id);
         
         if (!categoryPersistencePort.existsById(id)) {
@@ -52,7 +52,7 @@ public class CategoryService implements ManageCategoriesUseCase {
 
     @Override
     @Transactional(readOnly = true)
-    public Category getCategoryById(Long id) {
+    public Category getCategoryById(String id) {
         log.info("Fetching category with ID: {}", id);
         
         return categoryPersistencePort.findById(id)

@@ -43,6 +43,6 @@ public interface UserServiceFeignClient {
     void updateCustomerId(
         @RequestHeader("X-Internal-API-Key") String apiKey,
         @PathVariable("userId") String userId,
-        @PathVariable("customerId") Long customerId
+        @PathVariable("customerId") String customerId
     );
 }

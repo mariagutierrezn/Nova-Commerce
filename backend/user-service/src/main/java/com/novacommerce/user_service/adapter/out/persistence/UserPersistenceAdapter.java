@@ -9,11 +9,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
-import java.util.UUID;
+// ...existing imports...
 
 /**
  * Adaptador de salida para persistencia de usuarios.
- * Implementa UserPersistencePort usando Spring Data JPA.
+ * Implementa UserPersistencePort usando Spring Data MongoDB.
  */
 @Component
 @RequiredArgsConstructor
@@ -27,7 +27,7 @@ public class UserPersistenceAdapter implements UserPersistencePort {
     }
 
     @Override
-    public Optional<User> findById(UUID id) {
+    public Optional<User> findById(String id) {
         return userRepository.findById(id);
     }
 
@@ -62,7 +62,7 @@ public class UserPersistenceAdapter implements UserPersistencePort {
     }
 
     @Override
-    public void deleteById(UUID id) {
+    public void deleteById(String id) {
         userRepository.deleteById(id);
     }
 }

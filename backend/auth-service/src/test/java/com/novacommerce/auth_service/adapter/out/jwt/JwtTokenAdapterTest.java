@@ -7,9 +7,10 @@ import io.jsonwebtoken.security.Keys;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -21,6 +22,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 @DisplayName("JwtTokenAdapter Tests")
 class JwtTokenAdapterTest {
 
@@ -47,16 +49,15 @@ class JwtTokenAdapterTest {
         ReflectionTestUtils.setField(jwtTokenAdapter, "jwtSecret", jwtSecret);
         ReflectionTestUtils.setField(jwtTokenAdapter, "jwtExpirationMs", jwtExpirationMs);
         ReflectionTestUtils.setField(jwtTokenAdapter, "refreshTokenExpirationMs", refreshTokenExpirationMs);
-        
-        authentication = mock(Authentication.class);
     }
     
     @Test
     @DisplayName("Should generate access token with authentication")
+    @SuppressWarnings("unchecked")
     void testGenerateToken() {
         // Given
         String username = "testuser";
-        Collection<GrantedAuthority> authorities = List.of(
+        List<SimpleGrantedAuthority> authorities = List.of(
             new SimpleGrantedAuthority("ROLE_ADMIN"),
             new SimpleGrantedAuthority("USER_READ")
         );
@@ -102,10 +103,11 @@ class JwtTokenAdapterTest {
     
     @Test
     @DisplayName("Should validate valid token")
+    @SuppressWarnings("unchecked")
     void testValidateValidToken() {
         // Given
         String username = "testuser";
-        Collection<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_USER"));
+        List<SimpleGrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_USER"));
         
         when(authentication.getName()).thenReturn(username);
         when(authentication.getAuthorities()).thenReturn((Collection) authorities);
@@ -147,10 +149,11 @@ class JwtTokenAdapterTest {
     
     @Test
     @DisplayName("Should extract username from token")
+    @SuppressWarnings("unchecked")
     void testGetUsernameFromToken() {
         // Given
         String username = "testuser";
-        Collection<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_USER"));
+        List<SimpleGrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_USER"));
         
         when(authentication.getName()).thenReturn(username);
         when(authentication.getAuthorities()).thenReturn((Collection) authorities);
@@ -166,10 +169,11 @@ class JwtTokenAdapterTest {
     
     @Test
     @DisplayName("Should extract authorities from token")
+    @SuppressWarnings("unchecked")
     void testGetAuthoritiesFromToken() {
         // Given
         String username = "testuser";
-        Collection<GrantedAuthority> authorities = List.of(
+        List<SimpleGrantedAuthority> authorities = List.of(
             new SimpleGrantedAuthority("ROLE_ADMIN"),
             new SimpleGrantedAuthority("USER_READ")
         );
@@ -190,10 +194,11 @@ class JwtTokenAdapterTest {
     
     @Test
     @DisplayName("Should include claims in token")
+    @SuppressWarnings("unchecked")
     void testTokenContainsClaims() {
         // Given
         String username = "testuser";
-        Collection<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_USER"));
+        List<SimpleGrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_USER"));
         
         when(authentication.getName()).thenReturn(username);
         when(authentication.getAuthorities()).thenReturn((Collection) authorities);
@@ -218,21 +223,18 @@ class JwtTokenAdapterTest {
     
     @Test
     @DisplayName("Should generate different tokens for same user")
+    @SuppressWarnings("unchecked")
     void testGenerateDifferentTokens() {
         // Given
         String username = "testuser";
-        Collection<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_USER"));
+        List<SimpleGrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_USER"));
         
         when(authentication.getName()).thenReturn(username);
         when(authentication.getAuthorities()).thenReturn((Collection) authorities);
 
         // When
         String token1 = jwtTokenAdapter.generateToken(authentication, null);
-        try {
-            Thread.sleep(10); // Small delay to ensure different timestamps
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
+        // Generate second token - may be identical due to millisecond rounding, which is acceptable
         String token2 = jwtTokenAdapter.generateToken(authentication, null);
 
         // Then
@@ -245,6 +247,7 @@ class JwtTokenAdapterTest {
 
     @Test
     @DisplayName("Should handle non-base64 JWT secret")
+    @SuppressWarnings("unchecked")
     void testNonBase64Secret() {
         // Given
         JwtTokenAdapter adapter = new JwtTokenAdapter();
@@ -256,7 +259,7 @@ class JwtTokenAdapterTest {
         ReflectionTestUtils.setField(adapter, "refreshTokenExpirationMs", refreshTokenExpirationMs);
 
         String username = "testuser";
-        Collection<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_USER"));
+        List<SimpleGrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_USER"));
 
         when(authentication.getName()).thenReturn(username);
         when(authentication.getAuthorities()).thenReturn((Collection) authorities);

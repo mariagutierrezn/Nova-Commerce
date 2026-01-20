@@ -5,7 +5,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 import java.util.Set;
-import java.util.UUID;
 
 /**
  * DTO para crear un nuevo rol del sistema.
@@ -19,5 +18,5 @@ public record CreateRoleRequest(
     String description,
 
     @JsonProperty("permission_ids")
-    Set<UUID> permissionIds
+    Set<String> permissionIds
 ) {}

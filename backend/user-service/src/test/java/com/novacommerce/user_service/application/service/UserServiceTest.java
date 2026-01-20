@@ -58,24 +58,24 @@ class UserServiceTest {
     @BeforeEach
     void setUp() {
         role = Role.builder()
-                .id(UUID.randomUUID())
+                .id("role-123")
                 .name("ADMIN")
                 .description("Administrator role")
-                .permissions(new HashSet<>())
+                .permissionIds(new HashSet<>())
                 .build();
 
-        Set<Role> roles = new HashSet<>();
-        roles.add(role);
+        Set<String> roleIds = new HashSet<>();
+        roleIds.add(role.getId());
 
         user = User.builder()
-                .id(UUID.randomUUID())
+                .id("user-123")
                 .username("testuser")
                 .email("test@example.com")
                 .password("encryptedPassword")
                 .status(UserStatusEnum.ACTIVE)
                 .enabled(true)
                 .locked(false)
-                .roles(roles)
+                .roleIds(roleIds)
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .build();
@@ -93,14 +93,14 @@ class UserServiceTest {
                 user.getUpdatedAt()
         );
 
-        Set<UUID> roleIds = new HashSet<>();
-        roleIds.add(role.getId());
+        Set<String> roleIdsForRequest = new HashSet<>();
+        roleIdsForRequest.add(role.getId());
 
         createUserRequest = new CreateUserRequest(
                 "testuser",
                 "test@example.com",
                 "password123",
-                roleIds,
+                roleIdsForRequest,
                 null
         );
     }
@@ -124,7 +124,7 @@ class UserServiceTest {
     @Test
     @DisplayName("Should get user by ID successfully")
     void testGetUserById() {
-        UUID userId = user.getId();
+        String userId = user.getId();
 
         when(userPersistencePort.findById(userId)).thenReturn(Optional.of(user));
         when(userMapper.userToUserResponse(user)).thenReturn(userResponse);
@@ -139,7 +139,7 @@ class UserServiceTest {
     @Test
     @DisplayName("Should throw exception when user not found by ID")
     void testGetUserByIdNotFound() {
-        UUID userId = UUID.randomUUID();
+        String userId = "user-456";
 
         when(userPersistencePort.findById(userId)).thenReturn(Optional.empty());
 
@@ -195,7 +195,7 @@ class UserServiceTest {
     @Test
     @DisplayName("Should update user successfully")
     void testUpdateUser() {
-        UUID userId = user.getId();
+        String userId = user.getId();
         CreateUserRequest updateRequest = new CreateUserRequest(
                 "updateduser",
                 "updated@example.com",
@@ -221,7 +221,7 @@ class UserServiceTest {
     @Test
     @DisplayName("Should throw exception when updating non-existent user")
     void testUpdateUserNotFound() {
-        UUID userId = UUID.randomUUID();
+        String userId = "user-789";
 
         when(userPersistencePort.findById(userId)).thenReturn(Optional.empty());
 
@@ -235,7 +235,7 @@ class UserServiceTest {
     @Test
     @DisplayName("Should delete user successfully")
     void testDeleteUser() {
-        UUID userId = user.getId();
+        String userId = user.getId();
 
         when(userPersistencePort.findById(userId)).thenReturn(Optional.of(user));
         doNothing().when(userPersistencePort).deleteById(userId);
@@ -248,7 +248,7 @@ class UserServiceTest {
     @Test
     @DisplayName("Should throw exception when deleting non-existent user")
     void testDeleteUserNotFound() {
-        UUID userId = UUID.randomUUID();
+        String userId = "user-999";
 
         when(userPersistencePort.findById(userId)).thenReturn(Optional.empty());
 
@@ -256,7 +256,7 @@ class UserServiceTest {
             userService.deleteUser(userId);
         });
 
-        verify(userPersistencePort, never()).deleteById(any(UUID.class));
+        verify(userPersistencePort, never()).deleteById(anyString());
     }
 
     @Test
@@ -286,10 +286,10 @@ class UserServiceTest {
         );
 
         Role userRole = Role.builder()
-                .id(UUID.randomUUID())
+                .id("role-789")
                 .name("USER")
                 .description("User role")
-                .permissions(new HashSet<>())
+                .permissionIds(new HashSet<>())
                 .build();
 
         when(userPersistencePort.existsByUsername(anyString())).thenReturn(false);

@@ -40,16 +40,16 @@ class CustomerPersistenceAdapterTest {
         Customer customer = new Customer(null, "Juan", "Pérez", "juan@example.com", "123456789",
             CustomerStatus.ACTIVE, LoyaltyLevel.GOLD);
         CustomerEntity entity = new CustomerEntity();
-        entity.setId(1L);
+        entity.setId("1");
         entity.setFirstName("Juan");
         CustomerEntity savedEntity = new CustomerEntity();
-        savedEntity.setId(1L);
+        savedEntity.setId("1");
         savedEntity.setFirstName("Juan");
 
         when(mapper.toEntity(customer)).thenReturn(entity);
         when(repository.save(entity)).thenReturn(savedEntity);
         when(mapper.toDomain(savedEntity)).thenReturn(
-            new Customer(1L, "Juan", "Pérez", "juan@example.com", "123456789",
+            new Customer("1", "Juan", "Pérez", "juan@example.com", "123456789",
                 CustomerStatus.ACTIVE, LoyaltyLevel.GOLD)
         );
 
@@ -58,7 +58,7 @@ class CustomerPersistenceAdapterTest {
 
         // THEN
         assertNotNull(result);
-        assertEquals(1L, result.getId());
+        assertEquals("1", result.getId());
         assertEquals("Juan", result.getFirstName());
         verify(mapper).toEntity(customer);
         verify(repository).save(entity);
@@ -69,11 +69,11 @@ class CustomerPersistenceAdapterTest {
     @DisplayName("givenValidId_whenFindById_thenReturnCustomer")
     void givenValidId_whenFindById_thenReturnCustomer() {
         // GIVEN
-        Long customerId = 1L;
+        String customerId = "1";
         CustomerEntity entity = new CustomerEntity();
-        entity.setId(1L);
+        entity.setId("1");
         entity.setFirstName("María");
-        Customer customer = new Customer(1L, "María", "García", "maria@example.com", "987654321",
+        Customer customer = new Customer("1", "María", "García", "maria@example.com", "987654321",
             CustomerStatus.ACTIVE, LoyaltyLevel.SILVER);
 
         when(repository.findById(customerId)).thenReturn(Optional.of(entity));
@@ -93,7 +93,7 @@ class CustomerPersistenceAdapterTest {
     @DisplayName("givenInvalidId_whenFindById_thenReturnEmpty")
     void givenInvalidId_whenFindById_thenReturnEmpty() {
         // GIVEN
-        Long customerId = 999L;
+        String customerId = "999";
         when(repository.findById(customerId)).thenReturn(Optional.empty());
 
         // WHEN
@@ -110,19 +110,19 @@ class CustomerPersistenceAdapterTest {
     void givenMultipleCustomers_whenFindAll_thenReturnList() {
         // GIVEN
         CustomerEntity entity1 = new CustomerEntity();
-        entity1.setId(1L);
+        entity1.setId("1");
         entity1.setFirstName("Juan");
         CustomerEntity entity2 = new CustomerEntity();
-        entity2.setId(2L);
+        entity2.setId("2");
         entity2.setFirstName("María");
 
         when(repository.findAll()).thenReturn(List.of(entity1, entity2));
         when(mapper.toDomain(entity1)).thenReturn(
-            new Customer(1L, "Juan", "Pérez", "juan@example.com", "123456789",
+            new Customer("1", "Juan", "Pérez", "juan@example.com", "123456789",
                 CustomerStatus.ACTIVE, LoyaltyLevel.GOLD)
         );
         when(mapper.toDomain(entity2)).thenReturn(
-            new Customer(2L, "María", "García", "maria@example.com", "987654321",
+            new Customer("2", "María", "García", "maria@example.com", "987654321",
                 CustomerStatus.ACTIVE, LoyaltyLevel.SILVER)
         );
 
@@ -156,7 +156,7 @@ class CustomerPersistenceAdapterTest {
     @DisplayName("givenValidId_whenDeleteById_thenRepositoryDeleteCalled")
     void givenValidId_whenDeleteById_thenRepositoryDeleteCalled() {
         // GIVEN
-        Long customerId = 1L;
+        String customerId = "1";
 
         // WHEN
         adapter.deleteById(customerId);

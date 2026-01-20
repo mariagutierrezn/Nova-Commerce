@@ -11,15 +11,15 @@ public interface ProductPersistencePort {
     
     Product save(Product product);
     
-    Optional<Product> findById(Long id);
+    Optional<Product> findById(String id);
     
     Page<Product> findAll(Pageable pageable);
     
-    Page<Product> findByCategoryId(Long categoryId, Pageable pageable);
+    Page<Product> findByCategoryId(String categoryId, Pageable pageable);
     
-    void deleteById(Long id);
+    void deleteById(String id);
     
-    boolean existsById(Long id);
+    boolean existsById(String id);
     
     /**
      * Encuentra productos activos con stock disponible en orden aleatorio.

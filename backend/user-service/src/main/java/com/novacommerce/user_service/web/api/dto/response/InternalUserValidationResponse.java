@@ -31,7 +31,7 @@ public class InternalUserValidationResponse {
     private Boolean locked;
     
     @JsonProperty("customer_id")
-    private Long customerId;
+    private String customerId;
 
     @JsonProperty("roles")
     private Set<String> roles;

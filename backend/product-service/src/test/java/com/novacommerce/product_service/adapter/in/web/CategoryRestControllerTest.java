@@ -24,7 +24,7 @@ import java.util.List;
 
 import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -56,14 +56,14 @@ class CategoryRestControllerTest {
     @BeforeEach
     void setUp() {
         category = Category.builder()
-                .id(1L)
+                .id("1")
                 .name("Electronics")
                 .description("Electronic devices")
                 .status("ACTIVE")
                 .build();
 
         categoryResponse = CategoryResponse.builder()
-                .id(1L)
+                .id("1")
                 .name("Electronics")
                 .description("Electronic devices")
                 .status("ACTIVE")
@@ -92,16 +92,16 @@ class CategoryRestControllerTest {
     @DisplayName("Should get category by ID with authentication")
     @WithMockUser(roles = "ADMIN")
     void testGetCategoryById() throws Exception {
-        when(manageCategoriesUseCase.getCategoryById(1L)).thenReturn(category);
+        when(manageCategoriesUseCase.getCategoryById("1")).thenReturn(category);
         when(categoryDtoMapper.toResponse(category)).thenReturn(categoryResponse);
 
         mockMvc.perform(get("/api/categories/1")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", is(1)))
+                .andExpect(jsonPath("$.id", is("1")))
                 .andExpect(jsonPath("$.name", is("Electronics")));
 
-        verify(manageCategoriesUseCase, times(1)).getCategoryById(1L);
+        verify(manageCategoriesUseCase, times(1)).getCategoryById("1");
     }
 
     @Test
@@ -144,7 +144,7 @@ class CategoryRestControllerTest {
         updatedResponse.setName("Computing");
 
         when(categoryDtoMapper.toDomain(any(CategoryRequest.class))).thenReturn(updatedCategory);
-        when(manageCategoriesUseCase.updateCategory(anyLong(), any(Category.class))).thenReturn(updatedCategory);
+        when(manageCategoriesUseCase.updateCategory(anyString(), any(Category.class))).thenReturn(updatedCategory);
         when(categoryDtoMapper.toResponse(updatedCategory)).thenReturn(updatedResponse);
 
         mockMvc.perform(put("/api/categories/1")
@@ -153,20 +153,20 @@ class CategoryRestControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name", is("Computing")));
 
-        verify(manageCategoriesUseCase, times(1)).updateCategory(anyLong(), any(Category.class));
+        verify(manageCategoriesUseCase, times(1)).updateCategory(anyString(), any(Category.class));
     }
 
     @Test
     @DisplayName("Should delete category with authentication and ADMIN role")
     @WithMockUser(roles = "ADMIN")
     void testDeleteCategory() throws Exception {
-        doNothing().when(manageCategoriesUseCase).deleteCategory(1L);
+        doNothing().when(manageCategoriesUseCase).deleteCategory("1");
 
         mockMvc.perform(delete("/api/categories/1")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
 
-        verify(manageCategoriesUseCase, times(1)).deleteCategory(1L);
+        verify(manageCategoriesUseCase, times(1)).deleteCategory("1");
     }
 
     @Test

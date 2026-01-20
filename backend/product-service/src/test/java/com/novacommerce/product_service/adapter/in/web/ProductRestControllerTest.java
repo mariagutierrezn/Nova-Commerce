@@ -26,7 +26,7 @@ import java.util.List;
 
 import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -55,23 +55,23 @@ class ProductRestControllerTest {
     @BeforeEach
     void setUp() {
         product = Product.builder()
-                .id(1L)
+                .id("1")
                 .name("Laptop")
                 .description("High-performance laptop")
                 .price(new BigDecimal("999.99"))
                 .productType(ProductType.PHYSICAL)
-                .categoryId(1L)
+                .categoryId("1")
                 .stockQuantity(10)
                 .status("ACTIVE")
                 .build();
 
         productResponse = ProductResponse.builder()
-                .id(1L)
+                .id("1")
                 .name("Laptop")
                 .description("High-performance laptop")
                 .price(new BigDecimal("999.99"))
                 .productType(ProductType.PHYSICAL)
-                .categoryId(1L)
+                .categoryId("1")
                 .stockQuantity(10)
                 .status("ACTIVE")
                 .build();
@@ -99,16 +99,16 @@ class ProductRestControllerTest {
     @DisplayName("Should get product by ID with authentication")
     @WithMockUser(roles = "ADMIN")
     void testGetProductById() throws Exception {
-        when(manageProductsUseCase.getProductById(1L)).thenReturn(product);
+        when(manageProductsUseCase.getProductById("1")).thenReturn(product);
         when(productDtoMapper.toResponse(product)).thenReturn(productResponse);
 
         mockMvc.perform(get("/api/products/1")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", is(1)))
+                .andExpect(jsonPath("$.id", is("1")))
                 .andExpect(jsonPath("$.name", is("Laptop")));
 
-        verify(manageProductsUseCase, times(1)).getProductById(1L);
+        verify(manageProductsUseCase, times(1)).getProductById("1");
     }
 
     @Test
@@ -120,7 +120,7 @@ class ProductRestControllerTest {
                 .description("High-performance laptop")
                 .price(new BigDecimal("999.99"))
                 .productType(ProductType.PHYSICAL)
-                .categoryId(1L)
+                .categoryId("1")
                 .stockQuantity(10)
                 .status("ACTIVE")
                 .build();
@@ -147,7 +147,7 @@ class ProductRestControllerTest {
                 .description("High-performance gaming laptop")
                 .price(new BigDecimal("1299.99"))
                 .productType(ProductType.PHYSICAL)
-                .categoryId(1L)
+                .categoryId("1")
                 .stockQuantity(10)
                 .status("ACTIVE")
                 .build();
@@ -159,7 +159,7 @@ class ProductRestControllerTest {
         updatedResponse.setName("Gaming Laptop");
 
         when(productDtoMapper.toDomain(any(ProductRequest.class))).thenReturn(updatedProduct);
-        when(manageProductsUseCase.updateProduct(anyLong(), any(Product.class))).thenReturn(updatedProduct);
+        when(manageProductsUseCase.updateProduct(anyString(), any(Product.class))).thenReturn(updatedProduct);
         when(productDtoMapper.toResponse(updatedProduct)).thenReturn(updatedResponse);
 
         mockMvc.perform(put("/api/products/1")
@@ -168,20 +168,20 @@ class ProductRestControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name", is("Gaming Laptop")));
 
-        verify(manageProductsUseCase, times(1)).updateProduct(anyLong(), any(Product.class));
+        verify(manageProductsUseCase, times(1)).updateProduct(anyString(), any(Product.class));
     }
 
     @Test
     @DisplayName("Should delete product with authentication and ADMIN role")
     @WithMockUser(roles = "ADMIN")
     void testDeleteProduct() throws Exception {
-        doNothing().when(manageProductsUseCase).deleteProduct(1L);
+        doNothing().when(manageProductsUseCase).deleteProduct("1");
 
         mockMvc.perform(delete("/api/products/1")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
 
-        verify(manageProductsUseCase, times(1)).deleteProduct(1L);
+        verify(manageProductsUseCase, times(1)).deleteProduct("1");
     }
 
     @Test
@@ -190,7 +190,7 @@ class ProductRestControllerTest {
     void testGetProductsByCategory() throws Exception {
         Page<Product> productPage = new PageImpl<>(List.of(product), PageRequest.of(0, 20), 1);
 
-        when(manageProductsUseCase.getProductsByCategoryId(eq(1L), any())).thenReturn(productPage);
+        when(manageProductsUseCase.getProductsByCategoryId(eq("1"), any())).thenReturn(productPage);
         when(productDtoMapper.toResponse(product)).thenReturn(productResponse);
 
         mockMvc.perform(get("/api/products/category/1")
@@ -198,7 +198,7 @@ class ProductRestControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content", hasSize(1)));
 
-        verify(manageProductsUseCase, times(1)).getProductsByCategoryId(eq(1L), any());
+        verify(manageProductsUseCase, times(1)).getProductsByCategoryId(eq("1"), any());
     }
 
     @Test
@@ -217,7 +217,7 @@ class ProductRestControllerTest {
                 .description("High-performance laptop")
                 .price(new BigDecimal("999.99"))
                 .productType(ProductType.PHYSICAL)
-                .categoryId(1L)
+                .categoryId("1")
                 .stockQuantity(10)
                 .status("ACTIVE")
                 .build();

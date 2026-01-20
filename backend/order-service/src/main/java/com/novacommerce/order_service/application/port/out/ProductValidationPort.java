@@ -11,20 +11,20 @@ public interface ProductValidationPort {
      * @param productId ID del producto
      * @return true si el producto es válido
      */
-    boolean isProductValid(Long productId);
+    boolean isProductValid(String productId);
     
     /**
      * Obtiene el nombre del producto.
      */
-    String getProductName(Long productId);
+    String getProductName(String productId);
     
     /**
      * Obtiene el tipo de producto (para descuentos).
      */
-    String getProductType(Long productId);
+    String getProductType(String productId);
     
     /**
      * Verifica stock disponible.
      */
-    boolean hasStock(Long productId, Integer quantity);
+    boolean hasStock(String productId, Integer quantity);
 }

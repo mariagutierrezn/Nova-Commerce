@@ -13,7 +13,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -29,16 +28,16 @@ class RolePersistenceAdapterTest {
     private RolePersistenceAdapter adapter;
 
     private Role testRole;
-    private UUID roleId;
+    private String roleId;
 
     @BeforeEach
     void setUp() {
-        roleId = UUID.randomUUID();
+        roleId = "role-123";
         testRole = Role.builder()
             .id(roleId)
             .name("ADMIN")
             .description("Administrador del sistema")
-            .permissions(Set.of())
+            .permissionIds(Set.of())
             .build();
     }
 
@@ -105,7 +104,7 @@ class RolePersistenceAdapterTest {
     @Test
     @DisplayName("Should find all roles by id set")
     void testFindAllById() {
-        Set<UUID> ids = Set.of(roleId);
+        Set<String> ids = Set.of(roleId);
         List<Role> roles = List.of(testRole);
         when(roleRepository.findAllById(ids)).thenReturn(roles);
 
@@ -120,7 +119,7 @@ class RolePersistenceAdapterTest {
     @Test
     @DisplayName("Should return empty set when no roles found by ids")
     void testFindAllByIdEmpty() {
-        Set<UUID> ids = Set.of(UUID.randomUUID());
+        Set<String> ids = Set.of("role-456");
         when(roleRepository.findAllById(ids)).thenReturn(List.of());
 
         Set<Role> result = adapter.findAllById(ids);

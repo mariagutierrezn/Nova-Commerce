@@ -32,9 +32,9 @@ class CustomerServiceTest {
     @DisplayName("givenAllCustomers_whenFindAll_thenReturnList")
     void givenAllCustomers_whenFindAll_thenReturnList() {
         // GIVEN
-        Customer customer1 = new Customer(1L, "Juan", "Pérez", "juan@example.com", "123456789",
+        Customer customer1 = new Customer("1", "Juan", "Pérez", "juan@example.com", "123456789",
             CustomerStatus.ACTIVE, LoyaltyLevel.GOLD);
-        Customer customer2 = new Customer(2L, "María", "García", "maria@example.com", "987654321",
+        Customer customer2 = new Customer("2", "María", "García", "maria@example.com", "987654321",
             CustomerStatus.ACTIVE, LoyaltyLevel.SILVER);
 
         when(persistencePort.findAll()).thenReturn(List.of(customer1, customer2));
@@ -67,8 +67,8 @@ class CustomerServiceTest {
     @DisplayName("givenValidId_whenFindById_thenReturnCustomer")
     void givenValidId_whenFindById_thenReturnCustomer() {
         // GIVEN
-        Long customerId = 1L;
-        Customer customer = new Customer(1L, "Juan", "Pérez", "juan@example.com", "123456789",
+        String customerId = "1";
+        Customer customer = new Customer("1", "Juan", "Pérez", "juan@example.com", "123456789",
             CustomerStatus.ACTIVE, LoyaltyLevel.GOLD);
 
         when(persistencePort.findById(customerId)).thenReturn(Optional.of(customer));
@@ -86,7 +86,7 @@ class CustomerServiceTest {
     @DisplayName("givenInvalidId_whenFindById_thenReturnEmpty")
     void givenInvalidId_whenFindById_thenReturnEmpty() {
         // GIVEN
-        Long customerId = 999L;
+        String customerId = "999";
         when(persistencePort.findById(customerId)).thenReturn(Optional.empty());
 
         // WHEN
@@ -103,7 +103,7 @@ class CustomerServiceTest {
         // GIVEN
         Customer customer = new Customer(null, "Carlos", "López", "carlos@example.com", "555123456",
             null, null);
-        Customer savedCustomer = new Customer(3L, "Carlos", "López", "carlos@example.com", "555123456",
+        Customer savedCustomer = new Customer("3", "Carlos", "López", "carlos@example.com", "555123456",
             CustomerStatus.ACTIVE, LoyaltyLevel.BRONZE);
 
         when(persistencePort.existsByEmail("carlos@example.com")).thenReturn(false);
@@ -114,7 +114,7 @@ class CustomerServiceTest {
 
         // THEN
         assertNotNull(result);
-        assertEquals(3L, result.getId());
+        assertEquals("3", result.getId());
         assertEquals(CustomerStatus.ACTIVE, result.getStatus());
         verify(persistencePort).existsByEmail("carlos@example.com");
         verify(persistencePort).save(any(Customer.class));
@@ -144,7 +144,7 @@ class CustomerServiceTest {
         // GIVEN
         Customer customer = new Customer(null, "Test", "User", "test@example.com", null,
             CustomerStatus.INACTIVE, LoyaltyLevel.GOLD);
-        Customer savedCustomer = new Customer(4L, "Test", "User", "test@example.com", null,
+        Customer savedCustomer = new Customer("4", "Test", "User", "test@example.com", null,
             CustomerStatus.INACTIVE, LoyaltyLevel.GOLD);
 
         when(persistencePort.existsByEmail("test@example.com")).thenReturn(false);
@@ -162,12 +162,12 @@ class CustomerServiceTest {
     @DisplayName("givenExistingCustomer_whenUpdate_thenUpdateSuccessful")
     void givenExistingCustomer_whenUpdate_thenUpdateSuccessful() {
         // GIVEN
-        Long customerId = 1L;
-        Customer existingCustomer = new Customer(1L, "Juan", "Pérez", "juan@example.com", "123456789",
+        String customerId = "1";
+        Customer existingCustomer = new Customer("1", "Juan", "Pérez", "juan@example.com", "123456789",
             CustomerStatus.ACTIVE, LoyaltyLevel.GOLD);
         Customer updateData = new Customer(null, "Juan", "Pérez Updated", "juan@example.com", "123456789",
             CustomerStatus.ACTIVE, LoyaltyLevel.PLATINUM);
-        Customer updated = new Customer(1L, "Juan", "Pérez Updated", "juan@example.com", "123456789",
+        Customer updated = new Customer("1", "Juan", "Pérez Updated", "juan@example.com", "123456789",
             CustomerStatus.ACTIVE, LoyaltyLevel.PLATINUM);
 
         when(persistencePort.findById(customerId)).thenReturn(Optional.of(existingCustomer));
@@ -178,7 +178,7 @@ class CustomerServiceTest {
 
         // THEN
         assertNotNull(result);
-        assertEquals(1L, result.getId());
+        assertEquals("1", result.getId());
         assertEquals("Pérez Updated", result.getLastName());
         verify(persistencePort).findById(customerId);
         verify(persistencePort).save(any(Customer.class));
@@ -188,7 +188,7 @@ class CustomerServiceTest {
     @DisplayName("givenNonExistentCustomer_whenUpdate_thenThrowException")
     void givenNonExistentCustomer_whenUpdate_thenThrowException() {
         // GIVEN
-        Long customerId = 999L;
+        String customerId = "999";
         Customer updateData = new Customer(null, "Test", "User", "test@example.com", null,
             null, null);
 
@@ -206,8 +206,8 @@ class CustomerServiceTest {
     @DisplayName("givenBlockedCustomer_whenUpdate_thenThrowException")
     void givenBlockedCustomer_whenUpdate_thenThrowException() {
         // GIVEN
-        Long customerId = 1L;
-        Customer blockedCustomer = new Customer(1L, "Juan", "Pérez", "juan@example.com", "123456789",
+        String customerId = "1";
+        Customer blockedCustomer = new Customer("1", "Juan", "Pérez", "juan@example.com", "123456789",
             CustomerStatus.BLOCKED, LoyaltyLevel.GOLD);
         Customer updateData = new Customer(null, "Juan", "Updated", "juan@example.com", null,
             null, null);
@@ -226,8 +226,8 @@ class CustomerServiceTest {
     @DisplayName("givenExistingCustomer_whenDelete_thenDeleteSuccessful")
     void givenExistingCustomer_whenDelete_thenDeleteSuccessful() {
         // GIVEN
-        Long customerId = 1L;
-        Customer customer = new Customer(1L, "Juan", "Pérez", "juan@example.com", "123456789",
+        String customerId = "1";
+        Customer customer = new Customer("1", "Juan", "Pérez", "juan@example.com", "123456789",
             CustomerStatus.ACTIVE, LoyaltyLevel.GOLD);
 
         when(persistencePort.findById(customerId)).thenReturn(Optional.of(customer));
@@ -244,7 +244,7 @@ class CustomerServiceTest {
     @DisplayName("givenNonExistentCustomer_whenDelete_thenNoException")
     void givenNonExistentCustomer_whenDelete_thenNoException() {
         // GIVEN
-        Long customerId = 999L;
+        String customerId = "999";
         when(persistencePort.findById(customerId)).thenReturn(Optional.empty());
 
         // WHEN & THEN
@@ -257,8 +257,8 @@ class CustomerServiceTest {
     @DisplayName("givenBlockedCustomer_whenDelete_thenThrowException")
     void givenBlockedCustomer_whenDelete_thenThrowException() {
         // GIVEN
-        Long customerId = 1L;
-        Customer blockedCustomer = new Customer(1L, "Juan", "Pérez", "juan@example.com", "123456789",
+        String customerId = "1";
+        Customer blockedCustomer = new Customer("1", "Juan", "Pérez", "juan@example.com", "123456789",
             CustomerStatus.BLOCKED, LoyaltyLevel.GOLD);
 
         when(persistencePort.findById(customerId)).thenReturn(Optional.of(blockedCustomer));

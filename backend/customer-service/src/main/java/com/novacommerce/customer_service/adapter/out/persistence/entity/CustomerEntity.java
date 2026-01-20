@@ -2,37 +2,22 @@ package com.novacommerce.customer_service.adapter.out.persistence.entity;
 
 import com.novacommerce.customer_service.domain.model.enums.CustomerStatus;
 import com.novacommerce.customer_service.domain.model.enums.LoyaltyLevel;
-import jakarta.persistence.*;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.annotation.Id;
 
-@Entity
-@Table(name = "customers")
+@Document(collection = "customers")
 public class CustomerEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(nullable = false, length = 100)
+    private String id;
     private String firstName;
-
-    @Column(nullable = false, length = 100)
     private String lastName;
-
-    @Column(nullable = false, unique = true)
     private String email;
-
-    @Column(length = 20)
     private String phone;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
     private CustomerStatus status;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
     private LoyaltyLevel loyaltyLevel;
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
     public String getFirstName() { return firstName; }
     public void setFirstName(String firstName) { this.firstName = firstName; }
     public String getLastName() { return lastName; }

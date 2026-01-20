@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.UUID;
+// ...existing imports...
 
 /**
  * Adaptador de entrada REST para endpoints internos de usuarios.
@@ -110,8 +110,8 @@ public class InternalUserRestController {
         @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
     })
     public ResponseEntity<Void> updateCustomerId(
-        @PathVariable UUID userId,
-        @PathVariable Long customerId) {
+        @PathVariable String userId,
+        @PathVariable String customerId) {
         
         log.info("Actualizando customerId {} para usuario: {}", customerId, userId);
         manageUsersUseCase.updateCustomerId(userId, customerId);

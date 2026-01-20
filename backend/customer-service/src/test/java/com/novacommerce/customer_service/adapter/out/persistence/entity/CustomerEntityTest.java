@@ -34,7 +34,7 @@ class CustomerEntityTest {
         CustomerEntity entity = new CustomerEntity();
 
         // WHEN
-        entity.setId(1L);
+        entity.setId("1");
         entity.setFirstName("Juan");
         entity.setLastName("Pérez");
         entity.setEmail("juan@example.com");
@@ -43,7 +43,7 @@ class CustomerEntityTest {
         entity.setLoyaltyLevel(LoyaltyLevel.GOLD);
 
         // THEN
-        assertEquals(1L, entity.getId());
+        assertEquals("1", entity.getId());
         assertEquals("Juan", entity.getFirstName());
         assertEquals("Pérez", entity.getLastName());
         assertEquals("juan@example.com", entity.getEmail());
@@ -59,7 +59,7 @@ class CustomerEntityTest {
         CustomerEntity entity = new CustomerEntity();
 
         // WHEN
-        entity.setId(2L);
+        entity.setId("2");
         entity.setFirstName("María");
         entity.setLastName("García");
         entity.setEmail("maria@example.com");
@@ -110,7 +110,7 @@ class CustomerEntityTest {
     void givenCustomerEntity_whenGettersUsed_thenReturnValues() {
         // GIVEN
         CustomerEntity entity = new CustomerEntity();
-        entity.setId(3L);
+        entity.setId("3");
         entity.setFirstName("Carlos");
         entity.setLastName("López");
         entity.setEmail("carlos@example.com");
@@ -119,7 +119,7 @@ class CustomerEntityTest {
         entity.setLoyaltyLevel(LoyaltyLevel.BRONZE);
 
         // WHEN & THEN
-        assertEquals(3L, entity.getId());
+        assertEquals("3", entity.getId());
         assertEquals("Carlos", entity.getFirstName());
         assertEquals("López", entity.getLastName());
         assertEquals("carlos@example.com", entity.getEmail());
@@ -133,7 +133,7 @@ class CustomerEntityTest {
     void givenCustomerEntity_whenMultipleUpdates_thenFinalStateCorrect() {
         // GIVEN
         CustomerEntity entity = new CustomerEntity();
-        entity.setId(4L);
+        entity.setId("4");
         entity.setFirstName("Ana");
         entity.setStatus(CustomerStatus.ACTIVE);
 
@@ -143,7 +143,7 @@ class CustomerEntityTest {
         entity.setLoyaltyLevel(LoyaltyLevel.PLATINUM);
 
         // THEN
-        assertEquals(4L, entity.getId());
+        assertEquals("4", entity.getId());
         assertEquals("Andrea", entity.getFirstName());
         assertEquals(CustomerStatus.INACTIVE, entity.getStatus());
         assertEquals(LoyaltyLevel.PLATINUM, entity.getLoyaltyLevel());

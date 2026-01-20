@@ -4,7 +4,7 @@ import com.novacommerce.customer_service.domain.model.enums.CustomerStatus;
 import com.novacommerce.customer_service.domain.model.enums.LoyaltyLevel;
 
 public class Customer {
-    private Long id;
+    private String id;
     private String firstName;
     private String lastName;
     private String email;
@@ -14,7 +14,7 @@ public class Customer {
 
     public Customer() {}
 
-    public Customer(Long id, String firstName, String lastName, String email, String phone, CustomerStatus status, LoyaltyLevel loyaltyLevel) {
+    public Customer(String id, String firstName, String lastName, String email, String phone, CustomerStatus status, LoyaltyLevel loyaltyLevel) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -24,8 +24,8 @@ public class Customer {
         this.loyaltyLevel = loyaltyLevel;
     }
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
     public String getFirstName() { return firstName; }
     public void setFirstName(String firstName) { this.firstName = firstName; }
     public String getLastName() { return lastName; }

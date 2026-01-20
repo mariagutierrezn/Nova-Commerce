@@ -41,7 +41,7 @@ public class CategoryRestController {
     @GetMapping("/{id}")
     @Operation(summary = "Get category by ID")
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
-    public ResponseEntity<CategoryResponse> getCategoryById(@PathVariable Long id) {
+    public ResponseEntity<CategoryResponse> getCategoryById(@PathVariable String id) {
         var category = manageCategoriesUseCase.getCategoryById(id);
         return ResponseEntity.ok(categoryDtoMapper.toResponse(category));
     }
@@ -59,7 +59,7 @@ public class CategoryRestController {
     @Operation(summary = "Update category")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<CategoryResponse> updateCategory(
-            @PathVariable Long id,
+            @PathVariable String id,
             @Valid @RequestBody CategoryRequest request) {
         
         var category = categoryDtoMapper.toDomain(request);
@@ -70,7 +70,7 @@ public class CategoryRestController {
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete category")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteCategory(@PathVariable String id) {
         manageCategoriesUseCase.deleteCategory(id);
         return ResponseEntity.noContent().build();
     }

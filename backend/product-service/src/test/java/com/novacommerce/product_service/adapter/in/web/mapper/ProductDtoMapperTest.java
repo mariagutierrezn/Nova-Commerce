@@ -7,8 +7,6 @@ import com.novacommerce.product_service.domain.model.ProductType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -33,18 +31,18 @@ class ProductDtoMapperTest {
                 .description("High-performance laptop")
                 .price(new BigDecimal("999.99"))
                 .productType(ProductType.PHYSICAL)
-                .categoryId(1L)
+                .categoryId("1")
                 .stockQuantity(10)
                 .status("ACTIVE")
                 .build();
 
         product = Product.builder()
-                .id(1L)
+                .id("1")
                 .name("Laptop")
                 .description("High-performance laptop")
                 .price(new BigDecimal("999.99"))
                 .productType(ProductType.PHYSICAL)
-                .categoryId(1L)
+                .categoryId("1")
                 .stockQuantity(10)
                 .status("ACTIVE")
                 .build();
@@ -142,7 +140,7 @@ class ProductDtoMapperTest {
     void testResponseMapping() {
         ProductResponse response = mapper.toResponse(product);
         assertEquals("Laptop", response.getName());
-        assertEquals(1L, response.getId());
+        assertEquals("1", response.getId());
         assertEquals(new BigDecimal("999.99"), response.getPrice());
         assertEquals(ProductType.PHYSICAL, response.getProductType());
     }

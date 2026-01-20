@@ -4,7 +4,7 @@ import com.novacommerce.user_service.application.port.in.ManageRolesUseCase;
 import com.novacommerce.user_service.application.port.out.RolePersistencePort;
 import com.novacommerce.user_service.domain.model.Permission;
 import com.novacommerce.user_service.domain.model.Role;
-import com.novacommerce.user_service.repository.PermissionRepository;
+import com.novacommerce.user_service.application.port.out.PermissionPersistencePort;
 import com.novacommerce.user_service.service.mapper.RoleMapper;
 import com.novacommerce.user_service.web.api.dto.request.CreateRoleRequest;
 import com.novacommerce.user_service.web.api.dto.response.RoleResponse;
@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
+// ...existing imports...
 import java.util.stream.Collectors;
 
 /**
@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
 public class RoleService implements ManageRolesUseCase {
 
     private final RolePersistencePort rolePersistencePort;
-    private final PermissionRepository permissionRepository; // TODO: Crear PermissionPersistencePort
+    private final PermissionPersistencePort permissionPersistencePort;
     private final RoleMapper roleMapper;
 
     @Override
@@ -46,7 +46,7 @@ public class RoleService implements ManageRolesUseCase {
 
     @Override
     @Transactional(readOnly = true)
-    public RoleResponse getRoleById(UUID id) {
+    public RoleResponse getRoleById(String id) {
         log.info("Obteniendo rol: {}", id);
         return rolePersistencePort.findById(id)
             .map(roleMapper::roleToRoleResponse)
@@ -61,12 +61,13 @@ public class RoleService implements ManageRolesUseCase {
             throw new DuplicateResourceException("Role", "name", createRoleRequest.name());
         }
 
-        Set<Permission> permissions = loadPermissions(createRoleRequest.permissionIds());
+        Set<String> permissionIds = createRoleRequest.permissionIds();
+        Set<Permission> permissions = loadPermissions(permissionIds);
 
         Role role = Role.builder()
             .name(createRoleRequest.name())
             .description(createRoleRequest.description())
-            .permissions(permissions)
+            .permissionIds(permissions.stream().map(Permission::getId).collect(Collectors.toSet()))
             .build();
 
         Role savedRole = rolePersistencePort.save(role);
@@ -76,7 +77,7 @@ public class RoleService implements ManageRolesUseCase {
     }
 
     @Override
-    public void deleteRole(UUID id) {
+    public void deleteRole(String id) {
         log.info("Eliminando rol: {}", id);
 
         if (!rolePersistencePort.findById(id).isPresent()) {
@@ -87,24 +88,20 @@ public class RoleService implements ManageRolesUseCase {
         log.info("Rol eliminado exitosamente: {}", id);
     }
 
-    private Set<Permission> loadPermissions(Set<UUID> permissionIds) {
+    private Set<Permission> loadPermissions(Set<String> permissionIds) {
         if (permissionIds == null || permissionIds.isEmpty()) {
             return new HashSet<>();
         }
-
-        Set<Permission> permissions = new HashSet<>(permissionRepository.findAllById(permissionIds));
-
+        Set<Permission> permissions = permissionPersistencePort.findAllById(permissionIds);
         if (permissions.size() != permissionIds.size()) {
-            Set<UUID> foundIds = permissions.stream()
+            Set<String> foundIds = permissions.stream()
                 .map(Permission::getId)
                 .collect(Collectors.toSet());
-            Set<UUID> notFoundIds = permissionIds.stream()
+            Set<String> notFoundIds = permissionIds.stream()
                 .filter(id -> !foundIds.contains(id))
                 .collect(Collectors.toSet());
-
             log.warn("Permisos no encontrados: {}", notFoundIds);
         }
-
         return permissions;
     }
 }

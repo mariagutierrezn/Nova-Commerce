@@ -23,7 +23,7 @@ public class InternalProductController {
     }
 
     static class InternalProductResponse {
-        public Long id;
+        public String id;
         public String name;
         public String description;
         public java.math.BigDecimal price;
@@ -45,7 +45,7 @@ public class InternalProductController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<InternalProductResponse> getByIdInternal(@PathVariable Long id) {
+    public ResponseEntity<InternalProductResponse> getByIdInternal(@PathVariable String id) {
         Product product = manageProductsUseCase.getProductById(id);
         return ResponseEntity.ok(InternalProductResponse.from(product));
     }
