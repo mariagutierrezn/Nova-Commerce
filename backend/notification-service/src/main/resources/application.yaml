@@ -40,10 +40,10 @@ app:
 
   # Configuración de RabbitMQ
   rabbitmq:
-    exchange: ${app.rabbitmq.exchange:nova.exchange}
+    exchange: nova.exchange
     queue:
-      order-created: ${app.rabbitmq.queue.order-created:order.created.queue}
-      order-paid: ${app.rabbitmq.queue.order-paid:order.paid.queue}
+      order-created: order.created.queue
+      order-paid: order.paid.queue
 
 # Configuración de OpenAPI/Swagger
 springdoc:

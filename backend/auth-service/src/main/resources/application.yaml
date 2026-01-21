@@ -1,6 +1,20 @@
 server:
   port: 8081
 
+# Management and Actuator Configuration
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+      base-path: /actuator
+  endpoint:
+    health:
+      show-details: always
+  health:
+    mongo:
+      enabled: false
+
 spring:
   application:
     name: auth-service

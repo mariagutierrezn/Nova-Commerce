@@ -61,3 +61,8 @@ springdoc:
 logging:
   level:
     com.novacommerce.user_service.adapter.in.filter.InternalApiKeyFilter: DEBUG
+
+# Configuración de clientes HTTP para microservicios
+order:
+  service:
+    url: ${ORDER_SERVICE_URL:http://localhost:8083}

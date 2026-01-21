@@ -21,6 +21,8 @@ public class CustomerDto {
     private String phone;
     private CustomerStatus status;
     private LoyaltyLevel loyaltyLevel;
+    private Integer totalOrders;
+    private Double totalSpent;
 
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
@@ -36,4 +38,8 @@ public class CustomerDto {
     public void setStatus(CustomerStatus status) { this.status = status; }
     public LoyaltyLevel getLoyaltyLevel() { return loyaltyLevel; }
     public void setLoyaltyLevel(LoyaltyLevel loyaltyLevel) { this.loyaltyLevel = loyaltyLevel; }
+    public Integer getTotalOrders() { return totalOrders; }
+    public void setTotalOrders(Integer totalOrders) { this.totalOrders = totalOrders; }
+    public Double getTotalSpent() { return totalSpent; }
+    public void setTotalSpent(Double totalSpent) { this.totalSpent = totalSpent; }
 }

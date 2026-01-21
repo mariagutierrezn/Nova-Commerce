@@ -64,6 +64,8 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/auth/public/register").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/auth/refresh").permitAll()
+                // Actuator endpoints para healthcheck
+                .requestMatchers("/actuator/**").permitAll()
                 // Documentación Swagger
                 .requestMatchers("/swagger-ui/**").permitAll()
                 .requestMatchers("/v3/api-docs/**").permitAll()

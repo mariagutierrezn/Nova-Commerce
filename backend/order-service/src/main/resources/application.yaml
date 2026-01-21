@@ -59,10 +59,10 @@ app:
 
   # Configuración de RabbitMQ
   rabbitmq:
-    exchange: ${app.rabbitmq.exchange:nova.exchange}
+    exchange: nova.exchange
     routing-key:
-      order-created: ${app.rabbitmq.routing-key.order-created:order.created}
-      order-paid: ${app.rabbitmq.routing-key.order-paid:order.paid}
+      order-created: order.created
+      order-paid: order.paid
 
 # Configuración de OpenAPI/Swagger
 springdoc:
