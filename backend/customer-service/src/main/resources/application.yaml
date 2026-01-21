@@ -65,4 +65,4 @@ logging:
 # Configuración de clientes HTTP para microservicios
 order:
   service:
-    url: ${ORDER_SERVICE_URL:http://localhost:8083}
+    url: ${ORDER_SERVICE_URL:http://localhost:8085}

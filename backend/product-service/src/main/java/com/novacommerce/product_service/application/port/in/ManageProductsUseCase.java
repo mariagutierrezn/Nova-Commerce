@@ -17,4 +17,14 @@ public interface ManageProductsUseCase {
     Page<Product> getAllProducts(Pageable pageable);
     
     Page<Product> getProductsByCategoryId(String categoryId, Pageable pageable);
+    
+    /**
+     * Decrementa el stock de un producto.
+     * Lanza excepción si no hay suficiente stock.
+     * 
+     * @param productId ID del producto
+     * @param quantity cantidad a decrementar
+     * @return producto actualizado
+     */
+    Product decrementStock(String productId, Integer quantity);
 }

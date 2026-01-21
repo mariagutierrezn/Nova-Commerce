@@ -3,10 +3,7 @@ package com.novacommerce.product_service.adapter.in.web;
 import com.novacommerce.product_service.application.port.in.ManageProductsUseCase;
 import com.novacommerce.product_service.domain.model.Product;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * Endpoints internos para consumo entre microservicios.
@@ -43,10 +40,22 @@ public class InternalProductController {
             return r;
         }
     }
+    
+    static class DecrementStockRequest {
+        public Integer quantity;
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<InternalProductResponse> getByIdInternal(@PathVariable String id) {
         Product product = manageProductsUseCase.getProductById(id);
+        return ResponseEntity.ok(InternalProductResponse.from(product));
+    }
+    
+    @PostMapping("/{id}/decrement-stock")
+    public ResponseEntity<InternalProductResponse> decrementStock(
+            @PathVariable String id,
+            @RequestBody DecrementStockRequest request) {
+        Product product = manageProductsUseCase.decrementStock(id, request.quantity);
         return ResponseEntity.ok(InternalProductResponse.from(product));
     }
 }

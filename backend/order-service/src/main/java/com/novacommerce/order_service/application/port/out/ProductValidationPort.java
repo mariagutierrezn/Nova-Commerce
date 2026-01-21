@@ -27,4 +27,12 @@ public interface ProductValidationPort {
      * Verifica stock disponible.
      */
     boolean hasStock(String productId, Integer quantity);
+    
+    /**
+     * Decrementa el stock de un producto.
+     * 
+     * @param productId ID del producto
+     * @param quantity cantidad a decrementar
+     */
+    void decrementStock(String productId, Integer quantity);
 }

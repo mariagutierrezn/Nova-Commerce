@@ -73,4 +73,26 @@ public class ProductService implements ManageProductsUseCase {
                 categoryId, pageable.getPageNumber(), pageable.getPageSize());
         return productPersistencePort.findByCategoryId(categoryId, pageable);
     }
+
+    @Override
+    @Transactional
+    public Product decrementStock(String productId, Integer quantity) {
+        log.info("Decrementing stock for product ID: {} by quantity: {}", productId, quantity);
+        
+        Product product = productPersistencePort.findById(productId)
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found with ID: " + productId));
+        
+        Integer currentStock = product.getStockQuantity();
+        if (currentStock == null || currentStock < quantity) {
+            throw new IllegalStateException(
+                    String.format("Insufficient stock for product %s. Available: %d, Requested: %d", 
+                            productId, currentStock != null ? currentStock : 0, quantity));
+        }
+        
+        product.setStockQuantity(currentStock - quantity);
+        Product updated = productPersistencePort.save(product);
+        
+        log.info("Stock decremented successfully. Product: {}, New Stock: {}", productId, updated.getStockQuantity());
+        return updated;
+    }
 }

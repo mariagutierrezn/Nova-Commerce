@@ -63,6 +63,9 @@ public class OrderService implements CreateOrderUseCase, GetOrderUseCase, Update
         Order savedOrder = orderPersistencePort.save(order);
         log.info("Order created successfully with ID: {}", savedOrder.getId());
         
+        // Decrementar stock de productos
+        decrementProductStock(savedOrder);
+        
         // Publicar evento asíncrono
         publishOrderCreatedEvent(savedOrder);
         
@@ -190,6 +193,23 @@ public class OrderService implements CreateOrderUseCase, GetOrderUseCase, Update
     
     private String getCurrentSeason() {
         return CURRENT_SEASON;
+    }
+
+    /**
+     * Decrementa el stock de todos los productos de la orden.
+     */
+    private void decrementProductStock(Order order) {
+        log.info("Decrementing stock for order: {}", order.getId());
+        for (OrderItem item : order.getItems()) {
+            try {
+                productValidationPort.decrementStock(item.getProductId(), item.getQuantity());
+                log.info("Stock decremented for product {} by {}", item.getProductId(), item.getQuantity());
+            } catch (Exception e) {
+                log.error("Error decrementing stock for product {}: {}", item.getProductId(), e.getMessage());
+                // En producción, aquí se podría implementar compensación o rollback
+                throw new BusinessRuleException("Failed to decrement stock for product: " + item.getProductId());
+            }
+        }
     }
 
     /**

@@ -39,4 +39,10 @@ public class ProductRequest {
     @NotBlank(message = "Status is required")
     @Pattern(regexp = "ACTIVE|INACTIVE", message = "Status must be ACTIVE or INACTIVE")
     private String status;
+
+    private Boolean hasDiscount;
+
+    @Min(value = 0, message = "Discount percentage cannot be negative")
+    @Max(value = 100, message = "Discount percentage cannot exceed 100")
+    private Integer discountPercentage;
 }

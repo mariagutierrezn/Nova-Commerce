@@ -72,4 +72,18 @@ public class ProductClientAdapter implements ProductValidationPort {
             return false;
         }
     }
+    
+    @Override
+    public void decrementStock(String productId, Integer quantity) {
+        try {
+            log.info("Decrementing stock for product {} by {}", productId, quantity);
+            ProductServiceClient.DecrementStockRequest request = 
+                    new ProductServiceClient.DecrementStockRequest(quantity);
+            productServiceClient.decrementStock(productId, request, internalApiKey);
+            log.info("Stock decremented successfully for product {}", productId);
+        } catch (Exception e) {
+            log.error("Error decrementing stock for product: {}", productId, e);
+            throw new RuntimeException("Failed to decrement stock for product: " + productId, e);
+        }
+    }
 }

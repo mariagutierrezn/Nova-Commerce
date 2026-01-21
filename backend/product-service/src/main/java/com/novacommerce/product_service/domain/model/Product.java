@@ -21,4 +21,6 @@ public class Product {
     private Integer stockQuantity;
     private String status;
     private String imageUrl;
+    private Boolean hasDiscount;
+    private Integer discountPercentage;
 }

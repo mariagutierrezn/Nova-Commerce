@@ -23,4 +23,6 @@ public class ProductResponse {
     private Integer stockQuantity;
     private String status;
     private String imageUrl;
+    private Boolean hasDiscount;
+    private Integer discountPercentage;
 }
