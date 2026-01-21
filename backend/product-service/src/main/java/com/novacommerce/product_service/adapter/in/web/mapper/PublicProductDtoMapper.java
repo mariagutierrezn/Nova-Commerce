@@ -18,6 +18,11 @@ public interface PublicProductDtoMapper {
     @Mapping(target = "description", source = "description")
     @Mapping(target = "price", source = "price")
     @Mapping(target = "productType", source = "productType")
+    @Mapping(target = "imageUrl", source = "imageUrl")
+    @Mapping(target = "categoryId", source = "categoryId")
+    @Mapping(target = "stockQuantity", source = "stockQuantity")
+    @Mapping(target = "hasDiscount", source = "hasDiscount")
+    @Mapping(target = "discountPercentage", source = "discountPercentage")
     PublicProductResponse toPublicResponse(Product product);
     
     List<PublicProductResponse> toPublicResponseList(List<Product> products);

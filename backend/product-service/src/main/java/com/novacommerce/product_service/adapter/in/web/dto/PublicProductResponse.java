@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 
 /**
  * DTO público para mostrar productos en el home.
- * No expone campos internos como categoryId.
+ * Incluye información de stock, descuentos y categoría para la UI.
  */
 @Data
 @Builder
@@ -24,4 +24,8 @@ public class PublicProductResponse {
     private BigDecimal price;
     private ProductType productType;
     private String imageUrl;
+    private String categoryId;
+    private Integer stockQuantity;
+    private Boolean hasDiscount;
+    private Integer discountPercentage;
 }
