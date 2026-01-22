@@ -29,6 +29,11 @@ public interface ProductValidationPort {
     boolean hasStock(String productId, Integer quantity);
     
     /**
+     * Obtiene la URL de imagen del producto.
+     */
+    String getProductImageUrl(String productId);
+    
+    /**
      * Decrementa el stock de un producto.
      * 
      * @param productId ID del producto

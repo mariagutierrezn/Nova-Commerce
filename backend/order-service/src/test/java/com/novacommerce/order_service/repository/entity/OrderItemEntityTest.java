@@ -210,7 +210,8 @@ class OrderItemEntityTest {
                 "Smartphone",
                 1,
                 new BigDecimal("799.99"),
-                "ELECTRONICS"
+                "ELECTRONICS",
+                "https://example.com/smartphone.jpg"
         );
 
         // THEN - Todos los campos deben estar establecidos

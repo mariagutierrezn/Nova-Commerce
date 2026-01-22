@@ -22,4 +22,5 @@ public class OrderItemResponse {
     private BigDecimal unitPrice;
     private BigDecimal subTotal;
     private String productType;
+    private String imageUrl;
 }

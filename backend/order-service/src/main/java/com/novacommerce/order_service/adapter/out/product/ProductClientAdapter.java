@@ -74,6 +74,17 @@ public class ProductClientAdapter implements ProductValidationPort {
     }
     
     @Override
+    public String getProductImageUrl(String productId) {
+        try {
+            ProductResponse product = productServiceClient.getProductById(productId, internalApiKey);
+            return product != null ? product.getImageUrl() : null;
+        } catch (Exception e) {
+            log.error("Error getting product image URL: {}", productId, e);
+            return null;
+        }
+    }
+    
+    @Override
     public void decrementStock(String productId, Integer quantity) {
         try {
             log.info("Decrementing stock for product {} by {}", productId, quantity);

@@ -30,6 +30,22 @@ public class Order {
     
     @Builder.Default
     private List<OrderItem> items = new ArrayList<>();
+    
+    @Builder.Default
+    private List<AppliedDiscount> discounts = new ArrayList<>();
+
+    /**
+     * Representa un descuento aplicado a la orden.
+     */
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class AppliedDiscount {
+        private String type;        // LOYALTY, PRODUCT, SEASON
+        private BigDecimal percentage;
+        private Money amount;
+    }
 
     /**
      * Calcula todos los totales basándose en los items.

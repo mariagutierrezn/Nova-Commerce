@@ -18,4 +18,5 @@ public class OrderItemEntity {
     private Integer quantity;
     private BigDecimal unitPrice;
     private String productType;
+    private String imageUrl;
 }

@@ -22,6 +22,7 @@ public class OrderItem {
     private Integer quantity;
     private Money unitPrice;
     private String productType;
+    private String imageUrl;
 
     /**
      * Calcula el subtotal del item (cantidad * precio unitario).

@@ -150,6 +150,10 @@ public class OrderService implements CreateOrderUseCase, GetOrderUseCase, Update
             if (item.getProductType() == null) {
                 item.setProductType(productValidationPort.getProductType(item.getProductId()));
             }
+            // Enriquecer con imagen
+            if (item.getImageUrl() == null) {
+                item.setImageUrl(productValidationPort.getProductImageUrl(item.getProductId()));
+            }
         }
     }
 
@@ -169,13 +173,26 @@ public class OrderService implements CreateOrderUseCase, GetOrderUseCase, Update
         
         Money totalDiscount = Money.zero();
         
-        // Aplicar cada estrategia
+        // Aplicar cada estrategia y registrar descuentos aplicados
         for (DiscountStrategy strategy : discountStrategies) {
             if (strategy.isApplicable(context)) {
                 DiscountResult result = strategy.apply(context);
                 if (result.hasDiscount()) {
                     log.info("Applied {}: {}", strategy.getName(), result.getDescription());
                     totalDiscount = totalDiscount.add(result.getDiscountAmount());
+                    
+                    // Registrar descuento aplicado
+                    String discountType = determineDiscountType(strategy.getName());
+                    java.math.BigDecimal percentage = calculateDiscountPercentage(
+                        result.getDiscountAmount(), 
+                        order.getTotalBeforeDiscount()
+                    );
+                    
+                    order.getDiscounts().add(Order.AppliedDiscount.builder()
+                            .type(discountType)
+                            .percentage(percentage)
+                            .amount(result.getDiscountAmount())
+                            .build());
                 }
             }
         }
@@ -183,6 +200,32 @@ public class OrderService implements CreateOrderUseCase, GetOrderUseCase, Update
         // Aplicar descuento total a la orden
         order.applyDiscount(totalDiscount);
         log.info("Total discount applied: {}", totalDiscount);
+    }
+    
+    /**
+     * Determina el tipo de descuento basándose en el nombre de la estrategia.
+     */
+    private String determineDiscountType(String strategyName) {
+        if (strategyName.contains("Loyalty") || strategyName.contains("LOYALTY")) {
+            return "LOYALTY";
+        } else if (strategyName.contains("Product") || strategyName.contains("PRODUCT")) {
+            return "PRODUCT";
+        } else if (strategyName.contains("Season") || strategyName.contains("SEASON")) {
+            return "SEASON";
+        }
+        return "OTHER";
+    }
+    
+    /**
+     * Calcula el porcentaje de descuento.
+     */
+    private java.math.BigDecimal calculateDiscountPercentage(Money discountAmount, Money total) {
+        if (total.isZero()) {
+            return java.math.BigDecimal.ZERO;
+        }
+        return discountAmount.getAmount()
+                .divide(total.getAmount(), 2, java.math.RoundingMode.HALF_UP)
+                .multiply(new java.math.BigDecimal("100"));
     }
 
     /**

@@ -46,6 +46,13 @@ public class OrderDtoMapper {
                 .items(order.getItems().stream()
                         .map(this::toItemResponse)
                         .collect(Collectors.toList()))
+                .discounts(order.getDiscounts() != null ? order.getDiscounts().stream()
+                        .map(d -> OrderResponse.DiscountInfo.builder()
+                                .type(d.getType())
+                                .percentage(d.getPercentage())
+                                .amount(d.getAmount() != null ? d.getAmount().getAmount() : null)
+                                .build())
+                        .collect(Collectors.toList()) : null)
                 .build();
     }
 
@@ -58,6 +65,7 @@ public class OrderDtoMapper {
                 .unitPrice(item.getUnitPriceValue())
                 .subTotal(item.calculateSubTotal().getAmount())
                 .productType(item.getProductType())
+                .imageUrl(item.getImageUrl())
                 .build();
     }
 }

@@ -39,6 +39,17 @@ public class OrderMapper {
             });
         }
 
+        // Mapear discounts
+        if (order.getDiscounts() != null) {
+            entity.setDiscounts(order.getDiscounts().stream()
+                    .map(d -> OrderEntity.DiscountEntity.builder()
+                            .type(d.getType())
+                            .percentage(d.getPercentage())
+                            .amount(d.getAmount() != null ? d.getAmount().getAmount() : null)
+                            .build())
+                    .collect(Collectors.toList()));
+        }
+
         return entity;
     }
 
@@ -65,6 +76,17 @@ public class OrderMapper {
                     .collect(Collectors.toList()));
         }
 
+        // Mapear discounts
+        if (entity.getDiscounts() != null) {
+            order.setDiscounts(entity.getDiscounts().stream()
+                    .map(d -> Order.AppliedDiscount.builder()
+                            .type(d.getType())
+                            .percentage(d.getPercentage())
+                            .amount(Money.of(d.getAmount()))
+                            .build())
+                    .collect(Collectors.toList()));
+        }
+
         return order;
     }
 
@@ -76,6 +98,7 @@ public class OrderMapper {
                 .quantity(item.getQuantity())
                 .unitPrice(item.getUnitPriceValue())
                 .productType(item.getProductType())
+                .imageUrl(item.getImageUrl())
                 .build();
     }
 
@@ -87,6 +110,7 @@ public class OrderMapper {
                 .quantity(entity.getQuantity())
                 .unitPrice(Money.of(entity.getUnitPrice()))
                 .productType(entity.getProductType())
+                .imageUrl(entity.getImageUrl())
                 .build();
     }
 }

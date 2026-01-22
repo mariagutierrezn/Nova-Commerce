@@ -33,6 +33,19 @@ public class OrderEntity {
     @Builder.Default
     private List<OrderItemEntity> items = new ArrayList<>();
     
+    @Builder.Default
+    private List<DiscountEntity> discounts = new ArrayList<>();
+    
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class DiscountEntity {
+        private String type;
+        private BigDecimal percentage;
+        private BigDecimal amount;
+    }
+    
     public void addItem(OrderItemEntity item) {
         items.add(item);
     }

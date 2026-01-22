@@ -26,4 +26,15 @@ public class OrderResponse {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private List<OrderItemResponse> items;
+    private List<DiscountInfo> discounts;
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class DiscountInfo {
+        private String type;
+        private BigDecimal percentage;
+        private BigDecimal amount;
+    }
 }
