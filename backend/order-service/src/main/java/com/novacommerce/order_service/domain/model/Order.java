@@ -20,7 +20,10 @@ import java.util.List;
 @AllArgsConstructor
 public class Order {
     private String id;
+    private Long orderNumber;
     private String customerId;
+    private String customerName;
+    private String customerEmail;
     private String customerPhone;
     private String shippingAddress;
     private String paymentMethod;

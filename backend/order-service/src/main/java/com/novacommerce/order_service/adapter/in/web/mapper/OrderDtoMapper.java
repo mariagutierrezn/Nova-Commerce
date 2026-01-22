@@ -39,7 +39,10 @@ public class OrderDtoMapper {
     public OrderResponse toResponse(Order order) {
         return OrderResponse.builder()
                 .id(order.getId())
+                .orderNumber(order.getOrderNumber())
                 .customerId(order.getCustomerId())
+                .customerName(order.getCustomerName())
+                .customerEmail(order.getCustomerEmail())
                 .customerPhone(order.getCustomerPhone())
                 .shippingAddress(order.getShippingAddress())
                 .paymentMethod(order.getPaymentMethod())

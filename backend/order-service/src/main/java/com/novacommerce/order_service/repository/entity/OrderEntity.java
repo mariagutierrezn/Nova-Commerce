@@ -1,6 +1,7 @@
 package com.novacommerce.order_service.repository.entity;
 
 import com.novacommerce.order_service.domain.model.OrderStatus;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.annotation.Id;
 import lombok.AllArgsConstructor;
@@ -22,7 +23,13 @@ public class OrderEntity {
     
     @Id
     private String id;
+    
+    @Indexed(unique = true)
+    private Long orderNumber;
+    
     private String customerId;
+    private String customerName;
+    private String customerEmail;
     private String customerPhone;
     private String shippingAddress;
     private String paymentMethod;

@@ -1,5 +1,7 @@
 package com.novacommerce.order_service.application.service;
 
+import com.novacommerce.order_service.adapter.out.customer.CustomerServiceClient;
+import com.novacommerce.order_service.adapter.out.customer.dto.CustomerResponse;
 import com.novacommerce.order_service.application.port.in.CreateOrderUseCase;
 import com.novacommerce.order_service.application.port.in.GetOrderUseCase;
 import com.novacommerce.order_service.application.port.in.UpdateOrderStatusUseCase;
@@ -15,6 +17,7 @@ import com.novacommerce.order_service.domain.exception.OrderException;
 import com.novacommerce.order_service.domain.model.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,10 +39,34 @@ public class OrderService implements CreateOrderUseCase, GetOrderUseCase, Update
     private final ProductValidationPort productValidationPort;
     private final OrderEventPublisherPort orderEventPublisherPort;
     private final List<DiscountStrategy> discountStrategies;
+    private final SequenceGeneratorService sequenceGeneratorService;
+    private final CustomerServiceClient customerServiceClient;
+    
+    @Value("${app.jwt.internal-api-key}")
+    private String internalApiKey;
 
     @Override
     public Order createOrder(Order order) {
         log.info("Creating order for customer: {}", order.getCustomerId());
+        
+        // Generar número de orden incremental
+        Long orderNumber = sequenceGeneratorService.generateSequence("order_sequence");
+        order.setOrderNumber(orderNumber);
+        log.info("Generated order number: {}", orderNumber);
+        
+        // Enriquecer con información del cliente
+        try {
+            CustomerResponse customer = customerServiceClient.getCustomerById(order.getCustomerId(), internalApiKey);
+            String fullName = (customer.getFirstName() != null ? customer.getFirstName() : "") + " " + 
+                            (customer.getLastName() != null ? customer.getLastName() : "");
+            order.setCustomerName(fullName.trim());
+            order.setCustomerEmail(customer.getEmail());
+            order.setCustomerPhone(customer.getPhone());
+            log.info("Enriched order with customer info: {}", fullName);
+        } catch (Exception e) {
+            log.warn("Failed to enrich order with customer info: {}", e.getMessage());
+            // Continuar sin enriquecer si falla
+        }
         
         // Validar dominio
         order.validate();

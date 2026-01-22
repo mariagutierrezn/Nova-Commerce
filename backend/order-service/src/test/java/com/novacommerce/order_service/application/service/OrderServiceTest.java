@@ -1,5 +1,7 @@
 package com.novacommerce.order_service.application.service;
 
+import com.novacommerce.order_service.adapter.out.customer.CustomerServiceClient;
+import com.novacommerce.order_service.adapter.out.customer.dto.CustomerResponse;
 import com.novacommerce.order_service.application.port.out.CustomerValidationPort;
 import com.novacommerce.order_service.application.port.out.OrderEventPublisherPort;
 import com.novacommerce.order_service.application.port.out.OrderPersistencePort;
@@ -27,6 +29,8 @@ class OrderServiceTest {
     private OrderPersistencePort orderPersistencePort;
     private CustomerValidationPort customerValidationPort;
     private ProductValidationPort productValidationPort;
+    private SequenceGeneratorService sequenceGeneratorService;
+    private CustomerServiceClient customerServiceClient;
     private OrderService service;
 
     @BeforeEach
@@ -34,14 +38,36 @@ class OrderServiceTest {
         orderPersistencePort = mock(OrderPersistencePort.class);
         customerValidationPort = mock(CustomerValidationPort.class);
         productValidationPort = mock(ProductValidationPort.class);
+        sequenceGeneratorService = mock(SequenceGeneratorService.class);
+        customerServiceClient = mock(CustomerServiceClient.class);
         List<DiscountStrategy> strategies = List.of(
                 new LoyaltyDiscountStrategy(),
                 new SeasonDiscountStrategy(),
                 new ProductTypeDiscountStrategy()
         );
         OrderEventPublisherPort orderEventPublisherPort = mock(OrderEventPublisherPort.class);
-        service = new OrderService(orderPersistencePort, customerValidationPort, productValidationPort, orderEventPublisherPort, strategies);
+        service = new OrderService(
+            orderPersistencePort, 
+            customerValidationPort, 
+            productValidationPort, 
+            orderEventPublisherPort, 
+            strategies,
+            sequenceGeneratorService,
+            customerServiceClient
+        );
 
+        when(sequenceGeneratorService.generateSequence(anyString())).thenReturn(1001L);
+        
+        // Mock customer service client
+        CustomerResponse mockCustomer = CustomerResponse.builder()
+            .id("1")
+            .firstName("John")
+            .lastName("Doe")
+            .email("john.doe@example.com")
+            .phone("+1234567890")
+            .build();
+        when(customerServiceClient.getCustomerById(anyString(), anyString())).thenReturn(mockCustomer);
+        
         when(customerValidationPort.isCustomerValid(anyString())).thenReturn(true);
         when(customerValidationPort.getCustomerStatus(anyString())).thenReturn("ACTIVE");
         when(customerValidationPort.getCustomerLoyaltyLevel(anyString())).thenReturn("GOLD");

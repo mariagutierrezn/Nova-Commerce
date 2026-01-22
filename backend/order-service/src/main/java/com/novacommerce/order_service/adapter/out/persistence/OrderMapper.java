@@ -22,7 +22,10 @@ public class OrderMapper {
 
         OrderEntity entity = OrderEntity.builder()
                 .id(order.getId())
+                .orderNumber(order.getOrderNumber())
                 .customerId(order.getCustomerId())
+                .customerName(order.getCustomerName())
+                .customerEmail(order.getCustomerEmail())
                 .customerPhone(order.getCustomerPhone())
                 .shippingAddress(order.getShippingAddress())
                 .paymentMethod(order.getPaymentMethod())
@@ -63,7 +66,10 @@ public class OrderMapper {
 
         Order order = Order.builder()
                 .id(entity.getId())
+                .orderNumber(entity.getOrderNumber())
                 .customerId(entity.getCustomerId())
+                .customerName(entity.getCustomerName())
+                .customerEmail(entity.getCustomerEmail())
                 .customerPhone(entity.getCustomerPhone())
                 .shippingAddress(entity.getShippingAddress())
                 .paymentMethod(entity.getPaymentMethod())
