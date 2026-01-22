@@ -295,4 +295,100 @@ public class OrderService implements CreateOrderUseCase, GetOrderUseCase, Update
         
         orderEventPublisherPort.publishOrderPaid(event);
     }
+    
+    /**
+     * Calcula un preview de descuentos sin crear la orden.
+     * Útil para mostrar al usuario los descuentos antes de confirmar.
+     */
+    public DiscountPreviewResult calculateDiscountPreview(String customerId, List<OrderItem> items) {
+        log.info("Calculating discount preview for customer: {}", customerId);
+        
+        // Validar cliente
+        validateCustomer(customerId);
+        
+        // Calcular subtotal
+        Money subtotal = items.stream()
+                .map(OrderItem::calculateSubTotal)
+                .reduce(Money.zero(), Money::add);
+        
+        // Construir contexto
+        DiscountContext context = DiscountContext.builder()
+                .customerId(customerId)
+                .customerLoyaltyLevel(customerValidationPort.getCustomerLoyaltyLevel(customerId))
+                .customerStatus(customerValidationPort.getCustomerStatus(customerId))
+                .orderTotal(subtotal)
+                .items(items)
+                .currentSeason(getCurrentSeason())
+                .build();
+        
+        Money totalDiscount = Money.zero();
+        java.util.List<DiscountPreviewResult.AppliedDiscount> appliedDiscounts = new java.util.ArrayList<>();
+        
+        // Aplicar cada estrategia
+        for (DiscountStrategy strategy : discountStrategies) {
+            if (strategy.isApplicable(context)) {
+                DiscountResult result = strategy.apply(context);
+                if (result.hasDiscount()) {
+                    totalDiscount = totalDiscount.add(result.getDiscountAmount());
+                    
+                    String discountType = determineDiscountType(strategy.getName());
+                    java.math.BigDecimal percentage = calculateDiscountPercentage(
+                        result.getDiscountAmount(), 
+                        subtotal
+                    );
+                    
+                    appliedDiscounts.add(DiscountPreviewResult.AppliedDiscount.builder()
+                            .type(discountType)
+                            .label(getDiscountLabel(discountType))
+                            .description(result.getDescription())
+                            .percentage(percentage)
+                            .amount(result.getDiscountAmount().getAmount())
+                            .build());
+                }
+            }
+        }
+        
+        Money finalTotal = subtotal.subtract(totalDiscount);
+        
+        return DiscountPreviewResult.builder()
+                .subtotal(subtotal.getAmount())
+                .totalDiscount(totalDiscount.getAmount())
+                .total(finalTotal.getAmount())
+                .discounts(appliedDiscounts)
+                .build();
+    }
+    
+    /**
+     * Obtiene la etiqueta legible del tipo de descuento.
+     */
+    private String getDiscountLabel(String type) {
+        return switch (type) {
+            case "LOYALTY" -> "Descuento por Lealtad";
+            case "PRODUCT" -> "Descuento del Producto";
+            case "SEASON" -> "Descuento de Temporada";
+            default -> "Descuento";
+        };
+    }
+    
+    /**
+     * Clase interna para el resultado del preview
+     */
+    @lombok.Data
+    @lombok.Builder
+    public static class DiscountPreviewResult {
+        private java.math.BigDecimal subtotal;
+        private java.math.BigDecimal totalDiscount;
+        private java.math.BigDecimal total;
+        private List<AppliedDiscount> discounts;
+        
+        @lombok.Data
+        @lombok.Builder
+        public static class AppliedDiscount {
+            private String type;
+            private String label;
+            private String description;
+            private java.math.BigDecimal percentage;
+            private java.math.BigDecimal amount;
+        }
+    }
 }

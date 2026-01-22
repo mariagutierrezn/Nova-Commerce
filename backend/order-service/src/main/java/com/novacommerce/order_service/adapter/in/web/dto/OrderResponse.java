@@ -19,6 +19,9 @@ import java.util.List;
 public class OrderResponse {
     private String id;
     private String customerId;
+    private String customerPhone;
+    private String shippingAddress;
+    private String paymentMethod;
     private String status;
     private BigDecimal totalBeforeDiscount;
     private BigDecimal discountTotal;

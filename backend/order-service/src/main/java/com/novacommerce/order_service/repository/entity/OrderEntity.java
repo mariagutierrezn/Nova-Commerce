@@ -23,6 +23,9 @@ public class OrderEntity {
     @Id
     private String id;
     private String customerId;
+    private String customerPhone;
+    private String shippingAddress;
+    private String paymentMethod;
     private OrderStatus status;
     private BigDecimal totalBeforeDiscount;
     private BigDecimal discountTotal;

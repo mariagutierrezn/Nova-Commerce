@@ -21,6 +21,9 @@ import java.util.List;
 public class Order {
     private String id;
     private String customerId;
+    private String customerPhone;
+    private String shippingAddress;
+    private String paymentMethod;
     private OrderStatus status;
     private Money totalBeforeDiscount;
     private Money discountTotal;

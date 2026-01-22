@@ -1,13 +1,17 @@
 package com.novacommerce.order_service.adapter.in.web;
 
 import com.novacommerce.order_service.adapter.in.web.dto.CreateOrderRequest;
+import com.novacommerce.order_service.adapter.in.web.dto.DiscountPreviewRequest;
+import com.novacommerce.order_service.adapter.in.web.dto.DiscountPreviewResponse;
 import com.novacommerce.order_service.adapter.in.web.dto.OrderResponse;
 import com.novacommerce.order_service.adapter.in.web.dto.UpdateOrderStatusRequest;
 import com.novacommerce.order_service.adapter.in.web.mapper.OrderDtoMapper;
 import com.novacommerce.order_service.application.port.in.CreateOrderUseCase;
 import com.novacommerce.order_service.application.port.in.GetOrderUseCase;
 import com.novacommerce.order_service.application.port.in.UpdateOrderStatusUseCase;
+import com.novacommerce.order_service.application.service.OrderService;
 import com.novacommerce.order_service.domain.model.Order;
+import com.novacommerce.order_service.domain.model.OrderItem;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -35,6 +39,7 @@ public class OrderRestController {
     private final GetOrderUseCase getOrderUseCase;
     private final UpdateOrderStatusUseCase updateOrderStatusUseCase;
     private final OrderDtoMapper orderDtoMapper;
+    private final OrderService orderService;
 
     @PostMapping
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
@@ -93,5 +98,45 @@ public class OrderRestController {
         Order updated = updateOrderStatusUseCase.updateOrderStatus(id, request.getStatus());
         
         return ResponseEntity.ok(orderDtoMapper.toResponse(updated));
+    }
+    
+    @PostMapping("/discount-preview")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
+    @Operation(summary = "Preview de descuentos", description = "Calcula los descuentos que se aplicarían a una orden sin crearla")
+    public ResponseEntity<DiscountPreviewResponse> getDiscountPreview(@Valid @RequestBody DiscountPreviewRequest request) {
+        log.info("Calculating discount preview for customer: {}", request.getCustomerId());
+        
+        // Convertir DTOs a domain items
+        List<OrderItem> items = request.getItems().stream()
+                .map(dto -> OrderItem.builder()
+                        .productId(dto.getProductId())
+                        .quantity(dto.getQuantity())
+                        .unitPrice(com.novacommerce.order_service.domain.model.Money.of(dto.getUnitPrice()))
+                        .build())
+                .toList();
+        
+        // Calcular preview
+        OrderService.DiscountPreviewResult result = orderService.calculateDiscountPreview(
+                request.getCustomerId(), 
+                items
+        );
+        
+        // Convertir a response
+        DiscountPreviewResponse response = DiscountPreviewResponse.builder()
+                .subtotal(result.getSubtotal())
+                .totalDiscount(result.getTotalDiscount())
+                .total(result.getTotal())
+                .discounts(result.getDiscounts().stream()
+                        .map(d -> DiscountPreviewResponse.AppliedDiscountDto.builder()
+                                .type(d.getType())
+                                .label(d.getLabel())
+                                .description(d.getDescription())
+                                .percentage(d.getPercentage())
+                                .amount(d.getAmount())
+                                .build())
+                        .toList())
+                .build();
+        
+        return ResponseEntity.ok(response);
     }
 }

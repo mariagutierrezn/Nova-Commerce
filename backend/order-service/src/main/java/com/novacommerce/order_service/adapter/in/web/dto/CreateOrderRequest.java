@@ -22,6 +22,10 @@ public class CreateOrderRequest {
     @NotNull(message = "Customer ID is required")
     private String customerId;
     
+    private String customerPhone;
+    private String shippingAddress;
+    private String paymentMethod;
+    
     @NotEmpty(message = "Order must have at least one item")
     @Valid
     private List<OrderItemRequest> items;

@@ -17,6 +17,9 @@ public class OrderDtoMapper {
     public Order toDomain(CreateOrderRequest request) {
         Order order = Order.builder()
                 .customerId(request.getCustomerId())
+                .customerPhone(request.getCustomerPhone())
+                .shippingAddress(request.getShippingAddress())
+                .paymentMethod(request.getPaymentMethod())
                 .build();
 
         if (request.getItems() != null) {
@@ -37,6 +40,9 @@ public class OrderDtoMapper {
         return OrderResponse.builder()
                 .id(order.getId())
                 .customerId(order.getCustomerId())
+                .customerPhone(order.getCustomerPhone())
+                .shippingAddress(order.getShippingAddress())
+                .paymentMethod(order.getPaymentMethod())
                 .status(order.getStatus().name())
                 .totalBeforeDiscount(order.getTotalBeforeDiscountValue())
                 .discountTotal(order.getDiscountTotalValue())
