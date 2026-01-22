@@ -46,7 +46,11 @@ class PublicProductResponseTest {
                 "High-performance laptop",
                 new BigDecimal("999.99"),
                 ProductType.PHYSICAL,
-                "http://localhost:8083/images/products/1/test.jpg"
+                "http://localhost:8083/images/products/1/test.jpg",
+                "category1",
+                10,
+                true,
+                15
         );
 
         assertEquals("1", response.getId());

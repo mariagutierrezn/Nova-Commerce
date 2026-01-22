@@ -40,6 +40,8 @@ public class ProductRequest {
     @Pattern(regexp = "ACTIVE|INACTIVE", message = "Status must be ACTIVE or INACTIVE")
     private String status;
 
+    private String imageUrl;
+
     private Boolean hasDiscount;
 
     @Min(value = 0, message = "Discount percentage cannot be negative")
