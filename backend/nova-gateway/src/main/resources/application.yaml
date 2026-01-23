@@ -17,10 +17,21 @@ spring:
 
   cloud:
     gateway:
-      server:
-        webflux:
-          default-filters:
-            - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
+      globalcors:
+        add-to-simple-url-handler-mapping: true
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: "http://localhost:4200"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - PATCH
+              - OPTIONS
+            allowedHeaders: "*"
+            allowCredentials: true
+            maxAge: 3600
 
 # JWT Configuration
 app:
@@ -68,11 +79,17 @@ gateway:
       uri: ${ORDER_SERVICE_URL:http://order-service:8085}
       path: /api/orders/**
 
+    order-service-discounts:
+      uri: ${ORDER_SERVICE_URL:http://order-service:8085}
+      path: /api/discounts/**
+
   public-paths:
     - /api/auth/login
     - /api/auth/refresh
     - /api/auth/public/register
     - /api/public/**
+    - /api/customers/** # TEMPORAL: debug de clientes
+    - /api/discounts/** # Administración de descuentos (proteger en producción)
     - /images/**
     - /swagger-ui/**
     - /v3/api-docs/**

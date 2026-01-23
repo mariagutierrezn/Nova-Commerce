@@ -30,7 +30,7 @@ public class CustomerRestController {
     }
 
     @GetMapping
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_READ')")
+    // @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_READ')") // TEMPORAL: Comentado para permitir acceso público
     @Operation(summary = "Listar clientes", description = "Obtiene la lista completa de clientes")
     public ResponseEntity<List<CustomerDto>> getAll() {
         List<CustomerDto> list = manageCustomersUseCase.findAll()
@@ -39,7 +39,7 @@ public class CustomerRestController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_READ')")
+    // @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_READ')") // TEMPORAL: Comentado para permitir acceso público
     @Operation(summary = "Obtener cliente por ID", description = "Retorna el cliente correspondiente al identificador proporcionado")
     public ResponseEntity<CustomerDto> getById(@PathVariable String id) {
         Optional<Customer> opt = manageCustomersUseCase.findById(id);
@@ -56,9 +56,9 @@ public class CustomerRestController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_UPDATE')")
+    // @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_UPDATE')") // TEMPORAL: Comentado para permitir actualización pública
     @Operation(summary = "Actualizar cliente", description = "Actualiza los datos de un cliente existente")
-    public ResponseEntity<CustomerDto> update(@PathVariable String id, @Valid @RequestBody CustomerDto dto) {
+    public ResponseEntity<CustomerDto> update(@PathVariable String id, @RequestBody CustomerDto dto) {
         Customer updated = manageCustomersUseCase.update(id, mapper.toDomain(dto));
         return ResponseEntity.ok(mapper.toDto(updated));
     }

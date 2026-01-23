@@ -4,14 +4,14 @@ import com.novacommerce.customer_service.adapter.in.security.InternalApiKeyFilte
 import com.novacommerce.customer_service.adapter.in.security.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+// import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity; // TEMPORAL: Desactivado
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
-@EnableMethodSecurity
+// @EnableMethodSecurity // TEMPORAL: Desactivado para permitir acceso público sin restricciones de método
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
@@ -33,13 +33,18 @@ public class SecurityConfig {
                                 "/swagger-ui.html",
                                 "/swagger-ui/**",
                                 "/actuator/health",
-                                "/actuator/info"
+                                "/actuator/info",
+                                "/api/customers/**" // TEMPORAL: Acceso público completo sin filtros
                         ).permitAll()
-                .requestMatchers("/internal/**").permitAll()
+                        .requestMatchers("/internal/**").permitAll()
                         .anyRequest().authenticated()
-                )
-                .addFilterBefore(internalApiKeyFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                );
+        
+        // NO aplicar filtros a /api/customers/** - agregar filtros SOLO después de las rutas públicas
+        // Los filtros se ejecutarán solo para rutas autenticadas
+        http.addFilterBefore(internalApiKeyFilter, UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+        
         return http.build();
     }
 }

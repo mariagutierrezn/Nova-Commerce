@@ -17,18 +17,17 @@ import java.util.stream.Collectors;
 
 /**
  * Controlador REST para gestión de reglas de descuento.
+ * CORS manejado por el API Gateway - no usar @CrossOrigin aquí
  */
 @RestController
 @RequestMapping("/api/discounts")
 @RequiredArgsConstructor
 @Slf4j
-@CrossOrigin(origins = "*")
 public class DiscountRuleRestController {
     
     private final ManageDiscountRulesUseCase manageDiscountRulesUseCase;
     
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<DiscountRuleResponse>> getAllRules() {
         log.info("GET /api/discounts - Fetching all discount rules");
         
@@ -40,7 +39,6 @@ public class DiscountRuleRestController {
     }
     
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<DiscountRuleResponse> getRuleById(@PathVariable String id) {
         log.info("GET /api/discounts/{} - Fetching discount rule by id", id);
         
@@ -62,7 +60,6 @@ public class DiscountRuleRestController {
     }
     
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<DiscountRuleResponse> createRule(@Valid @RequestBody DiscountRuleRequest request) {
         log.info("POST /api/discounts - Creating new discount rule: {}", request.getName());
         
@@ -73,7 +70,6 @@ public class DiscountRuleRestController {
     }
     
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<DiscountRuleResponse> updateRule(
             @PathVariable String id,
             @Valid @RequestBody DiscountRuleRequest request) {
@@ -86,7 +82,6 @@ public class DiscountRuleRestController {
     }
     
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteRule(@PathVariable String id) {
         log.info("DELETE /api/discounts/{} - Deleting discount rule", id);
         
@@ -96,7 +91,6 @@ public class DiscountRuleRestController {
     }
     
     @PatchMapping("/{id}/toggle")
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> toggleRuleStatus(@PathVariable String id) {
         log.info("PATCH /api/discounts/{}/toggle - Toggling discount rule status", id);
         

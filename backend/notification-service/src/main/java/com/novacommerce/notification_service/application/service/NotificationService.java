@@ -1,5 +1,6 @@
 package com.novacommerce.notification_service.application.service;
 
+import com.novacommerce.notification_service.domain.dto.NotificationDTO;
 import com.novacommerce.notification_service.domain.model.OrderCreatedEvent;
 import com.novacommerce.notification_service.domain.model.OrderPaidEvent;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,8 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class NotificationService {
 
+    private final AdminNotificationService adminNotificationService;
+
     /**
      * Procesa evento de orden creada y envía notificación al cliente.
      */
@@ -25,11 +28,18 @@ public class NotificationService {
             // Simular envío de email
             sendOrderConfirmationEmail(event);
             
+            // Enviar notificación al dashboard de admin en tiempo real
+            NotificationDTO notificationDTO = adminNotificationService.createOrderNotification(
+                event.getOrderId(), 
+                event.getCustomerId(), 
+                event.getTotalAfterDiscount()
+            );
+            adminNotificationService.createAndSendNotification(notificationDTO);
+            
             // En el futuro se pueden agregar:
             // - SMS de confirmación
             // - Push notification
             // - Actualización de analytics
-            // - Notificación a administradores
             
             log.info("OrderCreatedEvent processed successfully for order: {}", event.getOrderId());
         } catch (Exception e) {
@@ -47,6 +57,13 @@ public class NotificationService {
         try {
             // Simular envío de email de confirmación de pago
             sendPaymentConfirmationEmail(event);
+            
+            // Enviar notificación al dashboard de admin en tiempo real
+            NotificationDTO notificationDTO = adminNotificationService.createPaymentNotification(
+                event.getOrderId(),
+                event.getTotalAmount()
+            );
+            adminNotificationService.createAndSendNotification(notificationDTO);
             
             // En el futuro se pueden agregar:
             // - Generación de factura

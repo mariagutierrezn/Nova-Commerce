@@ -60,6 +60,9 @@ public class GatewayConfig {
     @Value("${gateway.routes.order-service-orders.path}")
     private String orderServiceOrdersPath;
 
+    @Value("${gateway.routes.order-service-discounts.path}")
+    private String orderServiceDiscountsPath;
+
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
         log.info("Configuring Gateway routes");
@@ -72,6 +75,7 @@ public class GatewayConfig {
         log.info("Route: {} -> {}", productServiceImagesPath, productServiceUri);
         log.info("Route: {} -> {}", customerServiceCustomersPath, customerServiceUri);
         log.info("Route: {} -> {}", orderServiceOrdersPath, orderServiceUri);
+        log.info("Route: {} -> {}", orderServiceDiscountsPath, orderServiceUri);
 
         return builder.routes()
                 .route(RouteConstants.AUTH_SERVICE_ID, r -> r
@@ -124,6 +128,12 @@ public class GatewayConfig {
                         .uri(customerServiceUri))
                 .route("order-service-orders", r -> r
                         .path(orderServiceOrdersPath)
+                        .filters(f -> f
+                                .stripPrefix(0)
+                                .removeRequestHeader("Cookie"))
+                        .uri(orderServiceUri))
+                .route("order-service-discounts", r -> r
+                        .path(orderServiceDiscountsPath)
                         .filters(f -> f
                                 .stripPrefix(0)
                                 .removeRequestHeader("Cookie"))

@@ -6,18 +6,19 @@ import com.novacommerce.customer_service.adapter.out.order.OrderServiceClient;
 import com.novacommerce.customer_service.domain.model.Customer;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
 @Mapper(componentModel = "spring")
 public abstract class CustomerMapper {
     
-    protected OrderServiceClient orderServiceClient;
+    private static final Logger logger = LoggerFactory.getLogger(CustomerMapper.class);
     
-    // Constructor for dependency injection
-    protected void setOrderServiceClient(OrderServiceClient orderServiceClient) {
-        this.orderServiceClient = orderServiceClient;
-    }
+    @Autowired
+    protected OrderServiceClient orderServiceClient;
     
     @Mapping(target = "totalOrders", expression = "java(calculateTotalOrders(customer.getId()))")
     @Mapping(target = "totalSpent", expression = "java(calculateTotalSpent(customer.getId()))")
@@ -27,17 +28,18 @@ public abstract class CustomerMapper {
     
     protected Integer calculateTotalOrders(String customerId) {
         try {
-            if (customerId == null) return 0;
+            if (customerId == null || orderServiceClient == null) return 0;
             List<OrderDto> orders = orderServiceClient.getOrdersByCustomerId(customerId);
             return orders != null ? orders.size() : 0;
         } catch (Exception e) {
+            logger.warn("Error calculando total de órdenes para cliente {}: {}", customerId, e.getMessage());
             return 0;
         }
     }
     
     protected Double calculateTotalSpent(String customerId) {
         try {
-            if (customerId == null) return 0.0;
+            if (customerId == null || orderServiceClient == null) return 0.0;
             List<OrderDto> orders = orderServiceClient.getOrdersByCustomerId(customerId);
             if (orders == null) return 0.0;
             
@@ -48,6 +50,7 @@ public abstract class CustomerMapper {
                 })
                 .sum();
         } catch (Exception e) {
+            logger.warn("Error calculando total gastado para cliente {}: {}", customerId, e.getMessage());
             return 0.0;
         }
     }

@@ -130,8 +130,9 @@ services:
       SPRING_RABBITMQ_USERNAME: nova
       SPRING_RABBITMQ_PASSWORD: nova123
       SPRING_RABBITMQ_VIRTUAL_HOST: /nova
-      JWT_SECRET: E8F7D6C4B5A3F2E1D9C8B7A6F5E4D3C2B1A0F9E8D7C6B5A4F3E2D1C0B9A8F7E6D5C4B3A2F1E0D9C8B7A6F5E4D3C2B1A0F9E8D7C6B5A4
+      JWT_SECRET: E8F7D6C4B5A3F2E1D9C8B7A6F5E4D3C2B1A0F9A8D7C6B5A4F3E2D1C0B9A8F7E6D5C4B3A2F1E0D9C8B7A6F5E4D3C2B1A0F9E8D7C6B5A4
       INTERNAL_API_KEY: nova-internal-service-key-2024
+      ORDER_SERVICE_URL: http://order-service:8085
     depends_on:
       mongodb:
         condition: service_healthy
@@ -272,6 +273,14 @@ services:
       CUSTOMER_SERVICE_URL: http://customer-service:8084
       ORDER_SERVICE_URL: http://order-service:8085
       NOTIFICATION_SERVICE_URL: http://notification-service:8086
+      GATEWAY_PUBLIC_PATHS_0: /api/auth/login
+      GATEWAY_PUBLIC_PATHS_1: /api/auth/refresh
+      GATEWAY_PUBLIC_PATHS_2: /api/auth/public/register
+      GATEWAY_PUBLIC_PATHS_3: /api/public/**
+      GATEWAY_PUBLIC_PATHS_4: /api/customers/**
+      GATEWAY_PUBLIC_PATHS_5: /images/**
+      GATEWAY_PUBLIC_PATHS_6: /swagger-ui/**
+      GATEWAY_PUBLIC_PATHS_7: /v3/api-docs/**
     depends_on:
       auth-service:
         condition: service_healthy

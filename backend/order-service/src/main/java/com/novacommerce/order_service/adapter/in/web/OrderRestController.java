@@ -42,7 +42,7 @@ public class OrderRestController {
     private final OrderService orderService;
 
     @PostMapping
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
+    // TODO: Descomentar para producción: @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
     @Operation(summary = "Crear orden", description = "Crea una nueva orden validando cliente, productos y aplicando descuentos")
     public ResponseEntity<OrderResponse> createOrder(@Valid @RequestBody CreateOrderRequest request) {
         log.info("Creating order for customer: {}", request.getCustomerId());

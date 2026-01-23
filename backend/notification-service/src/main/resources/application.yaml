@@ -28,6 +28,13 @@ spring:
         concurrency: 1
         max-concurrency: 5
 
+  # Configuración de MongoDB
+  data:
+    mongodb:
+      uri: ${MONGODB_URI:mongodb://localhost:27017/notifications}
+      database: notifications
+      auto-index-creation: true
+
 # Configuración de la aplicación
 app:
   name: ${APP_NAME:Notification Service}
