@@ -38,6 +38,8 @@ public class JwtAuthenticationFilter implements GlobalFilter, Ordered {
             SecurityProperties securityProperties) {
         this.tokenValidatorPort = tokenValidatorPort;
         this.securityProperties = securityProperties;
+        log.info("JwtAuthenticationFilter initialized. Public paths: {}", 
+                 securityProperties.getPublicPaths());
     }
 
     @Override
@@ -108,8 +110,14 @@ public class JwtAuthenticationFilter implements GlobalFilter, Ordered {
         if (path.startsWith("/api/discounts")) {
             return true;
         }
-        return securityProperties.getPublicPaths().stream()
+        boolean isPublic = securityProperties.getPublicPaths().stream()
                 .anyMatch(pattern -> pathMatcher.match(pattern, path));
+        
+        if (!isPublic) {
+            log.debug("Path '{}' is NOT public. Public paths: {}", path, securityProperties.getPublicPaths());
+        }
+        
+        return isPublic;
     }
 
     /**

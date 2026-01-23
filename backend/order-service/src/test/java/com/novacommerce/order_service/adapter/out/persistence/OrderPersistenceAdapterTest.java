@@ -141,7 +141,7 @@ class OrderPersistenceAdapterTest {
         Order order1 = Order.builder().id("1").customerId(customerId).build();
         Order order2 = Order.builder().id("2").customerId(customerId).build();
 
-        when(orderRepository.findByCustomerId(customerId))
+        when(orderRepository.findByCustomerIdOrderByCreatedAtDesc(customerId))
                 .thenReturn(Arrays.asList(entity1, entity2));
         when(orderMapper.toDomain(entity1)).thenReturn(order1);
         when(orderMapper.toDomain(entity2)).thenReturn(order2);
@@ -155,7 +155,7 @@ class OrderPersistenceAdapterTest {
         assertEquals("1", orders.get(0).getId());
         assertEquals("2", orders.get(1).getId());
 
-        verify(orderRepository).findByCustomerId(customerId);
+        verify(orderRepository).findByCustomerIdOrderByCreatedAtDesc(customerId);
         verify(orderMapper, times(2)).toDomain(any(OrderEntity.class));
     }
 
@@ -163,7 +163,7 @@ class OrderPersistenceAdapterTest {
     void givenCustomerIdWithNoOrders_whenFindByCustomerId_thenReturnsEmptyList() {
         // GIVEN - Customer ID sin órdenes
         String customerId = "999";
-        when(orderRepository.findByCustomerId(customerId)).thenReturn(List.of());
+        when(orderRepository.findByCustomerIdOrderByCreatedAtDesc(customerId)).thenReturn(List.of());
 
         // WHEN - Buscar por customer ID
         List<Order> orders = persistenceAdapter.findByCustomerId(customerId);
@@ -172,7 +172,7 @@ class OrderPersistenceAdapterTest {
         assertNotNull(orders);
         assertTrue(orders.isEmpty());
 
-        verify(orderRepository).findByCustomerId(customerId);
+        verify(orderRepository).findByCustomerIdOrderByCreatedAtDesc(customerId);
         verify(orderMapper, never()).toDomain(any());
     }
 
@@ -187,7 +187,7 @@ class OrderPersistenceAdapterTest {
         Order order2 = Order.builder().id("2").build();
         Order order3 = Order.builder().id("3").build();
 
-        when(orderRepository.findAll()).thenReturn(Arrays.asList(entity1, entity2, entity3));
+        when(orderRepository.findAllByOrderByCreatedAtDesc()).thenReturn(Arrays.asList(entity1, entity2, entity3));
         when(orderMapper.toDomain(entity1)).thenReturn(order1);
         when(orderMapper.toDomain(entity2)).thenReturn(order2);
         when(orderMapper.toDomain(entity3)).thenReturn(order3);
@@ -199,7 +199,7 @@ class OrderPersistenceAdapterTest {
         assertNotNull(orders);
         assertEquals(3, orders.size());
 
-        verify(orderRepository).findAll();
+        verify(orderRepository).findAllByOrderByCreatedAtDesc();
         verify(orderMapper, times(3)).toDomain(any(OrderEntity.class));
     }
 

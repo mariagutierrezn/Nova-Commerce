@@ -8,5 +8,9 @@ import java.util.List;
 
 @Repository
 public interface OrderRepository extends MongoRepository<OrderEntity, String> {
-    List<OrderEntity> findByCustomerId(String customerId);
+    // Ordena por fecha de creación descendente (más reciente primero)
+    List<OrderEntity> findByCustomerIdOrderByCreatedAtDesc(String customerId);
+    
+    // Ordena todas las órdenes por fecha de creación descendente
+    List<OrderEntity> findAllByOrderByCreatedAtDesc();
 }

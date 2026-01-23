@@ -13,8 +13,9 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
+        // Configuración de CORS para permitir conexiones directas desde el frontend
         registry.addEndpoint("/ws")
-                .setAllowedOriginPatterns("*")
+                .setAllowedOrigins("http://localhost:4200", "http://localhost:8080")
                 .withSockJS();
     }
 

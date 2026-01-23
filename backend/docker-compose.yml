@@ -236,12 +236,15 @@ services:
       - "8086:8086"
     environment:
       SPRING_PROFILES_ACTIVE: docker
+      MONGODB_URI: mongodb://mongodb:27017/notifications
       SPRING_RABBITMQ_HOST: rabbitmq
       SPRING_RABBITMQ_PORT: 5672
       SPRING_RABBITMQ_USERNAME: nova
       SPRING_RABBITMQ_PASSWORD: nova123
       SPRING_RABBITMQ_VIRTUAL_HOST: /nova
     depends_on:
+      mongodb:
+        condition: service_healthy
       rabbitmq:
         condition: service_healthy
     networks:

@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * Adaptador de persistencia para órdenes.
@@ -38,16 +37,18 @@ public class OrderPersistenceAdapter implements OrderPersistencePort {
 
     @Override
     public List<Order> findByCustomerId(String customerId) {
-        return orderRepository.findByCustomerId(customerId).stream()
+        // Retorna órdenes ordenadas por fecha descendente (más reciente primero)
+        return orderRepository.findByCustomerIdOrderByCreatedAtDesc(customerId).stream()
                 .map(orderMapper::toDomain)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
     public List<Order> findAll() {
-        return orderRepository.findAll().stream()
+        // Retorna todas las órdenes ordenadas por fecha descendente (más reciente primero)
+        return orderRepository.findAllByOrderByCreatedAtDesc().stream()
                 .map(orderMapper::toDomain)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override

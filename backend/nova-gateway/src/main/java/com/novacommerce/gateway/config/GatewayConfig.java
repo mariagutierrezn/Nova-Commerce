@@ -63,6 +63,24 @@ public class GatewayConfig {
     @Value("${gateway.routes.order-service-discounts.path}")
     private String orderServiceDiscountsPath;
 
+    @Value("${gateway.routes.notification-service-notifications.uri}")
+    private String notificationServiceUri;
+
+    @Value("${gateway.routes.notification-service-notifications.path}")
+    private String notificationServiceNotificationsPath;
+
+    @Value("${gateway.routes.notification-service-websocket.uri}")
+    private String notificationServiceWsUri;
+
+    @Value("${gateway.routes.notification-service-websocket.path}")
+    private String notificationServiceWsPath;
+
+    @Value("${gateway.routes.notification-service-chat.uri}")
+    private String notificationServiceChatUri;
+
+    @Value("${gateway.routes.notification-service-chat.path}")
+    private String notificationServiceChatPath;
+
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
         log.info("Configuring Gateway routes");
@@ -76,6 +94,9 @@ public class GatewayConfig {
         log.info("Route: {} -> {}", customerServiceCustomersPath, customerServiceUri);
         log.info("Route: {} -> {}", orderServiceOrdersPath, orderServiceUri);
         log.info("Route: {} -> {}", orderServiceDiscountsPath, orderServiceUri);
+        log.info("Route: {} -> {}", notificationServiceNotificationsPath, notificationServiceUri);
+        log.info("Route: {} (WebSocket) -> {}", notificationServiceWsPath, notificationServiceWsUri);
+        log.info("Route: {} (Chat) -> {}", notificationServiceChatPath, notificationServiceChatUri);
 
         return builder.routes()
                 .route(RouteConstants.AUTH_SERVICE_ID, r -> r
@@ -138,6 +159,24 @@ public class GatewayConfig {
                                 .stripPrefix(0)
                                 .removeRequestHeader("Cookie"))
                         .uri(orderServiceUri))
+                .route("notification-service-notifications", r -> r
+                        .path(notificationServiceNotificationsPath)
+                        .filters(f -> f
+                                .stripPrefix(0)
+                                .removeRequestHeader("Cookie"))
+                        .uri(notificationServiceUri))
+                .route("notification-service-websocket", r -> r
+                        .path(notificationServiceWsPath)
+                        .filters(f -> f
+                                .stripPrefix(0)
+                                .removeRequestHeader("Cookie"))
+                        .uri(notificationServiceWsUri))
+                .route("notification-service-chat", r -> r
+                        .path(notificationServiceChatPath)
+                        .filters(f -> f
+                                .stripPrefix(0)
+                                .removeRequestHeader("Cookie"))
+                        .uri(notificationServiceChatUri))
                 .build();
     }
 }

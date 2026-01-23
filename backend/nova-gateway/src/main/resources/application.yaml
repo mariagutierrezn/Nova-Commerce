@@ -83,13 +83,27 @@ gateway:
       uri: ${ORDER_SERVICE_URL:http://order-service:8085}
       path: /api/discounts/**
 
+    notification-service-notifications:
+      uri: ${NOTIFICATION_SERVICE_URL:http://notification-service:8086}
+      path: /api/notifications/**
+
+    notification-service-chat:
+      uri: ${NOTIFICATION_SERVICE_URL:http://notification-service:8086}
+      path: /api/chat/**
+
+    notification-service-websocket:
+      uri: ${NOTIFICATION_SERVICE_WS_URL:ws://notification-service:8086}
+      path: /ws/**
+
   public-paths:
     - /api/auth/login
     - /api/auth/refresh
     - /api/auth/public/register
     - /api/public/**
-    - /api/customers/** # TEMPORAL: debug de clientes
-    - /api/discounts/** # Administración de descuentos (proteger en producción)
+    - /api/customers/**
+    - /api/discounts/**
+    - /api/chat/**
+    - /ws/**
     - /images/**
     - /swagger-ui/**
     - /v3/api-docs/**
